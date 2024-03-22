@@ -1,0 +1,31 @@
+package org.ledgers.controllers.rest
+
+import org.ledgers.domain.StoryId
+import org.ledgers.dto.StoryDto
+import org.ledgers.dto.toDto
+import org.ledgers.infrastructure.StoryRepositoryAdapter
+import org.ledgers.usecase.GetStoryUseCase
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+class StoryController {
+
+    @Autowired
+    lateinit var storyRepository: StoryRepositoryAdapter
+
+
+    @GetMapping("/api/story/{id}")
+    fun getStoryById(@PathVariable id: StoryId): StoryDto {
+        return GetStoryUseCase(storyRepository).getStoryById(id).toDto()
+    }
+
+    @PostMapping("/api/story/{id}")
+    fun saveStory(@PathVariable id: StoryId): StoryDto {
+        return GetStoryUseCase(storyRepository).getStoryById(id).toDto()
+    }
+
+}
