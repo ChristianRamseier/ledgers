@@ -1,7 +1,7 @@
 plugins {
+    kotlin("jvm")
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
-    kotlin("jvm")
     kotlin("plugin.spring") version "1.9.22"
 }
 
@@ -9,10 +9,6 @@ group = "org.ledgers"
 version = rootProject.version
 
 java.sourceCompatibility = JavaVersion.VERSION_21
-
-repositories {
-    mavenCentral()
-}
 
 sourceSets {
     main {

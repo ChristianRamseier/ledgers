@@ -5,6 +5,9 @@ import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.scenario.Scenario
 import org.ledgers.domain.scenario.Steps
+import org.ledgers.domain.stage.ComponentOnStage
+import org.ledgers.domain.stage.Location
+import org.ledgers.domain.stage.StageChange
 
 fun Story.toDto(): StoryDto {
     return StoryDto(

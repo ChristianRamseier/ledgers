@@ -39,8 +39,8 @@ class LedgersConfiguration {
             Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
                 registerString(builder, StoryId::class.java, { id -> id.toString() }, { id -> StoryId(id) })
                 registerInt(builder, Version::class.java, { version -> version.version }, { version -> Version(version) })
-                registerLong(builder, LedgerId::class.java, { id -> id.id }, { id -> LedgerId(id) })
-                registerLong(builder, OrganizationId::class.java, { id -> id.id }, { id -> OrganizationId(id) })
+                registerString(builder, LedgerId::class.java, { id -> id.id }, { id -> LedgerId(id) })
+                registerString(builder, OrganizationId::class.java, { id -> id.id }, { id -> OrganizationId(id) })
             }
 
         fun objectMapper(): ObjectMapper {

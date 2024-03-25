@@ -1,7 +1,9 @@
 package org.ledgers.domain
 
 import org.ledgers.domain.architecture.Architecture
+import kotlin.js.JsExport
 
+@JsExport
 data class Story(
     val id: StoryId,
     val version: Version,

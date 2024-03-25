@@ -6,11 +6,14 @@ import org.junit.jupiter.api.assertThrows
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.architecture.LedgerId
 import org.ledgers.domain.component.ComponentType
+import org.ledgers.domain.stage.ComponentOnStage
+import org.ledgers.domain.stage.Location
+import org.ledgers.domain.stage.StageChange
 
 class StorylineTest {
 
-    val componentOnStage = ComponentOnStage(Location(0, 0), ComponentReference(ComponentType.Ledger, LedgerId(1), Version.Zero))
-    val movedComponentOnStage = ComponentOnStage(Location(100, 0), ComponentReference(ComponentType.Ledger, LedgerId(1), Version.Zero))
+    val componentOnStage = ComponentOnStage(Location(0, 0), ComponentReference(ComponentType.Ledger, LedgerId.random(), Version.Zero))
+    val movedComponentOnStage = ComponentOnStage(Location(100, 0), ComponentReference(ComponentType.Ledger, LedgerId.random(), Version.Zero))
 
     @Test
     fun givenAnEmptyTimeline_whenAddingAChangeAtTimeTwo_theChangeSucceeds() {

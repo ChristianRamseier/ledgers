@@ -1,14 +1,17 @@
-plugins {
-    kotlin("jvm") version "1.9.22"
-    id("java-library")
+plugins{
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
 }
+allprojects {
 
-repositories {
-    mavenCentral()
+    group = "org.ledgers"
+    version = "0.0.1"
+
+    repositories {
+        mavenCentral()
+    }
+
 }
-
-group = "org.ledgers"
-version = "0.0.1"
 
 
 

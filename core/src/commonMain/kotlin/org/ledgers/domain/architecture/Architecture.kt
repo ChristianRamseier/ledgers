@@ -26,7 +26,7 @@ class Architecture {
     }
 
     fun addOrganization(name: String): Architecture {
-        val organization = Organization(OrganizationId.nextId(), Version.Zero, name)
+        val organization = Organization(OrganizationId.random(), Version.Zero, name)
         return Architecture(
             organizations = organizations.add(organization),
             ledgers = ledgers,
@@ -43,7 +43,7 @@ class Architecture {
     }
 
     fun addLedger(name: String, ownerId: OrganizationId): Architecture {
-        val ledger = Ledger(LedgerId.nextId(), Version.Zero, name, ownerId)
+        val ledger = Ledger(LedgerId.random(), Version.Zero, name, ownerId)
         return Architecture(
             organizations = organizations,
             ledgers = ledgers.add(ledger),

@@ -1,6 +1,9 @@
 package org.ledgers.domain
 
 import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.stage.ComponentOnStage
+import org.ledgers.domain.stage.Stage
+import org.ledgers.domain.stage.StageChange
 
 data class Storyline(
     val chapters: List<Chapter> = listOf(Chapter.Empty)

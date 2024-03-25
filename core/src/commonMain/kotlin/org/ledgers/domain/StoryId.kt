@@ -1,12 +1,13 @@
 package org.ledgers.domain
 
-import java.util.*
+import org.ledgers.util.UUID
+
 
 data class StoryId(val id: String) {
 
     companion object {
         fun random(): StoryId {
-            return StoryId(UUID.randomUUID().toString())
+            return StoryId(UUID.randomAsString())
         }
     }
 

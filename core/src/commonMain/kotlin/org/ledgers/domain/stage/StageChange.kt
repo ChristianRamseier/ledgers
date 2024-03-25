@@ -1,4 +1,4 @@
-package org.ledgers.domain
+package org.ledgers.domain.stage
 
 import org.ledgers.domain.component.ComponentReference
 
