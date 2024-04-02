@@ -55,6 +55,40 @@ class StoryPage(private val id: String, private val story: Story?) : Page {
                     }
                 }
                 div {
+                    id = "components"
+                    div {
+                        id = "components-controls"
+                        button {
+                            id = "add-organization"
+                            +"Add Organization"
+                        }
+                        button {
+                            id = "add-ledger"
+                            +"Add Ledger"
+                        }
+                        button {
+                            id = "add-asset"
+                            +"Add Asset"
+                        }
+                    }
+                    div {
+                        id = "components-list"
+                    }
+                }
+                div {
+                    id = "chapters"
+                    div {
+                        id = "chapters-list"
+                    }
+                    div {
+                        id = "chapters-controls"
+                        button {
+                            id = "add-chapter"
+                            +"Add Chapter"
+                        }
+                    }
+                }
+                div {
                     id = "controls"
                     div {
                         id = "zoom-controls"

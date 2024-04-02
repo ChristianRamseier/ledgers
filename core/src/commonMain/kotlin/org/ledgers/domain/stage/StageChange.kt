@@ -1,24 +1,13 @@
 package org.ledgers.domain.stage
 
 import org.ledgers.domain.component.ComponentReference
+import kotlin.js.JsExport
 
+@JsExport
 sealed interface StageChange {
 
     val componentReference: ComponentReference
 
-    data class Add(
-        val component: ComponentOnStage
-    ) : StageChange {
-        override val componentReference: ComponentReference get() = component.reference
-    }
+    val type: StageChangeType
 
-    data class Change(
-        val component: ComponentOnStage
-    ) : StageChange {
-        override val componentReference: ComponentReference get() = component.reference
-    }
-
-    data class Remove(
-        override val componentReference: ComponentReference
-    ) : StageChange
 }

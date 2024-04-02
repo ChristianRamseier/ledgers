@@ -18,7 +18,8 @@ class Site {
                 attributes["lang"] = "en"
                 head {
                     title { +browserTitle }
-                    link(href = "/style.css?$TIMESTAMP", rel = "stylesheet")
+                    link(href = "/canvas.css?$TIMESTAMP", rel = "stylesheet")
+                    link(href = "/ledgers.css?$TIMESTAMP", rel = "stylesheet")
                     link(href = "/favicon.svg", rel = "icon")
                     meta(name = "viewport", content = "width=device-width, initial-scale=1.0")
                     meta(name = "description", content = "$pageDescription")
@@ -29,6 +30,11 @@ class Site {
                     }
                     script(src = "/prism.js?$TIMESTAMP") {}
                     script(src = "/canvas.js?$TIMESTAMP") {}
+                    script(src = "/kotlin-kotlin-stdlib.js?$TIMESTAMP") {}
+                    script(src = "/kotlin_org_jetbrains_kotlin_kotlin_dom_api_compat.js?$TIMESTAMP") {}
+                    script(src = "/uuid.js?$TIMESTAMP") {}
+                    script(src = "/ledgers-core.js?$TIMESTAMP") {}
+                    script(src = "/ledgers.js?$TIMESTAMP") {}
                 }
             }
             return builder.toString()

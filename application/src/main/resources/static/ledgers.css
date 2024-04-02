@@ -1,0 +1,49 @@
+#components {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    display: flex;
+    gap: 6px;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+}
+
+#components-list {
+    display: flex;
+    flex-direction: column;
+}
+
+#components-list organization {
+    display: block;
+    cursor: pointer;
+}
+
+#chapters {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 100;
+    display: flex;
+    gap: 6px;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    font-size: small;
+}
+
+#chapters-list {
+    display: flex;
+    flex-direction: column;
+}
+
+#chapters-list chapter {
+    display: block;
+    cursor: pointer;
+}

@@ -1,5 +1,8 @@
 package org.ledgers.domain
 
+import kotlin.js.JsExport
+
+@JsExport
 data class Version(val version: Int) : Comparable<Version> {
 
     fun next(): Version {
@@ -12,5 +15,9 @@ data class Version(val version: Int) : Comparable<Version> {
 
     override fun compareTo(other: Version): Int {
         return version.compareTo(other.version)
+    }
+
+    override fun toString(): String {
+        return version.toString()
     }
 }

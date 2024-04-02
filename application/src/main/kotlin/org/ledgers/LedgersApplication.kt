@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @SpringBootApplication
 @EnableScheduling
 @EnableAsync
-class ToniePumpApplication
+class LedgersApplication
 
 fun main(args: Array<String>) {
-	runApplication<ToniePumpApplication>(*args)
+	runApplication<LedgersApplication>(*args)
 }

@@ -1,13 +1,15 @@
 package org.ledgers.domain
 
 import org.ledgers.domain.component.ComponentReference
-import org.ledgers.domain.stage.ComponentOnStage
-import org.ledgers.domain.stage.Stage
-import org.ledgers.domain.stage.StageChange
+import org.ledgers.domain.stage.*
+import kotlin.js.JsExport
 
+@JsExport
 data class Storyline(
     val chapters: List<Chapter> = listOf(Chapter.Empty)
 ) {
+
+    val numberOfChapters get() = chapters.size
 
     fun withChangeInChapter(chapter: Int, change: StageChange): Storyline {
         return withChangesInChapter(chapter, atChapter(chapter).withChange(change))
@@ -32,7 +34,7 @@ data class Storyline(
         return Chapter.Empty
     }
 
-    private fun withChangesInChapter(chapter: Int, changes: Chapter): Storyline {
+    private fun withChangesInChapter(chapter: Int, updatedChapter: Chapter): Storyline {
         if (chapter < 0) {
             throw RuntimeException("Chapter must be greater than equal to 0")
         }
@@ -41,7 +43,7 @@ data class Storyline(
         for (i in 0..<maxChapter) {
             copy.add(
                 if (i == chapter) {
-                    changes
+                    updatedChapter
                 } else {
                     atChapter(i)
                 }
@@ -53,24 +55,24 @@ data class Storyline(
     fun getStageAtChapter(chapter: Int): Stage {
         val componentsOnStage = LinkedHashMap<ComponentReference, ComponentOnStage>()
         for (i in 0..chapter) {
-            val changes = atChapter(chapter)
+            val changes = atChapter(i)
             changes.changes.forEach { change ->
                 when (change) {
-                    is StageChange.Add -> {
+                    is Add -> {
                         if (componentsOnStage.containsKey(change.componentReference)) {
                             throw RuntimeException("Stage already contains component ${change.componentReference}")
                         }
                         componentsOnStage[change.componentReference] = change.component
                     }
 
-                    is StageChange.Change -> {
+                    is Change -> {
                         if (!componentsOnStage.containsKey(change.componentReference)) {
                             throw RuntimeException("Stage does not contain component ${change.componentReference}")
                         }
                         componentsOnStage[change.componentReference] = change.component
                     }
 
-                    is StageChange.Remove -> {
+                    is Remove -> {
                         if (!componentsOnStage.containsKey(change.componentReference)) {
                             throw RuntimeException("Stage does not contain component ${change.componentReference}")
                         }
@@ -82,6 +84,18 @@ data class Storyline(
         return Stage(
             components = componentsOnStage.values.toList()
         )
+    }
+
+    fun withChapterNamed(chapter: Int, name: String): Storyline {
+        return withChangesInChapter(chapter, atChapter(chapter).withName(name))
+    }
+
+    fun withComponentInChapter(chapter: Int, reference: ComponentReference): Storyline {
+        val isPresent = getStageAtChapter(chapter).has(reference)
+        if (!isPresent) {
+            return withChangeInChapter(chapter, Add(ComponentOnStage(Location.ZERO, reference)))
+        }
+        return this
     }
 
 }

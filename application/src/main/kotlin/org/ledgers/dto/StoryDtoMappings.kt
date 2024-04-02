@@ -1,18 +1,17 @@
 package org.ledgers.dto
 
-import org.ledgers.domain.*
+import org.ledgers.domain.Chapter
+import org.ledgers.domain.Story
+import org.ledgers.domain.Storyline
 import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.scenario.Scenario
 import org.ledgers.domain.scenario.Steps
-import org.ledgers.domain.stage.ComponentOnStage
-import org.ledgers.domain.stage.Location
-import org.ledgers.domain.stage.StageChange
+import org.ledgers.domain.stage.*
 
 fun Story.toDto(): StoryDto {
     return StoryDto(
         id = id,
-        version = version,
         name = name,
         architecture = architecture.toDto(),
         storyline = storyline.toDto()
@@ -53,9 +52,9 @@ private fun Scenario.toDto(): ScenarioDto {
 
 private fun StageChange.toDto(): StageChangeDto {
     return when (this) {
-        is StageChange.Add -> StageChangeDto.Add(component.toDto())
-        is StageChange.Change -> StageChangeDto.Change(component.toDto())
-        is StageChange.Remove -> StageChangeDto.Remove(componentReference.toDto())
+        is Add -> StageChangeDto.Add(component.toDto())
+        is Change -> StageChangeDto.Change(component.toDto())
+        is Remove -> StageChangeDto.Remove(componentReference.toDto())
     }
 }
 
@@ -71,11 +70,9 @@ private fun Location.toDto(): LocationDto {
     return LocationDto(x = x, y = y)
 }
 
-
 fun StoryDto.toDomain(): Story {
     return Story(
         id = id,
-        version = version,
         name = name,
         architecture = architecture.toDomain(),
         storyline = storyline.toDomain()
@@ -116,9 +113,9 @@ private fun ScenarioDto.toDomain(): Scenario {
 
 private fun StageChangeDto.toDomain(): StageChange {
     return when (this) {
-        is StageChangeDto.Add -> StageChange.Add(component.toDomain())
-        is StageChangeDto.Change -> StageChange.Change(component.toDomain())
-        is StageChangeDto.Remove -> StageChange.Remove(componentReference.toDomain())
+        is StageChangeDto.Add -> Add(component.toDomain())
+        is StageChangeDto.Change -> Change(component.toDomain())
+        is StageChangeDto.Remove -> Remove(componentReference.toDomain())
     }
 }
 

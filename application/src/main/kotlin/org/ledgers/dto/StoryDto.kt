@@ -5,7 +5,6 @@ import org.ledgers.domain.Version
 
 data class StoryDto(
     val id: StoryId,
-    val version: Version,
     val name: String,
     val architecture: ArchitectureDto,
     val storyline: StorylineDto

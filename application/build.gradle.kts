@@ -23,6 +23,16 @@ sourceSets {
     }
 }
 
+evaluationDependsOn(":core")
+
+tasks {
+    processResources {
+        from(project(":core").tasks["jsBrowserProductionLibraryDistribution"].outputs.files) {
+            into("static")
+        }
+    }
+}
+
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux")

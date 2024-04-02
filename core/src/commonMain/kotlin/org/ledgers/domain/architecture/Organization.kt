@@ -3,7 +3,9 @@ package org.ledgers.domain.architecture
 import org.ledgers.domain.Version
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentType
+import kotlin.js.JsExport
 
+@JsExport
 data class Organization(
     override val id: OrganizationId,
     override val version: Version,

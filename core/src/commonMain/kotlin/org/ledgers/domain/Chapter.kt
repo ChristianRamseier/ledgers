@@ -4,8 +4,9 @@ import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.scenario.Scenario
 import org.ledgers.domain.stage.StageChange
 import org.ledgers.replaceFirstOrAdd
+import kotlin.js.JsExport
 
-
+@JsExport
 data class Chapter(
     val changes: List<StageChange>,
     val name: String = "",

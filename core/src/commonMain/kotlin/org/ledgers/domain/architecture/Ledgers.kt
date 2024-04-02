@@ -1,26 +1,28 @@
 package org.ledgers.domain.architecture
 
-class Ledgers {
+import org.ledgers.domain.component.ComponentReference
+import kotlin.js.JsExport
 
-    val ledgers: List<Ledger>
+@JsExport
+data class Ledgers(
+    val ledgers: List<Ledger> = emptyList()
+) {
 
-    constructor() {
-        ledgers = emptyList()
+    fun getByReference(reference: ComponentReference): Ledger {
+        val ledger = ledgers.find { it.reference == reference }
+        return ledger ?: throw RuntimeException("No ledger with reference $reference")
     }
 
-    constructor(ledgers: List<Ledger>) {
-        this.ledgers = ledgers
+    fun toArray(): Array<Ledger> {
+        return ledgers.toTypedArray()
     }
 
-    fun add(ledger: Ledger): Ledgers {
-        if (ledgers.any { it.id == ledger.id }) {
-            throw RuntimeException("Ledger with name ${ledger.name} already exists")
-        }
-        return Ledgers(ledgers.plus(ledger))
+    fun addOrReplace(ledger: Ledger): Ledgers {
+        return Ledgers(ledgers.filter { it.reference != ledger.reference }.plus(ledger))
     }
 
-    fun remove(ledgerId: LedgerId): Ledgers {
-        return Ledgers(ledgers.filter { it.id != ledgerId })
+    fun remove(reference: ComponentReference): Ledgers {
+        return Ledgers(ledgers.filter { it.reference != reference })
     }
 
 

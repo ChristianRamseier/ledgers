@@ -1,21 +1,34 @@
 package org.ledgers.domain.architecture
 
-data class Organizations(val organizations: List<Organization> = emptyList()) {
+import org.ledgers.domain.component.ComponentReference
+import kotlin.js.JsExport
 
-    fun getById(id: OrganizationId): Organization {
-        val organization = organizations.find { it.id == id }
-        return organization ?: throw RuntimeException("No organization with $id")
+@JsExport
+data class Organizations(
+    val organizations: List<Organization> = emptyList()
+) {
+
+    val numberOfOrganizations get() = organizations.size
+
+    fun getByReference(reference: ComponentReference): Organization {
+        val organization = organizations.find { it.reference == reference }
+        return organization ?: throw RuntimeException("No organization with reference $reference")
     }
 
-    fun add(organization: Organization): Organizations {
-        return Organizations(organizations.plus(organization))
+    fun addOrReplace(organization: Organization): Organizations {
+        return Organizations(organizations.filter { it.reference != organization.reference }.plus(organization))
     }
 
-    fun remove(id: OrganizationId): Organizations {
-        val toRemove = getById(id)
+    fun toArray(): Array<Organization> {
+        return organizations.toTypedArray()
+    }
+
+    fun remove(id: ComponentReference): Organizations {
+        val toRemove = getByReference(id)
         return Organizations(
-            organizations.filter { it == toRemove }
+            organizations.filter { it != toRemove }
         )
     }
+
 
 }

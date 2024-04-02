@@ -2,41 +2,30 @@ package org.ledgers.domain.architecture
 
 import org.ledgers.domain.AssetType
 import org.ledgers.domain.Version
+import org.ledgers.domain.component.Component
+import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.component.ComponentType
+import kotlin.js.JsExport
 
-class Architecture {
-
-    val organizations: Organizations
-    val ledgers: Ledgers
-    val assets: Assets
-
-    constructor(
-        organizations: Organizations,
-        ledgers: Ledgers,
-        assets: Assets,
-    ) {
-        this.organizations = organizations
-        this.ledgers = ledgers
-        this.assets = assets
-    }
-
-    constructor() {
-        this.organizations = Organizations()
-        this.ledgers = Ledgers()
-        this.assets = Assets()
-    }
+@JsExport
+data class Architecture(
+    val organizations: Organizations = Organizations(),
+    val ledgers: Ledgers = Ledgers(),
+    val assets: Assets = Assets()
+) {
 
     fun addOrganization(name: String): Architecture {
         val organization = Organization(OrganizationId.random(), Version.Zero, name)
         return Architecture(
-            organizations = organizations.add(organization),
+            organizations = organizations.addOrReplace(organization),
             ledgers = ledgers,
             assets = assets
         )
     }
 
-    fun removeOrganization(organizationId: OrganizationId): Architecture {
+    fun removeOrganization(reference: ComponentReference): Architecture {
         return Architecture(
-            organizations = organizations.remove(organizationId),
+            organizations = organizations.remove(reference),
             ledgers = ledgers,
             assets = assets
         )
@@ -46,15 +35,15 @@ class Architecture {
         val ledger = Ledger(LedgerId.random(), Version.Zero, name, ownerId)
         return Architecture(
             organizations = organizations,
-            ledgers = ledgers.add(ledger),
+            ledgers = ledgers.addOrReplace(ledger),
             assets = assets
         )
     }
 
-    fun removeLedger(ledgerId: LedgerId): Architecture {
+    fun removeLedger(reference: ComponentReference): Architecture {
         return Architecture(
             organizations = organizations,
-            ledgers = ledgers.remove(ledgerId),
+            ledgers = ledgers.remove(reference),
             assets = assets
         )
     }
@@ -66,6 +55,21 @@ class Architecture {
             ledgers = ledgers,
             assets = assets.add(asset)
         )
+    }
+
+    fun removeAsset(name: String): Architecture {
+        return Architecture(
+            organizations = organizations,
+            ledgers = ledgers,
+            assets = assets.remove(name)
+        )
+    }
+
+    fun getComponent(componentReference: ComponentReference): Component {
+        return when(componentReference.type) {
+            ComponentType.Organization -> organizations.getByReference(componentReference)
+            ComponentType.Ledger -> ledgers.getByReference(componentReference)
+        }
     }
 
 }
