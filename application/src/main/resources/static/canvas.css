@@ -296,6 +296,7 @@ nav .link:hover {
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
+  text-overflow: ellipsis;
 }
 .node.is-dragging .node-name {
   cursor: grabbing;

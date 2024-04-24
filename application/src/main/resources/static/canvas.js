@@ -4,7 +4,6 @@ let scale, panOffsetX, panOffsetY;
 const ZOOM_SPEED = 0.1;
 const minScale = 0.35;
 const maxScale = 1.25;
-const container = document.getElementById('canvas-nodes');
 
 let isDragging = false;
 let isSpacePressed = false;
@@ -140,18 +139,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function prepareForSerialization() {
-    document.querySelectorAll('a').forEach(link => {
-        if (link.hasAttribute('target') && link.target === '_blank') {
-            link.removeAttribute('target');
-            link.removeAttribute('rel');
-        }
-    });
-}
-
 // Serialize canvas data
 function updateCanvasData() {
-    prepareForSerialization();
     const nodes = Array.from(document.querySelectorAll('.node')).map(node => {
         const nodeObject = {
             id: node.id,
@@ -241,16 +230,20 @@ function drawEdges() {
 }
 
 // Drag nodes
-document.querySelectorAll('.node .node-name').forEach(nodeName => {
-    nodeName.addEventListener('mousedown', function (e) {
+function enableDraggingFor(element) {
+    element.addEventListener('mousedown', function (e) {
+        console.log('dragger')
         if (isSpacePressed) return;
-
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
         selectedElement = this.parentElement;
         selectedElement.classList.add('is-dragging');
     });
+}
+
+document.querySelectorAll('.node .node-name').forEach(nodeName => {
+    enableDraggingFor(nodeName)
 });
 
 window.addEventListener('mousemove', function (e) {
@@ -281,7 +274,7 @@ window.addEventListener('mouseup', function () {
 // Panning
 window.addEventListener('keydown', function (e) {
     if (e.code === 'Space') {
-        e.preventDefault();
+        //e.preventDefault();
         isSpacePressed = true;
         document.body.classList.add('will-pan');
     }

@@ -23,6 +23,16 @@
     cursor: pointer;
 }
 
+#components-list ledger {
+    display: block;
+    cursor: pointer;
+}
+
+#components-list asset {
+    display: block;
+    cursor: pointer;
+}
+
 #chapters {
     position: fixed;
     bottom: 1rem;
@@ -46,4 +56,23 @@
 #chapters-list chapter {
     display: block;
     cursor: pointer;
+}
+
+#editors {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    display: flex;
+    gap: 6px;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    font-size: small;
+}
+
+#editors div {
+    display: none;
+    gap: 6px;
+    flex-direction: column;
 }

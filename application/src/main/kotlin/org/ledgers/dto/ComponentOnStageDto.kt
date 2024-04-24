@@ -1,7 +1,7 @@
 package org.ledgers.dto
 
 data class ComponentOnStageDto(
-    val location: LocationDto,
+    val location: BoxDto,
     val reference: ComponentReferenceDto
 ) {
 

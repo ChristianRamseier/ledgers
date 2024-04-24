@@ -14,7 +14,7 @@ class StageTest {
         val oldStage = Stage()
         val organizationId = OrganizationId.random()
         val addedComponent = ComponentOnStage(
-            location = Location(10, 10),
+            box = Box(10, 10, 100, 100),
             reference = ComponentReference(ComponentType.Organization, organizationId, Version.Zero)
         )
         val newStage = Stage(components = listOf(addedComponent))
@@ -28,13 +28,13 @@ class StageTest {
         val oldStage = Stage(
             listOf(
                 ComponentOnStage(
-                    location = Location(10, 10),
+                    box = Box(10, 10, 100, 100),
                     reference = ComponentReference(ComponentType.Organization, organizationId, Version(1))
                 )
             )
         )
         val component = ComponentOnStage(
-            location = Location(10, 10),
+            box = Box(10, 10, 100, 100),
             reference = ComponentReference(ComponentType.Organization, organizationId, Version.Zero)
         )
         val newStage = Stage(components = listOf(component))
@@ -46,7 +46,7 @@ class StageTest {
     fun givenTwoStages_whenNoComponentWasRemoved_aRemovalIsReturned() {
         val organizationId = OrganizationId.random()
         val component = ComponentOnStage(
-            location = Location(10, 10),
+            box = Box(10, 10, 100, 100),
             reference = ComponentReference(ComponentType.Organization, organizationId, Version.Zero)
         )
         val oldStage = Stage(components = listOf(component))
@@ -59,7 +59,7 @@ class StageTest {
     fun givenTwoStages_whenNoComponentWasChanged_noChangesAreReturned() {
         val organizationId = OrganizationId.random()
         val component = ComponentOnStage(
-            location = Location(10, 10),
+            box = Box(10, 10, 100, 100),
             reference = ComponentReference(ComponentType.Organization, organizationId, Version.Zero)
         )
         val oldStage = Stage(components = listOf(component))
@@ -67,4 +67,5 @@ class StageTest {
         val changes = oldStage.getChangesThatLeadTo(newStage)
         assertThat(changes).isEmpty()
     }
+
 }

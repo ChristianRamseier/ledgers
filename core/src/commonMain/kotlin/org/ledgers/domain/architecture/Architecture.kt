@@ -40,6 +40,22 @@ data class Architecture(
         )
     }
 
+    fun withChangedLedger(reference: ComponentReference, name: String, ownerId: OrganizationId): Architecture {
+        return Architecture(
+            organizations = organizations,
+            ledgers = ledgers.withChangedLedger(reference, name, ownerId),
+            assets = assets
+        )
+    }
+
+    fun withChangedOrganization(reference: ComponentReference, name: String): Architecture {
+        return Architecture(
+            organizations = organizations.withChangedOrganization(reference, name),
+            ledgers = ledgers,
+            assets = assets
+        )
+    }
+
     fun removeLedger(reference: ComponentReference): Architecture {
         return Architecture(
             organizations = organizations,
@@ -49,11 +65,19 @@ data class Architecture(
     }
 
     fun addAsset(name: String, assetType: AssetType): Architecture {
-        val asset = Asset(name, assetType)
+        val asset = Asset(AssetId.random(), Version.Zero, name, assetType)
         return Architecture(
             organizations = organizations,
             ledgers = ledgers,
             assets = assets.add(asset)
+        )
+    }
+
+    fun withChangedAsset(reference: ComponentReference, name: String, assetType: AssetType): Architecture {
+        return Architecture(
+            organizations = organizations,
+            ledgers = ledgers,
+            assets = assets.change(reference, name, assetType)
         )
     }
 
@@ -69,7 +93,11 @@ data class Architecture(
         return when(componentReference.type) {
             ComponentType.Organization -> organizations.getByReference(componentReference)
             ComponentType.Ledger -> ledgers.getByReference(componentReference)
+            ComponentType.Asset -> assets.getByReference(componentReference)
         }
     }
+
+
+
 
 }

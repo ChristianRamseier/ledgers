@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import org.ledgers.domain.StoryId
 import org.ledgers.domain.Version
+import org.ledgers.domain.architecture.AssetId
 import org.ledgers.domain.architecture.LedgerId
 import org.ledgers.domain.architecture.OrganizationId
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
@@ -38,6 +39,7 @@ class LedgersConfiguration {
         private val OBJECT_MAPPER_CUSTOMIZER =
             Jackson2ObjectMapperBuilderCustomizer { builder: Jackson2ObjectMapperBuilder ->
                 registerString(builder, StoryId::class.java, { id -> id.toString() }, { id -> StoryId(id) })
+                registerString(builder, AssetId::class.java, { id -> id.toString() }, { id -> AssetId(id) })
                 registerInt(builder, Version::class.java, { version -> version.version }, { version -> Version(version) })
                 registerString(builder, LedgerId::class.java, { id -> id.id }, { id -> LedgerId(id) })
                 registerString(builder, OrganizationId::class.java, { id -> id.id }, { id -> OrganizationId(id) })

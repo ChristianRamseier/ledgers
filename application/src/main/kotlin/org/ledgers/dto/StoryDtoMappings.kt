@@ -27,7 +27,7 @@ private fun Architecture.toDto(): ArchitectureDto {
 }
 
 private fun Asset.toDto(): AssetDto {
-    return AssetDto(name = name, assetType = assetType)
+    return AssetDto(id = id, version = version, name = name, assetType = assetType)
 }
 
 private fun Ledger.toDto(): LedgerDto {
@@ -63,11 +63,11 @@ private fun ComponentReference.toDto(): ComponentReferenceDto {
 }
 
 private fun ComponentOnStage.toDto(): ComponentOnStageDto {
-    return ComponentOnStageDto(location = location.toDto(), reference = reference.toDto())
+    return ComponentOnStageDto(location = box.toDto(), reference = reference.toDto())
 }
 
-private fun Location.toDto(): LocationDto {
-    return LocationDto(x = x, y = y)
+private fun Box.toDto(): BoxDto {
+    return BoxDto(x = x, y = y, width = width, height = height)
 }
 
 fun StoryDto.toDomain(): Story {
@@ -88,7 +88,7 @@ private fun ArchitectureDto.toDomain(): Architecture {
 }
 
 private fun AssetDto.toDomain(): Asset {
-    return Asset(name = name, assetType = assetType)
+    return Asset(id = id, version = version, name = name, assetType = assetType)
 }
 
 private fun LedgerDto.toDomain(): Ledger {
@@ -124,9 +124,9 @@ private fun ComponentReferenceDto.toDomain(): ComponentReference {
 }
 
 private fun ComponentOnStageDto.toDomain(): ComponentOnStage {
-    return ComponentOnStage(location = location.toDomain(), reference = reference.toDomain())
+    return ComponentOnStage(box = location.toDomain(), reference = reference.toDomain())
 }
 
-private fun LocationDto.toDomain(): Location {
-    return Location(x = x, y = y)
+private fun BoxDto.toDomain(): Box {
+    return Box(x = x, y = y, width = width, height = height)
 }

@@ -90,10 +90,10 @@ data class Storyline(
         return withChangesInChapter(chapter, atChapter(chapter).withName(name))
     }
 
-    fun withComponentInChapter(chapter: Int, reference: ComponentReference): Storyline {
+    fun withComponentInChapter(chapter: Int, reference: ComponentReference, box: Box): Storyline {
         val isPresent = getStageAtChapter(chapter).has(reference)
         if (!isPresent) {
-            return withChangeInChapter(chapter, Add(ComponentOnStage(Location.ZERO, reference)))
+            return withChangeInChapter(chapter, Add(ComponentOnStage(box, reference)))
         }
         return this
     }

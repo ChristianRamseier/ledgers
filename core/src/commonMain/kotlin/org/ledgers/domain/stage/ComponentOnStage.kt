@@ -5,7 +5,7 @@ import kotlin.js.JsExport
 
 @JsExport
 data class ComponentOnStage(
-    val location: Location,
+    val box: Box,
     val reference: ComponentReference
 ) {
 }

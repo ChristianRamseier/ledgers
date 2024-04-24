@@ -5,5 +5,6 @@ import kotlin.js.JsExport
 @JsExport
 enum class ComponentType {
     Ledger,
-    Organization
+    Organization,
+    Asset
 }

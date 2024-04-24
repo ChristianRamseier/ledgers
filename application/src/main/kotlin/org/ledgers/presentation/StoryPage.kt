@@ -89,6 +89,70 @@ class StoryPage(private val id: String, private val story: Story?) : Page {
                     }
                 }
                 div {
+                    id = "editors"
+                    div {
+                        id = "ledger-editor"
+                        input(type = InputType.text) {
+                            id = "ledger-name"
+                        }
+                        select {
+                            id = "ledger-organization"
+                        }
+                        button {
+                            id = "ledger-apply"
+                            +"Apply"
+                        }
+                    }
+                    div {
+                        id = "organization-editor"
+                        input(type = InputType.text) {
+                            id = "organization-name"
+                        }
+                        button {
+                            id = "organization-apply"
+                            +"Apply"
+                        }
+                    }
+                    div {
+                        id = "asset-editor"
+                        input(type = InputType.text) {
+                            id = "asset-name"
+                        }
+                        label {
+                            radioInput(name = "asset-type") {
+                                id = "asset-type-cash"
+                                value = "Cash"
+                            }
+                            +"Cash"
+                        }
+                        label {
+                            radioInput(name = "asset-type") {
+                                id = "asset-type-security"
+                                value = "Security"
+
+                            }
+                            +"Security"
+                        }
+                        button {
+                            id = "asset-apply"
+                            +"Apply"
+                        }
+                    }
+                    div {
+                        id = "chapter-editor"
+                        input(type = InputType.text) {
+                            id = "chapter-name"
+                        }
+                        div {
+                            id = "chapter-changes"
+                        }
+                        button {
+                            id = "chapter-apply"
+                            +"Apply"
+                        }
+                    }
+                }
+                div {
                     id = "controls"
                     div {
                         id = "zoom-controls"

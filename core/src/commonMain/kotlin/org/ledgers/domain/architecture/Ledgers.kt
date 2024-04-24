@@ -8,6 +8,9 @@ data class Ledgers(
     val ledgers: List<Ledger> = emptyList()
 ) {
 
+    val numberOfLedgers get() = ledgers.size
+
+
     fun getByReference(reference: ComponentReference): Ledger {
         val ledger = ledgers.find { it.reference == reference }
         return ledger ?: throw RuntimeException("No ledger with reference $reference")
@@ -23,6 +26,18 @@ data class Ledgers(
 
     fun remove(reference: ComponentReference): Ledgers {
         return Ledgers(ledgers.filter { it.reference != reference })
+    }
+
+    fun withChangedLedger(reference: ComponentReference, name: String, ownerId: OrganizationId): Ledgers {
+        return return Ledgers(
+            ledgers.map {
+                if (it.reference == reference) {
+                    it.copy(name = name, ownerId = ownerId)
+                } else {
+                    it
+                }
+            }
+        )
     }
 
 
