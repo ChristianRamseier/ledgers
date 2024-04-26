@@ -22,4 +22,5 @@ data class Stage(
             .map { Change(newById[it]!!) }
         return toRemove + toAdd + toChange
     }
+
 }

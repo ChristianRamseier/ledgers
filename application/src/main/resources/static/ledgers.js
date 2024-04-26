@@ -17,14 +17,14 @@ const transition = function (fromStory, fromChapter, toStory, toChapter) {
             case 'Add': {
                 const nodes = document.getElementById('canvas-nodes')
                 const newNode = document.createElement('node');
-                newNode.id = `node:${component.reference}`
+                newNode.id = `${component.reference}`
                 newNode.className = 'node node-link'
                 newNode.style.left = `${change.component.box.x}px`
                 newNode.style.top = `${change.component.box.y}px`
                 newNode.style.width = `${change.component.box.width}px`
                 newNode.style.height = `${change.component.box.height}px`
                 const name = document.createElement('div')
-                name.id = `node:${component.reference}:name`
+                name.id = `${component.reference}.name`
                 name.className = 'node-name'
                 name.textContent = component.name
                 newNode.appendChild(name)
@@ -34,17 +34,19 @@ const transition = function (fromStory, fromChapter, toStory, toChapter) {
             }
 
             case 'Change': {
-                const node = document.getElementById(`node:${component.reference}`)
-                node.x = change.component.box.x
-                node.y = change.component.box.y
-                const name = document.getElementById(`node:${component.reference}:name`)
-                name.textContent = change.component.name
+                const node = document.getElementById(`${component.reference}`)
+                node.style.left = `${change.component.box.x}px`
+                node.style.top = `${change.component.box.y}px`
+                node.style.width = `${change.component.box.width}px`
+                node.style.height = `${change.component.box.height}px`
+                const name = document.getElementById(`${component.reference}.name`)
+                name.textContent = component.name
                 break;
             }
 
             case 'Remove': {
                 const nodes = document.getElementById('canvas-nodes')
-                const node = document.getElementById(`node:${component.reference}`)
+                const node = document.getElementById(`${component.reference}`)
                 nodes.removeChild(node)
                 break;
             }
@@ -112,16 +114,19 @@ const updateChaptersList = function () {
 
 document.getElementById('add-organization').addEventListener('click', function () {
     state.story = state.story.addOrganization(`Organization #${state.story.architecture.organizations.numberOfOrganizations + 1}`)
+    editOrganization(state.story.architecture.organizations.last)
     updateComponentList()
 });
 
 document.getElementById('add-asset').addEventListener('click', function () {
     state.story = state.story.addAsset(`Asset #${state.story.architecture.assets.numberOfAssets + 1}`)
+    editAsset(state.story.architecture.assets.last)
     updateComponentList()
 });
 
 document.getElementById('add-ledger').addEventListener('click', function () {
     state.story = state.story.addLedger(`Ledger #${state.story.architecture.ledgers.numberOfLedgers + 1}`)
+    editLedger(state.story.architecture.ledgers.last)
     updateComponentList()
 });
 
@@ -177,6 +182,18 @@ function toggleEditorDisplay() {
     document.getElementById('chapter-editor').style = flexIf(editorState.editor === 'chapter')
 }
 
+function nodeMoved(node) {
+    const width = 200
+    const height = 200
+    const x = parseInt(node.style.left, 10);
+    const y = parseInt(node.style.top, 10);
+    const box = new domain.stage.Box(x, y, width, height);
+    const reference = domain.component.ComponentReference.Companion.fromString(node.id);
+    const story = state.story.withComponentInChapter(state.chapter, reference, box)
+    console.log(box, story)
+    state.story = story
+}
+
 document.getElementById('ledger-apply').addEventListener('click', function () {
     if (editorState.editor == 'ledger') {
         const name = document.getElementById('ledger-name').value
@@ -185,7 +202,7 @@ document.getElementById('ledger-apply').addEventListener('click', function () {
         const story = state.story.withChangedLedger(editorState.edited.reference, name, organization)
         transition(state.story, state.chapter, story, state.chapter)
         state.story = story
-        const nameOnStage = document.getElementById(`node:${reference}:name`)
+        const nameOnStage = document.getElementById(`${reference}.name`)
         if (nameOnStage) {
             nameOnStage.textContent = name
         }

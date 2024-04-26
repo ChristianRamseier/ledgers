@@ -16,6 +16,10 @@ let lastTouchY = 0;
 let touchStartPanX = 0;
 let touchStartPanY = 0;
 
+function nodeMoved() {
+    console.log('This function should never be called and be implemented elsewhere')
+}
+
 function adjustCanvasToViewport() {
     const nodes = document.querySelectorAll('.node');
     if (nodes.length) {
@@ -265,6 +269,7 @@ window.addEventListener('mouseup', function () {
     if (isDragging && selectedElement) {
         selectedElement.classList.remove('is-dragging');
         isDragging = false;
+        nodeMoved(selectedElement)
         selectedElement = null;
         updateCanvasData();
         drawEdges();
@@ -274,7 +279,7 @@ window.addEventListener('mouseup', function () {
 // Panning
 window.addEventListener('keydown', function (e) {
     if (e.code === 'Space') {
-        //e.preventDefault();
+        // e.preventDefault(); - removed since it prevents entry of the space key in text fields
         isSpacePressed = true;
         document.body.classList.add('will-pan');
     }
@@ -435,6 +440,7 @@ document.addEventListener('touchend', function () {
     if (isDragging && selectedElement) {
         selectedElement.classList.remove('is-dragging');
         isDragging = false;
+        nodeMoved(selectedElement)
         selectedElement = null;
     }
 });

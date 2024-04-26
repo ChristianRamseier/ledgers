@@ -9,7 +9,7 @@ data class Ledgers(
 ) {
 
     val numberOfLedgers get() = ledgers.size
-
+    val last get() = ledgers.last()
 
     fun getByReference(reference: ComponentReference): Ledger {
         val ledger = ledgers.find { it.reference == reference }

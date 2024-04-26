@@ -27,6 +27,10 @@ data class Chapter(
         return Chapter(updated, name, scenario)
     }
 
+    fun findStageChange(reference: ComponentReference): StageChange? {
+        return changes.find { it.componentReference == reference }
+    }
+
     companion object {
         val Empty = Chapter(emptyList(), "", null)
     }

@@ -91,11 +91,30 @@ data class Storyline(
     }
 
     fun withComponentInChapter(chapter: Int, reference: ComponentReference, box: Box): Storyline {
-        val isPresent = getStageAtChapter(chapter).has(reference)
-        if (!isPresent) {
-            return withChangeInChapter(chapter, Add(ComponentOnStage(box, reference)))
+        val stageAtChapter = getStageAtChapter(chapter)
+        if (!stageAtChapter.has(reference)) {
+            // component does not appear on stage in current chapter
+            val stageChange = atChapter(chapter).findStageChange(reference)
+            if (stageChange is Remove) {
+                // component was removed in this chapter -> replace removal with change
+                return withChangeInChapter(chapter, Change(ComponentOnStage(box, reference)))
+            } else {
+                // component is not present or was removed in a previous chapter -> add it
+                return withChangeInChapter(chapter, Add(ComponentOnStage(box, reference)))
+            }
+        } else {
+            // component appears on current stage
+            val stageChange = atChapter(chapter).findStageChange(reference)
+            if (stageChange is Add) {
+                // component was added in current chapter -> change the addition to the new box
+                return withChangeInChapter(chapter, Add(ComponentOnStage(box, reference)))
+            } else if (stageChange is Change || stageChange == null) {
+                // component was changed in current or added in previous chapter -> add or replace the change
+                return withChangeInChapter(chapter, Change(ComponentOnStage(box, reference)))
+            } else {
+                throw RuntimeException("Unexpected stage change: $stageChange")
+            }
         }
-        return this
     }
 
 }

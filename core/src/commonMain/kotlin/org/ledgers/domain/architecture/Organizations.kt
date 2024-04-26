@@ -9,6 +9,7 @@ data class Organizations(
 ) {
 
     val numberOfOrganizations get() = organizations.size
+    val last get() = organizations.last()
 
     fun getByReference(reference: ComponentReference): Organization {
         val organization = organizations.find { it.reference == reference }

@@ -262,12 +262,14 @@ nav .link:hover {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   position: absolute;
   display: block;
+  transition: all 0.5s ease-in-out;
 }
 .node.is-active {
   box-shadow:
     0 0 0 2px var(--color-ui-3);
 }
 .node.is-dragging {
+  transition: none;
   cursor: grabbing;
   box-shadow:
     0 0 0 2px var(--color-ui-3),

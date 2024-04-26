@@ -8,6 +8,7 @@ import kotlin.js.JsExport
 data class Assets(val assets: List<Asset> = emptyList()) {
 
     val numberOfAssets get() = assets.size
+    val last get() = assets.last()
 
     fun add(asset: Asset): Assets {
         if (assets.any { it.name == asset.name }) {
