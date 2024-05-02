@@ -60,32 +60,32 @@ const updateComponentList = function () {
     const ledgers = state.story.architecture.ledgers.toArray()
     const assets = state.story.architecture.assets.toArray()
     const organizationsHtml = organizations.map(o =>
-        `<organization id="${o.reference}">${o.name}</organization>`
+        `<organization id="component:${o.reference}">${o.name}</organization>`
     ).join('\n')
     const ledgersHtml = ledgers.map(l =>
-        `<ledger id="${l.reference}">${l.name}</ledger>`
+        `<ledger id="component:${l.reference}">${l.name}</ledger>`
     ).join('\n')
     const assetsHtml = assets.map(a =>
-        `<asset id="${a.reference}">${a.name}</asset>`
+        `<asset id="component:${a.reference}">${a.name}</asset>`
     ).join('\n')
     document.getElementById('components-list').innerHTML = organizationsHtml + ledgersHtml + assetsHtml
     organizations.forEach(o => {
-        document.getElementById(`${o.reference}`).addEventListener('click', function (event) {
+        document.getElementById(`component:${o.reference}`).addEventListener('click', function (event) {
             editOrganization(o)
         })
     })
 
     assets.forEach(a => {
-        document.getElementById(`${a.reference}`).addEventListener('click', function (event) {
+        document.getElementById(`component:${a.reference}`).addEventListener('click', function (event) {
             editAsset(a)
         })
     })
 
     ledgers.forEach(l => {
-        document.getElementById(`${l.reference}`).addEventListener('click', function (event) {
+        document.getElementById(`component:${l.reference}`).addEventListener('click', function (event) {
             editLedger(l)
         })
-        document.getElementById(`${l.reference}`).addEventListener('dblclick', function (event) {
+        document.getElementById(`component:${l.reference}`).addEventListener('dblclick', function (event) {
             const width = 200
             const height = 200
             const x = (window.innerWidth / 2 - panOffsetX - width / 2) * scale;
@@ -100,15 +100,19 @@ const updateComponentList = function () {
 
 const updateChaptersList = function () {
     const chapters = state.story.storyline.chapters.toArray()
-    const html = chapters.map((o, i) =>
-        `<chapter id="chapter-${i}">${o.name || 'Chapter ' + (i + 1)}</chapter>`
+    const html = chapters.map((chapter, i) =>
+        `<chapter id="chapter-${i}">${chapter.name || 'Chapter ' + (i + 1)}</chapter>`
     ).join('\n')
     document.getElementById('chapters-list').innerHTML = html
-    chapters.forEach((o, i) =>
-        document.getElementById(`chapter-${i}`).addEventListener('click', function (event) {
-            transition(state.story, state.chapter, state.story, i)
-            state.chapter = i
-        })
+    chapters.forEach((chapter, i) => {
+            document.getElementById(`chapter-${i}`).addEventListener('click', function (event) {
+                transition(state.story, state.chapter, state.story, i)
+                state.chapter = i
+            });
+            document.getElementById(`chapter-${i}`).addEventListener('dblclick', function (event) {
+                editChapter(i)
+            });
+        }
     )
 }
 
@@ -125,9 +129,14 @@ document.getElementById('add-asset').addEventListener('click', function () {
 });
 
 document.getElementById('add-ledger').addEventListener('click', function () {
-    state.story = state.story.addLedger(`Ledger #${state.story.architecture.ledgers.numberOfLedgers + 1}`)
-    editLedger(state.story.architecture.ledgers.last)
-    updateComponentList()
+    const organizations = state.story.architecture.organizations
+    if (organizations.numberOfOrganizations > 0) {
+        state.story = state.story.addLedger(`Ledger #${state.story.architecture.ledgers.numberOfLedgers + 1}`, organizations.last.id)
+        editLedger(state.story.architecture.ledgers.last)
+        updateComponentList()
+    } else {
+        alert('Please add an organization first.')
+    }
 });
 
 document.getElementById('add-chapter').addEventListener('click', function () {
@@ -148,8 +157,14 @@ function editLedger(ledger) {
     editorState.editor = 'ledger'
     editorState.edited = ledger
     toggleEditorDisplay()
+    const organization = state.story.architecture.organizations.toArray()
+    const organizationsHtml = organization.map(o =>
+        `<option value="${o.id}">${o.name}</option>`
+    ).join('\n')
     document.getElementById('ledger-name').value = ledger.name
-    document.getElementById('ledger-organization').value = ledger.organizationId
+    const ledgerOrganization = document.getElementById('ledger-organization');
+    ledgerOrganization.innerHTML = organizationsHtml
+    ledgerOrganization.value = ledger.ownerId
 }
 
 function editOrganization(organization) {
@@ -157,6 +172,13 @@ function editOrganization(organization) {
     editorState.edited = organization
     toggleEditorDisplay()
     document.getElementById('organization-name').value = organization.name
+}
+
+function editChapter(chapter) {
+    editorState.editor = 'chapter'
+    editorState.edited = chapter
+    toggleEditorDisplay()
+    document.getElementById('chapter-name').value = chapter.name
 }
 
 function editAsset(asset) {
@@ -190,14 +212,13 @@ function nodeMoved(node) {
     const box = new domain.stage.Box(x, y, width, height);
     const reference = domain.component.ComponentReference.Companion.fromString(node.id);
     const story = state.story.withComponentInChapter(state.chapter, reference, box)
-    console.log(box, story)
     state.story = story
 }
 
 document.getElementById('ledger-apply').addEventListener('click', function () {
     if (editorState.editor == 'ledger') {
         const name = document.getElementById('ledger-name').value
-        const organization = document.getElementById('ledger-organization').value
+        const organization = new domain.architecture.OrganizationId(document.getElementById('ledger-organization').value)
         const reference = editorState.edited.reference
         const story = state.story.withChangedLedger(editorState.edited.reference, name, organization)
         transition(state.story, state.chapter, story, state.chapter)

@@ -17,70 +17,82 @@ class StorylineTest {
 
     @Test
     fun givenAnEmptyTimeline_whenAddingAChange_theChangePrevailsInTime() {
-        val timeline = Storyline()
-        val updatedTimeline = timeline.withChangeInChapter(0, Add(componentOnStage))
-        assertThat(updatedTimeline.chapters).containsExactly(Chapter(listOf(Add(componentOnStage))))
-        assertThat(updatedTimeline.getStageAtChapter(0).components).containsExactly(componentOnStage)
-        assertThat(updatedTimeline.getStageAtChapter(1).components).containsExactly(componentOnStage)
+        val storyline = Storyline()
+        val updatedStoryline = storyline.withChangeInChapter(0, Add(componentOnStage))
+        assertThat(updatedStoryline.chapters).containsExactly(Chapter(listOf(Add(componentOnStage))))
+        assertThat(updatedStoryline.getStageAtChapter(0).components).containsExactly(componentOnStage)
+        assertThat(updatedStoryline.getStageAtChapter(1).components).containsExactly(componentOnStage)
     }
 
     @Test
     fun givenAnEmptyTimeline_whenGettingStageAtFutureTime_anEmptyStageIsReturned() {
-        val timeline = Storyline()
-        assertThat(timeline.getStageAtChapter(42).components).isEmpty()
+        val storyline = Storyline()
+        assertThat(storyline.getStageAtChapter(42).components).isEmpty()
     }
 
     @Test
     fun givenATimelineWithAChange_whenReplacingIt_anUpdatedStageIsReturned() {
-        val timeline = Storyline().withChangeInChapter(0, Add(componentOnStage))
-        val updatedTimeline = timeline.withChangeInChapter(0, Add(movedComponentOnStage))
-        assertThat(updatedTimeline.chapters).containsExactly(Chapter(listOf(Add(movedComponentOnStage))))
-        assertThat(updatedTimeline.getStageAtChapter(0).components).containsExactly(movedComponentOnStage)
+        val storyline = Storyline().withChangeInChapter(0, Add(componentOnStage))
+        val updatedStoryline = storyline.withChangeInChapter(0, Add(movedComponentOnStage))
+        assertThat(updatedStoryline.chapters).containsExactly(Chapter(listOf(Add(movedComponentOnStage))))
+        assertThat(updatedStoryline.getStageAtChapter(0).components).containsExactly(movedComponentOnStage)
     }
 
     @Test
     fun givenATimelineWithAChange_whenRemovingIt_anEmptyStageIsReturned() {
-        val timeline = Storyline().withChangeInChapter(0, Add(componentOnStage))
-        val updatedTimeline = timeline.withoutChangeToComponentAtChapter(0, componentOnStage.reference)
-        assertThat(updatedTimeline.getStageAtChapter(0).components).isEmpty()
+        val storyline = Storyline().withChangeInChapter(0, Add(componentOnStage))
+        val updatedStoryline = storyline.withoutChangeToComponentAtChapter(0, componentOnStage.reference)
+        assertThat(updatedStoryline.getStageAtChapter(0).components).isEmpty()
     }
 
     @Test
     fun givenATimelineWithAChange_whenCuttingIt_anEmptyTimelineIsReturned() {
-        val timeline = Storyline()
+        val storyline = Storyline()
             .withChangeInChapter(0, Add(componentOnStage))
             .withChangeInChapter(1, Change(movedComponentOnStage))
-        val updatedTimeline = timeline.withMaximumChapterBeing(0)
-        assertThat(updatedTimeline.chapters).containsExactly(Chapter(listOf(Add(componentOnStage))))
-        assertThat(updatedTimeline.getStageAtChapter(0).components).containsExactly(componentOnStage)
+        val updatedStoryline = storyline.withMaximumChapterBeing(0)
+        assertThat(updatedStoryline.chapters).containsExactly(Chapter(listOf(Add(componentOnStage))))
+        assertThat(updatedStoryline.getStageAtChapter(0).components).containsExactly(componentOnStage)
     }
 
     @Test
     fun givenATimelineWithAChange_whenAddingTheSameComponentAgainLater_anExceptionIsThrownWhenRequestingTheStage() {
-        val timeline = Storyline()
+        val storyline = Storyline()
             .withChangeInChapter(0, Add(componentOnStage))
             .withChangeInChapter(1, Add(movedComponentOnStage))
         assertThrows<RuntimeException> {
-            timeline.getStageAtChapter(1)
+            storyline.getStageAtChapter(1)
         }
     }
 
     @Test
     fun givenAnEmptyTimeline_whenAddingAChangeBeforeAddition_anExceptionIsThrownWhenRequestingTheStage() {
-        val timeline = Storyline()
+        val storyline = Storyline()
             .withChangeInChapter(0, Change(componentOnStage))
         assertThrows<RuntimeException> {
-            timeline.getStageAtChapter(0)
+            storyline.getStageAtChapter(0)
         }
     }
 
     @Test
     fun givenAnEmptyTimeline_whenRemovingAChangeBeforeAddition_anExceptionIsThrownWhenRequestingTheStage() {
-        val timeline = Storyline()
+        val storyline = Storyline()
             .withChangeInChapter(0, Remove(componentOnStage.reference))
         assertThrows<RuntimeException> {
-            timeline.getStageAtChapter(0)
+            storyline.getStageAtChapter(0)
         }
+    }
+
+    @Test
+    fun givenAnAddition_whenAddingAnotherAdditionBeforeIt_theLaterAdditionIsChangedToAChange() {
+        val storyline = Storyline()
+            .withChangeInChapter(1, Add(componentOnStage))
+            .withComponentOnStageInChapter(0, movedComponentOnStage)
+
+        assertThat(storyline.chapters).containsExactly(
+            Chapter(listOf(Add(movedComponentOnStage))),
+            Chapter(listOf(Change(componentOnStage))),
+        )
     }
 
 }
