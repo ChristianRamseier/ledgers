@@ -1,7 +1,6 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
-
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -26,6 +25,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("com.benasher44:uuid:0.8.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
         jvmTest {

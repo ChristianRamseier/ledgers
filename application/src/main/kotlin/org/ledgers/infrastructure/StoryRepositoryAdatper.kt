@@ -1,13 +1,14 @@
 package org.ledgers.infrastructure
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import org.ledgers.domain.Story
 import org.ledgers.domain.StoryId
 import org.ledgers.domain.repository.StoryRepository
 import org.ledgers.dto.StoryDto
 import org.ledgers.dto.toDomain
 import org.ledgers.dto.toDto
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Repository
 import java.io.File
@@ -16,14 +17,12 @@ import java.io.File
 class StoryRepositoryAdapter(
     @Value("\${org.ledger.storage.path}")
     private val storagePath: String,
-    @Autowired
-    private val mapper: ObjectMapper
 ) : StoryRepository {
 
 
     override fun save(story: Story): Story {
         val storyDto = story.toDto()
-        val json = mapper.writeValueAsString(storyDto)
+        val json = Json.encodeToString(storyDto)
         val file = File("$storagePath/${Filename(storyDto.id)}")
         file.writeText(json)
         return readStory(file)
@@ -35,8 +34,8 @@ class StoryRepositoryAdapter(
             .map { file -> readStory(file) }
     }
 
-    private fun readStory(file: File?): Story {
-        val storyDto = mapper.readValue(file, StoryDto::class.java)
+    private fun readStory(file: File): Story {
+        val storyDto = Json.decodeFromStream<StoryDto>(file.inputStream())
         return storyDto.toDomain()
     }
 

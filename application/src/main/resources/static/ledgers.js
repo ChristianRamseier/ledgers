@@ -1,9 +1,42 @@
+const dto = window['org.ledgers:core'].org.ledgers.dto
 const domain = window['org.ledgers:core'].org.ledgers.domain
 const usecase = window['org.ledgers:core'].org.ledgers.usecase
 
 let state = {
     story: domain.Story.Companion.new(),
     chapter: 0
+}
+
+function loadStory() {
+    const storyId = document.getElementById('story-id').getAttribute('storyId')
+    const response = fetch(`/api/story/${storyId}`).then(response => {
+        response.text().then(json => {
+            const story = dto.fromJson(json)
+            transition(state.story, state.chapter, story, 0)
+            state = {
+                story: story,
+                chapter: 0
+            }
+            updateDisplay()
+        })
+    })
+}
+
+function updateStory(story) {
+    state.story = story
+    fetch(`/api/story/${story.id}`, {
+        method: 'POST',
+        body: dto.toJson(story),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {})
+}
+
+function updateDisplay() {
+    updateComponentList()
+    updateChaptersList()
+    toggleEditorDisplay()
 }
 
 const transition = function (fromStory, fromChapter, toStory, toChapter) {
@@ -93,7 +126,7 @@ const updateComponentList = function () {
             const box = new domain.stage.Box(x, y, width, height);
             const story = state.story.withComponentInChapter(state.chapter, l.reference, box)
             transition(state.story, state.chapter, story, state.chapter)
-            state.story = story
+            updateStory(story)
         })
     })
 }
@@ -117,13 +150,15 @@ const updateChaptersList = function () {
 }
 
 document.getElementById('add-organization').addEventListener('click', function () {
-    state.story = state.story.addOrganization(`Organization #${state.story.architecture.organizations.numberOfOrganizations + 1}`)
+    const story = state.story.addOrganization(`Organization #${state.story.architecture.organizations.numberOfOrganizations + 1}`);
+    updateStory(story)
     editOrganization(state.story.architecture.organizations.last)
     updateComponentList()
 });
 
 document.getElementById('add-asset').addEventListener('click', function () {
-    state.story = state.story.addAsset(`Asset #${state.story.architecture.assets.numberOfAssets + 1}`)
+    const story = state.story.addAsset(`Asset #${state.story.architecture.assets.numberOfAssets + 1}`);
+    updateStory(story)
     editAsset(state.story.architecture.assets.last)
     updateComponentList()
 });
@@ -131,7 +166,8 @@ document.getElementById('add-asset').addEventListener('click', function () {
 document.getElementById('add-ledger').addEventListener('click', function () {
     const organizations = state.story.architecture.organizations
     if (organizations.numberOfOrganizations > 0) {
-        state.story = state.story.addLedger(`Ledger #${state.story.architecture.ledgers.numberOfLedgers + 1}`, organizations.last.id)
+        const story = state.story.addLedger(`Ledger #${state.story.architecture.ledgers.numberOfLedgers + 1}`, organizations.last.id);
+        updateStory(story)
         editLedger(state.story.architecture.ledgers.last)
         updateComponentList()
     } else {
@@ -141,7 +177,8 @@ document.getElementById('add-ledger').addEventListener('click', function () {
 
 document.getElementById('add-chapter').addEventListener('click', function () {
     const numberOfChapters = state.story.storyline.numberOfChapters;
-    state.story = state.story.withChapterNamed(numberOfChapters, '')
+    const story = state.story.withChapterNamed(numberOfChapters, '')
+    updateStory(story)
     updateChaptersList()
 })
 
@@ -212,7 +249,7 @@ function nodeMoved(node) {
     const box = new domain.stage.Box(x, y, width, height);
     const reference = domain.component.ComponentReference.Companion.fromString(node.id);
     const story = state.story.withComponentInChapter(state.chapter, reference, box)
-    state.story = story
+    updateStory(story)
 }
 
 document.getElementById('ledger-apply').addEventListener('click', function () {
@@ -222,7 +259,7 @@ document.getElementById('ledger-apply').addEventListener('click', function () {
         const reference = editorState.edited.reference
         const story = state.story.withChangedLedger(editorState.edited.reference, name, organization)
         transition(state.story, state.chapter, story, state.chapter)
-        state.story = story
+        updateStory(story)
         const nameOnStage = document.getElementById(`${reference}.name`)
         if (nameOnStage) {
             nameOnStage.textContent = name
@@ -237,7 +274,7 @@ document.getElementById('organization-apply').addEventListener('click', function
         const name = document.getElementById('organization-name').value
         const story = state.story.withChangedOrganization(editorState.edited.reference, name)
         transition(state.story, state.chapter, story, state.chapter)
-        state.story = story
+        updateStory(story)
         resetEditors()
         updateComponentList()
     }
@@ -249,12 +286,11 @@ document.getElementById('asset-apply').addEventListener('click', function () {
         const type = document.getElementById('asset-type-cash').checked ? domain.AssetType.Cash : domain.AssetType.Security
         const story = state.story.withChangedAsset(editorState.edited.reference, name, type)
         transition(state.story, state.chapter, story, state.chapter)
-        state.story = story
+        updateStory(story)
         resetEditors()
         updateComponentList()
     }
 })
 
-updateComponentList()
-updateChaptersList()
-toggleEditorDisplay()
+updateDisplay()
+loadStory()

@@ -3,7 +3,7 @@ package org.ledgers.presentation
 import kotlinx.html.*
 import org.ledgers.domain.Story
 
-class StoryPage(private val id: String, private val story: Story?) : Page {
+class StoryPage(private val storyId: String, private val story: Story?) : Page {
 
     override fun toHtml(): String {
         if (story == null) {
@@ -12,7 +12,10 @@ class StoryPage(private val id: String, private val story: Story?) : Page {
             }
         }
         return Site.getHtmlFor("${story.getDisplayName()} - Story") {
-
+            div {
+                id = "story-id"
+                attributes["storyId"] = storyId
+            }
             div {
                 id = "container"
                 div {

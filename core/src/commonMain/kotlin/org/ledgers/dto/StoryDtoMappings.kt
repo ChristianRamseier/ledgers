@@ -5,6 +5,7 @@ import org.ledgers.domain.Story
 import org.ledgers.domain.Storyline
 import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.component.ComponentType
 import org.ledgers.domain.scenario.Scenario
 import org.ledgers.domain.scenario.Steps
 import org.ledgers.domain.stage.*
@@ -52,14 +53,14 @@ private fun Scenario.toDto(): ScenarioDto {
 
 private fun StageChange.toDto(): StageChangeDto {
     return when (this) {
-        is Add -> StageChangeDto.Add(component.toDto())
-        is Change -> StageChangeDto.Change(component.toDto())
-        is Remove -> StageChangeDto.Remove(componentReference.toDto())
+        is Add -> AddDto(component.toDto())
+        is Change -> ChangeDto(component.toDto())
+        is Remove -> RemoveDto(componentReference.toDto())
     }
 }
 
 private fun ComponentReference.toDto(): ComponentReferenceDto {
-    return ComponentReferenceDto(type = type, id = id, version = version)
+    return ComponentReferenceDto(type = type, id = id.id, version = version)
 }
 
 private fun ComponentOnStage.toDto(): ComponentOnStageDto {
@@ -69,6 +70,7 @@ private fun ComponentOnStage.toDto(): ComponentOnStageDto {
 private fun Box.toDto(): BoxDto {
     return BoxDto(x = x, y = y, width = width, height = height)
 }
+
 
 fun StoryDto.toDomain(): Story {
     return Story(
@@ -113,14 +115,19 @@ private fun ScenarioDto.toDomain(): Scenario {
 
 private fun StageChangeDto.toDomain(): StageChange {
     return when (this) {
-        is StageChangeDto.Add -> Add(component.toDomain())
-        is StageChangeDto.Change -> Change(component.toDomain())
-        is StageChangeDto.Remove -> Remove(componentReference.toDomain())
+        is AddDto -> Add(component.toDomain())
+        is ChangeDto -> Change(component.toDomain())
+        is RemoveDto -> Remove(componentReference.toDomain())
     }
 }
 
 private fun ComponentReferenceDto.toDomain(): ComponentReference {
-    return ComponentReference(type = type, id = id, version = version)
+    val componentId = when (type) {
+        ComponentType.Ledger -> LedgerId(id)
+        ComponentType.Organization -> OrganizationId(id)
+        ComponentType.Asset -> AssetId(id)
+    }
+    return ComponentReference(type = type, id = componentId, version = version)
 }
 
 private fun ComponentOnStageDto.toDomain(): ComponentOnStage {
