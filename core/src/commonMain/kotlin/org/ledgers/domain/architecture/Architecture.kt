@@ -9,9 +9,10 @@ import kotlin.js.JsExport
 
 @JsExport
 data class Architecture(
-    val organizations: Organizations = Organizations(),
-    val ledgers: Ledgers = Ledgers(),
-    val assets: Assets = Assets()
+    val organizations: Organizations,
+    val ledgers: Ledgers,
+    val assets: Assets,
+    val links: Links
 ) {
 
     fun addOrganization(name: String): Architecture {
@@ -19,7 +20,8 @@ data class Architecture(
         return Architecture(
             organizations = organizations.addOrReplace(organization),
             ledgers = ledgers,
-            assets = assets
+            assets = assets,
+            links = links
         )
     }
 
@@ -27,16 +29,18 @@ data class Architecture(
         return Architecture(
             organizations = organizations.remove(reference),
             ledgers = ledgers,
-            assets = assets
+            assets = assets,
+            links = links
         )
     }
 
     fun addLedger(name: String, ownerId: OrganizationId): Architecture {
-        val ledger = Ledger(LedgerId.random(), Version.Zero, name, ownerId)
+        val ledger = Ledger(LedgerId.random(), Version.Zero, name, ownerId, LedgerCapabilities.None)
         return Architecture(
             organizations = organizations,
             ledgers = ledgers.addOrReplace(ledger),
-            assets = assets
+            assets = assets,
+            links = links
         )
     }
 
@@ -44,7 +48,8 @@ data class Architecture(
         return Architecture(
             organizations = organizations,
             ledgers = ledgers.withChangedLedger(reference, name, ownerId),
-            assets = assets
+            assets = assets,
+            links = links
         )
     }
 
@@ -52,7 +57,8 @@ data class Architecture(
         return Architecture(
             organizations = organizations.withChangedOrganization(reference, name),
             ledgers = ledgers,
-            assets = assets
+            assets = assets,
+            links = links
         )
     }
 
@@ -60,7 +66,8 @@ data class Architecture(
         return Architecture(
             organizations = organizations,
             ledgers = ledgers.remove(reference),
-            assets = assets
+            assets = assets,
+            links = links
         )
     }
 
@@ -69,7 +76,8 @@ data class Architecture(
         return Architecture(
             organizations = organizations,
             ledgers = ledgers,
-            assets = assets.add(asset)
+            assets = assets.add(asset),
+            links = links
         )
     }
 
@@ -77,7 +85,8 @@ data class Architecture(
         return Architecture(
             organizations = organizations,
             ledgers = ledgers,
-            assets = assets.change(reference, name, assetType)
+            assets = assets.change(reference, name, assetType),
+            links = links
         )
     }
 
@@ -85,19 +94,57 @@ data class Architecture(
         return Architecture(
             organizations = organizations,
             ledgers = ledgers,
-            assets = assets.remove(name)
+            assets = assets.remove(name),
+            links = links
+        )
+    }
+
+    fun addLinkBetween(from: LedgerId, to: LedgerId): Architecture {
+        val link = Link(LinkId.random(), Version.Zero, from, to)
+        return Architecture(
+            organizations = organizations,
+            ledgers = ledgers,
+            assets = assets,
+            links = links.add(link)
+        )
+    }
+
+    fun removeLink(reference: ComponentReference): Architecture {
+        return Architecture(
+            organizations = organizations,
+            ledgers = ledgers,
+            assets = assets,
+            links = links.remove(reference)
+        )
+    }
+
+    fun withChangedLink(reference: ComponentReference, from: LedgerId, to: LedgerId): Architecture {
+        return Architecture(
+            organizations = organizations,
+            ledgers = ledgers,
+            assets = assets,
+            links = links.change(reference, from, to)
         )
     }
 
     fun getComponent(componentReference: ComponentReference): Component {
-        return when(componentReference.type) {
+        return when (componentReference.type) {
             ComponentType.Organization -> organizations.getByReference(componentReference)
             ComponentType.Ledger -> ledgers.getByReference(componentReference)
             ComponentType.Asset -> assets.getByReference(componentReference)
+            ComponentType.Link -> links.getByReference(componentReference)
         }
     }
 
 
+    companion object {
+        val Empty = Architecture(
+            organizations = Organizations(),
+            ledgers = Ledgers(),
+            assets = Assets(),
+            links = Links()
+        )
+    }
 
 
 }

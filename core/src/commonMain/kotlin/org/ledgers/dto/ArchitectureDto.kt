@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class ArchitectureDto(
     val organizations: List<OrganizationDto>,
     val ledgers: List<LedgerDto>,
-    val assets: List<AssetDto>
+    val assets: List<AssetDto>,
+    val links: List<LinkDto>
 ) {
 
 }

@@ -2,6 +2,7 @@ package org.ledgers.dto
 
 import kotlinx.serialization.Serializable
 import org.ledgers.domain.Version
+import org.ledgers.domain.architecture.LedgerCapabilities
 import org.ledgers.domain.architecture.LedgerId
 import org.ledgers.domain.architecture.OrganizationId
 import org.ledgers.dto.serializers.LedgerIdSerializer
@@ -16,7 +17,9 @@ data class LedgerDto(
     val version: Version,
     val name: String,
     @Serializable(with = OrganizationIdSerializer::class)
-    val ownerId: OrganizationId
+    val ownerId: OrganizationId,
+
+    val capabilities: List<LedgerCapabilityDto>
 ) {
 
 }

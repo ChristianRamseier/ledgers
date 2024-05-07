@@ -10,7 +10,8 @@ data class Ledger(
     override val id: LedgerId,
     override val version: Version,
     val name: String,
-    val ownerId: OrganizationId
+    val ownerId: OrganizationId,
+    val capabilities: LedgerCapabilities
 ) : Component {
 
     override val type: ComponentType

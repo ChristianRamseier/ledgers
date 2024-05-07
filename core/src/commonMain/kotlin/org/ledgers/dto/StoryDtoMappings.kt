@@ -23,8 +23,13 @@ private fun Architecture.toDto(): ArchitectureDto {
     return ArchitectureDto(
         organizations = organizations.organizations.map { it.toDto() },
         ledgers = ledgers.ledgers.map { it.toDto() },
-        assets = assets.assets.map { it.toDto() }
+        assets = assets.assets.map { it.toDto() },
+        links = links.links.map { it.toDto() }
     )
+}
+
+private fun Link.toDto(): LinkDto {
+    return LinkDto(id = id, version = version, from = from, to = to)
 }
 
 private fun Asset.toDto(): AssetDto {
@@ -32,7 +37,20 @@ private fun Asset.toDto(): AssetDto {
 }
 
 private fun Ledger.toDto(): LedgerDto {
-    return LedgerDto(id = id, version = version, name = name, ownerId = ownerId)
+    return LedgerDto(id = id, version = version, name = name, ownerId = ownerId, capabilities = capabilities.toDto())
+}
+
+private fun LedgerCapabilities.toDto(): List<LedgerCapabilityDto> {
+    return capabilities.map { it.toDto() }
+}
+
+private fun LedgerCapability.toDto(): LedgerCapabilityDto {
+    return LedgerCapabilityDto(
+        assetId = assetId,
+        sourceLedgerId = sourceLedgerId,
+        accounting = accounting,
+        sourceLabel = sourceLabel
+    )
 }
 
 private fun Organization.toDto(): OrganizationDto {
@@ -85,8 +103,13 @@ private fun ArchitectureDto.toDomain(): Architecture {
     return Architecture(
         organizations = Organizations(organizations.map { it.toDomain() }),
         ledgers = Ledgers(ledgers.map { it.toDomain() }),
-        assets = Assets(assets.map { it.toDomain() })
+        assets = Assets(assets.map { it.toDomain() }),
+        links = Links(links.map { it.toDomain() })
     )
+}
+
+private fun LinkDto.toDomain(): Link {
+    return Link(id = id, version = version, from = from, to = to)
 }
 
 private fun AssetDto.toDomain(): Asset {
@@ -94,7 +117,11 @@ private fun AssetDto.toDomain(): Asset {
 }
 
 private fun LedgerDto.toDomain(): Ledger {
-    return Ledger(id = id, version = version, name = name, ownerId = ownerId)
+    return Ledger(id = id, version = version, name = name, ownerId = ownerId, capabilities = LedgerCapabilities(capabilities.map { it.toDomain() }))
+}
+
+private fun LedgerCapabilityDto.toDomain(): LedgerCapability {
+    return LedgerCapability(assetId = assetId, sourceLedgerId = sourceLedgerId, accounting = accounting, sourceLabel = sourceLabel)
 }
 
 private fun OrganizationDto.toDomain(): Organization {
@@ -126,6 +153,7 @@ private fun ComponentReferenceDto.toDomain(): ComponentReference {
         ComponentType.Ledger -> LedgerId(id)
         ComponentType.Organization -> OrganizationId(id)
         ComponentType.Asset -> AssetId(id)
+        ComponentType.Link -> LinkId(id)
     }
     return ComponentReference(type = type, id = componentId, version = version)
 }

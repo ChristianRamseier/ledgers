@@ -3,6 +3,7 @@ package org.ledgers.domain.component
 import org.ledgers.domain.Version
 import org.ledgers.domain.architecture.AssetId
 import org.ledgers.domain.architecture.LedgerId
+import org.ledgers.domain.architecture.LinkId
 import org.ledgers.domain.architecture.OrganizationId
 import kotlin.js.JsExport
 
@@ -26,6 +27,7 @@ data class ComponentReference(
                 ComponentType.Ledger -> LedgerId(parts[1])
                 ComponentType.Organization -> OrganizationId(parts[1])
                 ComponentType.Asset -> AssetId(parts[1])
+                ComponentType.Link -> LinkId(parts[1])
             }
             val version = Version(parts[2].toInt())
             return ComponentReference(type, id, version)

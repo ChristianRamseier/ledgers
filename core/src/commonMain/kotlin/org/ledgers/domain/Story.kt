@@ -6,6 +6,7 @@ import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.stage.Box
 import org.ledgers.domain.stage.StageChange
+import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 @JsExport
@@ -84,7 +85,7 @@ data class Story(
             return Story(
                 id = StoryId.random(),
                 name = "",
-                architecture = Architecture(),
+                architecture = Architecture.Empty,
                 storyline = Storyline()
             )
         }
