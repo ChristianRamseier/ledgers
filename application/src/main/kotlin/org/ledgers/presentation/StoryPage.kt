@@ -21,26 +21,30 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                 div {
                     id = "canvas-container"
                     svg {
-                        id = "canvas-edges"
+                        id = "canvas-edges-svg"
                         defs {
                             marker {
                                 id = "arrowhead"
-                                attributes["markerWidth"] = "10"
-                                attributes["markerHeight"] = "8"
-                                attributes["refX"] = "5"
-                                attributes["refY"] = "4"
+                                attributes["markerWidth"] = "5"
+                                attributes["markerHeight"] = "4"
+                                attributes["refX"] = "2.5"
+                                attributes["refY"] = "2"
                                 attributes["orient"] = "auto"
-                                polygon { attributes["points"] = "0 0, 10 4, 0 8" }
+                                polygon { attributes["points"] = "0 0, 5 2, 0 4" }
                             }
                         }
                         g { id = "edge-paths" }
+                    }
+
+                    div {
+                        id = "canvas-edges"
 
                     }
 
                     div {
                         id = "canvas-nodes"
-
                     }
+
                     div(classes = "theme-dark hidden") {
                         id = "output"
                         div(classes = "code-header") {

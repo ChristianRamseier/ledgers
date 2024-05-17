@@ -99,13 +99,12 @@ data class Architecture(
         )
     }
 
-    fun addLinkBetween(from: LedgerId, to: LedgerId): Architecture {
-        val link = Link(LinkId.random(), Version.Zero, from, to)
+    fun addLinkIfNotExists(from: LedgerId, to: LedgerId): Architecture {
         return Architecture(
             organizations = organizations,
             ledgers = ledgers,
             assets = assets,
-            links = links.add(link)
+            links = links.addLinkIfNotExists(from, to)
         )
     }
 

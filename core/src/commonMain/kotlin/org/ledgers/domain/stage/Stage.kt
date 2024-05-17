@@ -1,5 +1,6 @@
 package org.ledgers.domain.stage
 
+import org.ledgers.domain.component.ComponentId
 import org.ledgers.domain.component.ComponentReference
 import kotlin.js.JsExport
 
@@ -10,6 +11,10 @@ data class Stage(
 
     fun has(reference: ComponentReference): Boolean {
         return components.any { it.reference == reference }
+    }
+
+    fun getById(id: ComponentId): ComponentOnStage {
+        return components.find { it.reference.id == id } ?: throw RuntimeException("No component on stage by id $id")
     }
 
     fun getChangesThatLeadTo(otherStage: Stage): List<StageChange> {

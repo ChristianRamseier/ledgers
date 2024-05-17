@@ -1,11 +1,14 @@
 package org.ledgers.domain.stage
 
 import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.component.ComponentType
 import kotlin.js.JsExport
 
 @JsExport
-data class ComponentOnStage(
-    val box: Box,
+sealed interface ComponentOnStage {
+
     val reference: ComponentReference
-) {
+
+    val type: ComponentType get() = reference.type
+
 }

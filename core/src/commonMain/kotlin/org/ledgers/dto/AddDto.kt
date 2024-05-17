@@ -1,8 +1,10 @@
 package org.ledgers.dto
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("Add")
 data class AddDto(
     val component: ComponentOnStageDto
 ) : StageChangeDto {

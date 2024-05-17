@@ -1,5 +1,6 @@
 package org.ledgers.domain.architecture
 
+import org.ledgers.domain.Version
 import org.ledgers.domain.component.ComponentReference
 import kotlin.js.JsExport
 
@@ -9,10 +10,15 @@ data class Links(val links: List<Link> = emptyList()) {
     val numberOfAssets get() = links.size
     val last get() = links.last()
 
-    fun add(link: Link): Links {
-        if (links.contains(link)) {
-            throw RuntimeException("Link already exists")
+    fun find(from: LedgerId, to: LedgerId): Link? {
+        return links.find { it.from == from && it.to == to }
+    }
+
+    fun addLinkIfNotExists(from: LedgerId, to: LedgerId): Links {
+        if (find(from, to) != null) {
+            return this
         }
+        val link = Link(LinkId.random(), Version.Zero, from, to)
         return Links(links.plus(link))
     }
 
@@ -22,6 +28,7 @@ data class Links(val links: List<Link> = emptyList()) {
         }
         return Links(links.filter { it.reference == reference })
     }
+
 
     fun change(reference: ComponentReference, from: LedgerId, to: LedgerId): Links {
         return Links(
@@ -35,7 +42,6 @@ data class Links(val links: List<Link> = emptyList()) {
         )
     }
 
-
     fun toArray(): Array<Link> {
         return links.toTypedArray()
     }
@@ -43,6 +49,11 @@ data class Links(val links: List<Link> = emptyList()) {
     fun getByReference(reference: ComponentReference): Link {
         val asset = links.find { it.reference == reference }
         return asset ?: throw RuntimeException("No link with reference $reference")
+    }
+
+    fun getBetween(from: LedgerId, to: LedgerId): Link {
+        val asset = links.find { it.from == from && it.to == to }
+        return asset ?: throw RuntimeException("No link between $from and $to")
     }
 
 }

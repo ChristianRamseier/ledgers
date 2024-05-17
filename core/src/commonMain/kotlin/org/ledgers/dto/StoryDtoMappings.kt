@@ -82,7 +82,10 @@ private fun ComponentReference.toDto(): ComponentReferenceDto {
 }
 
 private fun ComponentOnStage.toDto(): ComponentOnStageDto {
-    return ComponentOnStageDto(location = box.toDto(), reference = reference.toDto())
+    return when (this) {
+        is LedgerOnStage -> LedgerOnStageDto(reference.toDto(), box.toDto())
+        is LinkOnStage -> LinkOnStageDto(reference.toDto(), fromAnchor, toAnchor)
+    }
 }
 
 private fun Box.toDto(): BoxDto {
@@ -159,7 +162,10 @@ private fun ComponentReferenceDto.toDomain(): ComponentReference {
 }
 
 private fun ComponentOnStageDto.toDomain(): ComponentOnStage {
-    return ComponentOnStage(box = location.toDomain(), reference = reference.toDomain())
+    return when (this) {
+        is LedgerOnStageDto -> LedgerOnStage(reference.toDomain(), box.toDomain())
+        is LinkOnStageDto -> LinkOnStage(reference.toDomain(), fromAnchor, toAnchor)
+    }
 }
 
 private fun BoxDto.toDomain(): Box {

@@ -8,6 +8,7 @@ const maxScale = 1.25;
 let isDragging = false;
 let isSpacePressed = false;
 let isPanning = false;
+let isLinking = false;
 
 let startX = 0;
 let startY = 0;
@@ -16,7 +17,13 @@ let lastTouchY = 0;
 let touchStartPanX = 0;
 let touchStartPanY = 0;
 
+let selectedElement, startAnchor, endAnchor
+
 function nodeMoved() {
+    console.log('This function should never be called and be implemented elsewhere')
+}
+
+function linkCreated() {
     console.log('This function should never be called and be implemented elsewhere')
 }
 
@@ -57,7 +64,7 @@ function adjustCanvasToViewport() {
     applyPanAndZoom();
 
     document.getElementById('canvas-nodes').style.opacity = 1;
-    document.getElementById('canvas-edges').style.opacity = 1;
+    document.getElementById('canvas-edges-svg').style.opacity = 1;
 }
 
 document.addEventListener('DOMContentLoaded', adjustCanvasToViewport);
@@ -143,9 +150,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+function getEdges() {
+    const edges = [...document.getElementsByTagName('edge')].map(edge => {
+        const edgeObject = {
+            id: edge.id,
+            fromNode: edge.getAttribute('data-from-node'),
+            fromSide: edge.getAttribute('data-from-side'),
+            toNode: edge.getAttribute('data-to-node'),
+            toSide: edge.getAttribute('data-to-side'),
+        }
+        return edgeObject
+    })
+    return edges
+}
+
 // Serialize canvas data
 function updateCanvasData() {
-    const nodes = Array.from(document.querySelectorAll('.node')).map(node => {
+    const nodes = Array.from(document.querySelectorAll('node')).map(node => {
         const nodeObject = {
             id: node.id,
             type: node.getAttribute('data-node-type'),
@@ -171,7 +192,7 @@ function updateCanvasData() {
 
     const canvasData = {
         nodes: nodes,
-        edges: edges,
+        edges: getEdges(),
     };
 
     const positionsOutput = document.getElementById('positionsOutput');
@@ -186,7 +207,7 @@ function getAnchorPoint(node, side) {
     const width = node.offsetWidth;
     const height = node.offsetHeight;
 
-    switch (side) {
+    switch (side.toLowerCase()) {
         case 'top':
             return {x: x + width / 2, y: y};
         case 'right':
@@ -201,13 +222,19 @@ function getAnchorPoint(node, side) {
 }
 
 function drawEdges() {
-    const svgContainer = document.getElementById('edge-paths');
-    svgContainer.innerHTML = ''; // Clear existing edges for redraw
 
+    const edges = getEdges()
+
+    const svgContainer = document.getElementById('edge-paths');
+    [...svgContainer.children].forEach(path => {
+        const edge = edges.find(e => path.id === `${e.id}.path`)
+        if(!edge) {
+            svgContainer.removeChild(path)
+        }
+    })
     edges.forEach(edge => {
         const fromNode = document.getElementById(edge.fromNode);
         const toNode = document.getElementById(edge.toNode);
-
         if (fromNode && toNode) {
             const fromPoint = getAnchorPoint(fromNode, edge.fromSide);
             const toPoint = getAnchorPoint(toNode, edge.toSide);
@@ -219,16 +246,19 @@ function drawEdges() {
             const controlPointY2 = toPoint.y;
 
             const d = `M ${fromPoint.x} ${fromPoint.y} C ${controlPointX1} ${controlPointY1}, ${controlPointX2} ${controlPointY2}, ${toPoint.x} ${toPoint.y}`;
-
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', d);
-            path.setAttribute('stroke', 'black');
-            path.setAttribute('fill', 'none');
-            if (edge.toEnd === 'arrow') {
+            const pathId = `${edge.id}.path`;
+            const existingPath = document.getElementById(pathId)
+            if (existingPath) {
+                existingPath.setAttribute('d', d)
+            } else {
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.id = pathId
+                path.setAttribute('d', d);
+                path.setAttribute('stroke', 'black');
+                path.setAttribute('fill', 'none');
                 path.setAttribute('marker-end', 'url(#arrowhead)');
+                svgContainer.appendChild(path);
             }
-
-            svgContainer.appendChild(path);
         }
     });
 }
@@ -236,14 +266,24 @@ function drawEdges() {
 // Drag nodes
 function enableDraggingFor(element) {
     element.addEventListener('mousedown', function (e) {
-        console.log('dragger')
         if (isSpacePressed) return;
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
         selectedElement = this.parentElement;
         selectedElement.classList.add('is-dragging');
+        document.body.classList.add('is-dragging');
     });
+}
+
+function enableAnchorFor(anchorElement) {
+    anchorElement.addEventListener('mousedown', function (e) {
+        if (isSpacePressed) return;
+        isLinking = true
+        startAnchor = anchorElement
+        startAnchor.classList.add('is-linking')
+        startAnchor.parentElement.classList.add('is-linking')
+    })
 }
 
 document.querySelectorAll('.node .node-name').forEach(nodeName => {
@@ -251,29 +291,64 @@ document.querySelectorAll('.node .node-name').forEach(nodeName => {
 });
 
 window.addEventListener('mousemove', function (e) {
-    if (!isDragging || !selectedElement) return;
+    if (isDragging && selectedElement) {
 
-    const dx = (e.clientX - startX) / scale;
-    const dy = (e.clientY - startY) / scale;
+        const dx = (e.clientX - startX) / scale;
+        const dy = (e.clientY - startY) / scale;
 
-    selectedElement.style.left = `${parseInt(selectedElement.style.left, 10) + dx}px`;
-    selectedElement.style.top = `${parseInt(selectedElement.style.top, 10) + dy}px`;
+        selectedElement.style.left = `${parseInt(selectedElement.style.left, 10) + dx}px`;
+        selectedElement.style.top = `${parseInt(selectedElement.style.top, 10) + dy}px`;
 
-    startX = e.clientX;
-    startY = e.clientY;
+        startX = e.clientX;
+        startY = e.clientY;
 
-    drawEdges();
+        drawEdges();
+    }
+    if (isLinking && startAnchor) {
+        drawLinkHint(e.clientX, e.clientY)
+    }
 });
 
-window.addEventListener('mouseup', function () {
+function endDragging() {
     if (isDragging && selectedElement) {
         selectedElement.classList.remove('is-dragging');
+        document.body.classList.remove('is-dragging');
         isDragging = false;
         nodeMoved(selectedElement)
         selectedElement = null;
         updateCanvasData();
         drawEdges();
     }
+}
+
+function endLinking() {
+    if (isLinking && startAnchor) {
+        startAnchor.classList.remove('is-linking')
+        startAnchor.parentElement.classList.remove('is-linking')
+        isLinking = false;
+        if (endAnchor) {
+            linkCreated(startAnchor, endAnchor)
+            endAnchor = null
+        }
+        startAnchor = null
+    }
+}
+
+function drawLinkHint(x, y) {
+    const anchorElements = [...document.getElementsByTagName('anchor')];
+    endAnchor = null
+    anchorElements.forEach(anchor => {
+        const rect = anchor.getBoundingClientRect()
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+            endAnchor = anchor
+        }
+    })
+
+}
+
+window.addEventListener('mouseup', function (e) {
+    endDragging()
+    endLinking()
 });
 
 // Panning
@@ -435,15 +510,19 @@ document.addEventListener('touchmove', function (e) {
     }
 }, {passive: true});
 
+// Check if hovering over anchor
+document.addEventListener('touchmove', function (e) {
+    if (isLinking) {
+        drawLinkHint(e.touches[0].clientX, e.touches[0].clientY)
+    }
+}, {passive: true});
+
 // End dragging
 document.addEventListener('touchend', function () {
-    if (isDragging && selectedElement) {
-        selectedElement.classList.remove('is-dragging');
-        isDragging = false;
-        nodeMoved(selectedElement)
-        selectedElement = null;
-    }
+    endDragging()
+    endLinking()
 });
+
 
 function applyPanAndZoom() {
     document.body.style.setProperty('--scale', scale);
@@ -460,6 +539,9 @@ document.addEventListener('gesturechange', function (e) {
     e.preventDefault();
 });
 
-let edges = [];
+window.addEventListener('dragstart', function (e) {
+    e.preventDefault();
+});
+
 drawEdges();
 updateCanvasData();

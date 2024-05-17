@@ -90,8 +90,12 @@ data class Storyline(
         return withChangesInChapter(chapter, atChapter(chapter).withName(name))
     }
 
-    fun withComponentInChapter(chapter: Int, reference: ComponentReference, box: Box): Storyline {
-        return withComponentOnStageInChapter(chapter, ComponentOnStage(box, reference))
+    fun withLedgerInChapter(chapter: Int, reference: ComponentReference, box: Box): Storyline {
+        return withComponentOnStageInChapter(chapter, LedgerOnStage(reference, box))
+    }
+
+    fun withLinkInChapter(chapter: Int, link: ComponentReference, from: Anchor, to: Anchor): Storyline {
+        return withComponentOnStageInChapter(chapter, LinkOnStage(link, from, to))
     }
 
     /**

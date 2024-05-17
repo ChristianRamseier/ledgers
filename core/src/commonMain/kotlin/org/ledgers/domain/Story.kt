@@ -1,12 +1,12 @@
 package org.ledgers.domain
 
-import org.ledgers.domain.architecture.Architecture
-import org.ledgers.domain.architecture.OrganizationId
+import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.stage.Anchor
+import org.ledgers.domain.stage.AnchorReference
 import org.ledgers.domain.stage.Box
 import org.ledgers.domain.stage.StageChange
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 @JsExport
@@ -64,8 +64,24 @@ data class Story(
         return copy(storyline = storyline.withChangeInChapter(chapter, change))
     }
 
-    fun withComponentInChapter(chapter: Int, reference: ComponentReference, box: Box): Story {
-        return copy(storyline = storyline.withComponentInChapter(chapter, reference, box))
+    fun withLedgerInChapter(chapter: Int, reference: ComponentReference, box: Box): Story {
+        return copy(storyline = storyline.withLedgerInChapter(chapter, reference, box))
+    }
+
+    fun withLinkBetween(from: LedgerId, to: LedgerId): Story {
+        return copy(architecture = architecture.addLinkIfNotExists(from, to))
+    }
+
+    fun withLinkInChapter(chapter: Int, from: AnchorReference, to: AnchorReference): Story {
+        val story = withLinkBetween(from.ledgerId, to.ledgerId)
+        val link = story.architecture.links.getBetween(from.ledgerId, to.ledgerId)
+        val updated = story.copy(storyline = storyline.withLinkInChapter(chapter, link.reference, from.anchor, to.anchor))
+        val linkBack = story.architecture.links.getBetween(to.ledgerId, from.ledgerId)
+        return if (updated.storyline.getStageAtChapter(chapter).has(linkBack.reference)) {
+            updated.copy(storyline = updated.storyline.withLinkInChapter(chapter, linkBack.reference, to.anchor, from.anchor))
+        } else {
+            updated
+        }
     }
 
     fun withChapterNamed(chapter: Int, name: String): Story {

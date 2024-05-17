@@ -93,13 +93,13 @@ body {
   overflow: hidden;
   background-position: calc(var(--pan-x) - 19px) calc(var(--pan-y) - 19px);
 }
-#canvas-edges,
+#canvas-edges-svg,
 #canvas-nodes {
   opacity: 0;
   transform: translate(var(--pan-x), var(--pan-y)) scale(var(--scale));
   transform-origin: left top;
 }
-#canvas-edges {
+#canvas-edges-svg {
   z-index: 150;
   pointer-events: none;
   user-select: none;
@@ -110,11 +110,16 @@ body {
   width: 100%;
   height: 100%;
 }
-#canvas-edges path {
+#canvas-edges-svg path {
   stroke: var(--color-ui-3);
   stroke-width: 2;
   fill: none;
+  transition: all 0.5s ease-in-out;
 }
+.is-dragging #canvas-edges-svg path {
+  transition: none;
+}
+
 #arrowhead {
   fill: var(--color-ui-3);
 }
@@ -303,6 +308,42 @@ nav .link:hover {
 .node.is-dragging .node-name {
   cursor: grabbing;
 }
+
+anchor {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 5px;
+  visibility: hidden;
+  cursor: pointer;
+  outline: 2px solid lightgrey;
+  outline-offset: -2px;
+}
+
+anchor.is-linking {
+  outline: 2px solid black;
+  visibility: visible;
+}
+
+
+anchor:hover {
+  outline: 2px solid black;
+}
+
+.node:hover anchor {
+  visibility: visible;
+}
+
+.node.is-linking anchor:not(.is-linking) {
+  visibility: hidden;
+}
+
+.node-anchor-top { top: 0; left: 50%; margin-left: -7px; margin-top: -7px;}
+.node-anchor-bottom { bottom: 0; left: 50%; margin-left: -7px; margin-bottom: -7px;  }
+.node-anchor-left { top: 50%; left: 0; margin-left: -7px; margin-top: -7px; }
+.node-anchor-right { top: 50%; right: 0; margin-right: -7px; margin-top:-7px; }
+
 .node-link,
 .node-text {
   background-color: var(--color-bg-1);

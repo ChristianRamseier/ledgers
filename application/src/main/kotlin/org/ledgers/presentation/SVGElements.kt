@@ -27,7 +27,7 @@ fun SVG.defs(block: Definitions.() -> Unit = {}) {
 
 
 class Marker(consumer: TagConsumer<*>) :
-    HTMLTag("markers", consumer, emptyMap(),
+    HTMLTag("marker", consumer, emptyMap(),
         inlineTag = true,
         emptyTag = false),
     HtmlInlineTag
