@@ -35,13 +35,15 @@ class StoryRepositoryAdapter(
     }
 
     private fun readStory(file: File): Story {
-        val storyDto = Json.decodeFromStream<StoryDto>(file.inputStream())
-        return storyDto.toDomain()
+        return file.inputStream().use { input ->
+            val storyDto = Json.decodeFromStream<StoryDto>(input)
+            storyDto.toDomain()
+        }
     }
 
     override fun findById(storyId: StoryId): Story? {
         val file = File("$storagePath/${Filename(storyId)}")
-        if(file.exists()) {
+        if (file.exists()) {
             return readStory(file)
         }
         return null
