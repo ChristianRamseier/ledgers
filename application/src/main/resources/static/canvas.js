@@ -131,16 +131,15 @@ function getAnchorPoint(node, side) {
 
     switch (side.toLowerCase()) {
         case 'top':
-            return {x: x + width / 2, y: y};
+            return {x: x + width / 2, y: y, directionX: 0, directionY: -1};
         case 'right':
-            return {x: x + width, y: y + height / 2};
+            return {x: x + width, y: y + height / 2, directionX: 1, directionY: 0};
         case 'bottom':
-            return {x: x + width / 2, y: y + height};
+            return {x: x + width / 2, y: y + height, directionX: 0, directionY: 1};
         case 'left':
-            return {x: x, y: y + height / 2};
-        default: // center or unspecified case
-            return {x: x + width / 2, y: y + height / 2};
+            return {x: x, y: y + height / 2, directionX: -1, directionY: 0};
     }
+    throw Error(`Unknown anchor for node ${node} and side ${side}`)
 }
 
 function drawEdges() {
@@ -161,11 +160,11 @@ function drawEdges() {
             const fromPoint = getAnchorPoint(fromNode, edge.fromSide);
             const toPoint = getAnchorPoint(toNode, edge.toSide);
 
-            const curveTightness = 0.75;
-            const controlPointX1 = fromPoint.x + (toPoint.x - fromPoint.x) * curveTightness;
-            const controlPointX2 = fromPoint.x + (toPoint.x - fromPoint.x) * (1 - curveTightness);
-            const controlPointY1 = fromPoint.y;
-            const controlPointY2 = toPoint.y;
+            const curveTightness = 100;
+            const controlPointX1 = fromPoint.x + fromPoint.directionX * curveTightness;
+            const controlPointY1 = fromPoint.y + fromPoint.directionY * curveTightness;
+            const controlPointX2 = toPoint.x + toPoint.directionX * curveTightness;
+            const controlPointY2 = toPoint.y + toPoint.directionY * curveTightness;
 
             const d = `M ${fromPoint.x} ${fromPoint.y} C ${controlPointX1} ${controlPointY1}, ${controlPointX2} ${controlPointY2}, ${toPoint.x} ${toPoint.y}`;
             const pathId = `${edge.id}.path`;
