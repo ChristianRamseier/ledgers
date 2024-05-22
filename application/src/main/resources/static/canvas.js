@@ -249,10 +249,10 @@ function endLinking() {
         startAnchor.classList.remove('is-linking')
         startAnchor.parentElement.classList.remove('is-linking')
         isLinking = false;
-        if (endAnchor) {
+        if (endAnchor && startAnchor != endAnchor) {
             linkCreated(startAnchor, endAnchor)
-            endAnchor = null
         }
+        endAnchor = null
         startAnchor = null
         hideLinkHint()
     }
