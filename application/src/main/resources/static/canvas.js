@@ -225,10 +225,10 @@ function drawEdges() {
 
     const edges = getEdges()
 
-    const svgContainer = document.getElementById('edge-paths');
+    const svgContainer = document.getElementById('canvas-edge-paths');
     [...svgContainer.children].forEach(path => {
         const edge = edges.find(e => path.id === `${e.id}.path`)
-        if(!edge) {
+        if (!edge) {
             svgContainer.removeChild(path)
         }
     })
@@ -304,8 +304,11 @@ window.addEventListener('mousemove', function (e) {
 
         drawEdges();
     }
+});
+
+window.addEventListener('mousemove', function (e) {
     if (isLinking && startAnchor) {
-        drawLinkHint(e.clientX, e.clientY)
+        drawLinkHintAndDetectEndAnchor(e.clientX, e.clientY)
     }
 });
 
@@ -331,15 +334,36 @@ function endLinking() {
             endAnchor = null
         }
         startAnchor = null
+        hideLinkHint()
     }
 }
 
-function drawLinkHint(x, y) {
+function hideLinkHint() {
+    const linkHintContainer = document.getElementById('canvas-edge-link-hint')
+    linkHintContainer.innerHTML = ''
+}
+
+function drawLinkHintAndDetectEndAnchor(mouseX, mouseY) {
+
+    if (startAnchor) {
+        const linkHintContainer = document.getElementById('canvas-edge-link-hint')
+        linkHintContainer.innerHTML = ''
+        const rect = startAnchor.getBoundingClientRect()
+        const startX = rect.x + rect.width / 2;
+        const startY = rect.y + rect.height / 2;
+        const d = `M ${startX - panOffsetX} ${startY - panOffsetY} ${mouseX - panOffsetX} ${mouseY - panOffsetY}`;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('stroke-dasharray', '2,2');
+        path.setAttribute('fill', 'none');
+        linkHintContainer.appendChild(path);
+    }
+
     const anchorElements = [...document.getElementsByTagName('anchor')];
     endAnchor = null
     anchorElements.forEach(anchor => {
         const rect = anchor.getBoundingClientRect()
-        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        if (mouseX >= rect.left && mouseX <= rect.right && mouseY >= rect.top && mouseY <= rect.bottom) {
             endAnchor = anchor
         }
     })
@@ -513,7 +537,7 @@ document.addEventListener('touchmove', function (e) {
 // Check if hovering over anchor
 document.addEventListener('touchmove', function (e) {
     if (isLinking) {
-        drawLinkHint(e.touches[0].clientX, e.touches[0].clientY)
+        drawLinkHintAndDetectEndAnchor(e.touches[0].clientX, e.touches[0].clientY)
     }
 }, {passive: true});
 

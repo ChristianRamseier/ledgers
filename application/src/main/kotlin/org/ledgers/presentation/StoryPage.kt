@@ -8,7 +8,7 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
     override fun toHtml(): String {
         if (story == null) {
             return Site.getHtmlFor("Story not found") {
-                +"No story found by id $id"
+                +"No story found by id $storyId"
             }
         }
         return Site.getHtmlFor("${story.getDisplayName()} - Story") {
@@ -33,7 +33,8 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                                 polygon { attributes["points"] = "0 0, 5 2, 0 4" }
                             }
                         }
-                        g { id = "edge-paths" }
+                        g { id = "canvas-edge-paths" }
+                        g { id = "canvas-edge-link-hint" }
                     }
 
                     div {

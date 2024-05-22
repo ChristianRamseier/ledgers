@@ -135,7 +135,6 @@ data class Architecture(
         }
     }
 
-
     companion object {
         val Empty = Architecture(
             organizations = Organizations(),

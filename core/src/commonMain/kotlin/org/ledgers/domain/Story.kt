@@ -3,7 +3,6 @@ package org.ledgers.domain
 import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
-import org.ledgers.domain.stage.Anchor
 import org.ledgers.domain.stage.AnchorReference
 import org.ledgers.domain.stage.Box
 import org.ledgers.domain.stage.StageChange
@@ -74,10 +73,10 @@ data class Story(
 
     fun withLinkInChapter(chapter: Int, from: AnchorReference, to: AnchorReference): Story {
         val story = withLinkBetween(from.ledgerId, to.ledgerId)
-        val link = story.architecture.links.getBetween(from.ledgerId, to.ledgerId)
+        val link = story.architecture.links.findBetween(from.ledgerId, to.ledgerId) ?: throw RuntimeException("No link between ${from.ledgerId} and ${to.ledgerId}")
         val updated = story.copy(storyline = storyline.withLinkInChapter(chapter, link.reference, from.anchor, to.anchor))
-        val linkBack = story.architecture.links.getBetween(to.ledgerId, from.ledgerId)
-        return if (updated.storyline.getStageAtChapter(chapter).has(linkBack.reference)) {
+        val linkBack = updated.architecture.links.findBetween(to.ledgerId, from.ledgerId)
+        return if (linkBack != null && updated.storyline.getStageAtChapter(chapter).has(linkBack.reference)) {
             updated.copy(storyline = updated.storyline.withLinkInChapter(chapter, linkBack.reference, to.anchor, from.anchor))
         } else {
             updated

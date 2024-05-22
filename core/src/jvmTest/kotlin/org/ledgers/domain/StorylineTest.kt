@@ -12,8 +12,8 @@ import org.ledgers.domain.stage.*
 class StorylineTest {
 
     val id = LedgerId.random()
-    val componentOnStage = ComponentOnStage(Box(0, 0, 100, 10), ComponentReference(ComponentType.Ledger, id, Version.Zero))
-    val movedComponentOnStage = ComponentOnStage(Box(100, 0, 100, 100), ComponentReference(ComponentType.Ledger, id, Version.Zero))
+    val componentOnStage = LedgerOnStage(ComponentReference(ComponentType.Ledger, id, Version.Zero), Box(0, 0, 100, 10))
+    val movedComponentOnStage = LedgerOnStage(ComponentReference(ComponentType.Ledger, id, Version.Zero), Box(100, 0, 100, 100))
 
     @Test
     fun givenAnEmptyTimeline_whenAddingAChange_theChangePrevailsInTime() {

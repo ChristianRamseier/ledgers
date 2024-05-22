@@ -110,12 +110,22 @@ body {
   width: 100%;
   height: 100%;
 }
+
+@keyframes smooth-appear {
+  0% { opacity:0; }
+  75% { opacity:0; }
+  100% { opacity:1; }
+}
+
 #canvas-edges-svg path {
   stroke: var(--color-ui-3);
   stroke-width: 2;
   fill: none;
   transition: all 0.5s ease-in-out;
+  opacity:0;
+  animation: smooth-appear 0.65s ease-out forwards;
 }
+
 .is-dragging #canvas-edges-svg path {
   transition: none;
 }
