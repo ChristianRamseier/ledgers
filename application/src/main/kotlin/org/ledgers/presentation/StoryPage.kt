@@ -46,21 +46,6 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                         id = "canvas-nodes"
                     }
 
-                    div(classes = "theme-dark hidden") {
-                        id = "output"
-                        div(classes = "code-header") {
-                            span(classes = "language") { +"Ledger Story" }
-                            span(classes = "close-output") { +"×" }
-                        }
-                        div {
-                            id = "output-code"
-                            pre { code(classes = "language-json") { id = "positionsOutput" } }
-                        }
-                        div(classes = "code-footer") {
-                            button(classes = "button-copy") { +"Copy code" }
-                            button(classes = "button-download") { +"Download file" }
-                        }
-                    }
                 }
                 div {
                     id = "components"
@@ -164,10 +149,6 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                     id = "controls"
                     div {
                         id = "zoom-controls"
-                        button {
-                            id = "toggle-output"
-                            +"Toggle output"
-                        }
                         button {
                             id = "zoom-out"
                             +"Zoom out"

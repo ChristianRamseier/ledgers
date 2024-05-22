@@ -28,7 +28,6 @@ class Site {
                     section {
                         content()
                     }
-                    script(src = "/prism.js?$TIMESTAMP") {}
                     script(src = "/canvas.js?$TIMESTAMP") {}
                     script(src = "/kotlin-kotlin-stdlib.js?$TIMESTAMP") {}
                     script(src = "/kotlin_org_jetbrains_kotlin_kotlin_dom_api_compat.js?$TIMESTAMP") {}

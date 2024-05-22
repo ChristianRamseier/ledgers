@@ -98,47 +98,6 @@ document.getElementById('zoom-reset').addEventListener('click', function () {
     adjustCanvasToViewport();
 });
 
-document.getElementById('toggle-output').addEventListener('click', function () {
-    const output = document.getElementById('output');
-    output.classList.toggle('hidden');
-});
-
-document.querySelector('.close-output').addEventListener('click', function () {
-    const output = document.getElementById('output');
-    output.classList.toggle('hidden');
-});
-
-document.querySelector('.button-copy').addEventListener('click', function () {
-    const positionsOutput = document.getElementById('positionsOutput').textContent;
-    navigator.clipboard.writeText(positionsOutput).catch(err => {
-        console.error('Error copying canvas data: ', err);
-    });
-});
-
-document.querySelector('.button-download').addEventListener('click', function () {
-    const positionsOutput = document.getElementById('positionsOutput').textContent;
-    const blob = new Blob([positionsOutput], {type: 'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sample.canvas';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-});
-
-// Very simplified Markdown conversion
-function htmlToMarkdown(html) {
-    let markdown = html.replace(/<br\s*[\/]?>/gi, "\n");
-    markdown = markdown.replace(/<a href="([^"]+)">([^<]+)<\/a>/gi, "[$2]($1)");
-    markdown = markdown.replace(/<ul>/gi, "\n\n").replace(/<\/ul>/gi, "\n\n").replace(/<li>/gi, "- ").replace(/<\/li>/gi, "\n");
-    markdown = markdown.replace(/<[^>]+>/g, '');
-    markdown = markdown.replace(/\n\s*-\s+/g, "\n- ");
-    markdown = markdown.trim().replace(/\n{3,}/g, "\n\n");
-    return markdown;
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     const links = document.querySelectorAll('a');
     links.forEach(link => {
@@ -162,43 +121,6 @@ function getEdges() {
         return edgeObject
     })
     return edges
-}
-
-// Serialize canvas data
-function updateCanvasData() {
-    const nodes = Array.from(document.querySelectorAll('node')).map(node => {
-        const nodeObject = {
-            id: node.id,
-            type: node.getAttribute('data-node-type'),
-            x: parseInt(node.style.left, 10),
-            y: parseInt(node.style.top, 10),
-            width: node.offsetWidth,
-            height: node.offsetHeight,
-        };
-
-        const fileAttribute = node.getAttribute('data-node-file');
-        if (fileAttribute) {
-            nodeObject.file = fileAttribute;
-        }
-
-        if (nodeObject.type === 'text') {
-            const textContent = node.querySelector('.node-text-content').innerHTML;
-            nodeObject.text = htmlToMarkdown(textContent);
-        }
-
-
-        return nodeObject;
-    });
-
-    const canvasData = {
-        nodes: nodes,
-        edges: getEdges(),
-    };
-
-    const positionsOutput = document.getElementById('positionsOutput');
-    positionsOutput.textContent = JSON.stringify(canvasData, null, 2);
-
-    Prism.highlightElement(positionsOutput);
 }
 
 function getAnchorPoint(node, side) {
@@ -319,7 +241,6 @@ function endDragging() {
         isDragging = false;
         nodeMoved(selectedElement)
         selectedElement = null;
-        updateCanvasData();
         drawEdges();
     }
 }
@@ -568,4 +489,3 @@ window.addEventListener('dragstart', function (e) {
 });
 
 drawEdges();
-updateCanvasData();
