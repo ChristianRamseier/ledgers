@@ -5,6 +5,7 @@ plugins {
 
 kotlin {
 
+
     jvm {
         compilations.all {
             kotlinOptions.jvmTarget = JavaVersion.VERSION_21.toString()
@@ -22,11 +23,17 @@ kotlin {
     }
 
     sourceSets {
+        all {
+            languageSettings {
+                optIn("kotlin.js.ExperimentalJsExport")
+            }
+        }
         commonMain {
             dependencies {
                 implementation("com.benasher44:uuid:0.8.4")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
+
         }
         jvmTest {
             dependencies {

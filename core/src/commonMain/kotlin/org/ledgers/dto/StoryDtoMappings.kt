@@ -6,8 +6,8 @@ import org.ledgers.domain.Storyline
 import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.component.ComponentType
-import org.ledgers.domain.scenario.Scenario
-import org.ledgers.domain.scenario.Steps
+import org.ledgers.domain.scenario.*
+import org.ledgers.domain.scenario.action.*
 import org.ledgers.domain.stage.*
 
 fun Story.toDto(): StoryDto {
@@ -62,11 +62,84 @@ private fun Storyline.toDto(): StorylineDto {
 }
 
 private fun Chapter.toDto(): ChapterDto {
-    return ChapterDto(name = name, changes = changes.map { it.toDto() }, scenario = scenario?.toDto())
+    return ChapterDto(name = name, changes = changes.map { it.toDto() }, scenario = scenario.toDto())
 }
 
 private fun Scenario.toDto(): ScenarioDto {
-    return ScenarioDto(name = name)
+    return ScenarioDto(name = name, steps = steps.steps.map { it.toDto() })
+}
+
+private fun Step.toDto(): StepDto {
+    return StepDto(
+        description = description,
+        actions = actions.map { it.toDto() }
+    )
+}
+
+private fun Action.toDto(): ActionDto {
+    return when (this) {
+        is CreateAccountAction -> this.toDto()
+        is IssueAction -> this.toDto()
+        is ReduceAction -> this.toDto()
+        is TransferAction -> this.toDto()
+    }
+}
+
+fun CreateAccountAction.toDto(): CreateAccountActionDto {
+    return CreateAccountActionDto(
+        id = id,
+        ledgerId = ledgerId,
+        accountReference = accountReference,
+        owner = owner
+    )
+}
+
+fun IssueAction.toDto(): IssueActionDto {
+    return IssueActionDto(
+        id = id,
+        ledgerId = ledgerId,
+        asset = asset,
+        quantity = quantity,
+        issueAccount = issueAccount,
+        targetAccount = targetAccount
+    )
+}
+
+fun ReduceAction.toDto(): ReduceActionDto {
+    return ReduceActionDto(
+        id = id,
+        ledgerId = ledgerId,
+        asset = asset,
+        quantity = quantity,
+        sourceAccount = sourceAccount,
+        issueAccount = issueAccount,
+    )
+}
+
+fun TransferAction.toDto(): TransferActionDto {
+    return TransferActionDto(
+        id = id,
+        asset = asset,
+        quantity = quantity,
+        label = label,
+        fromAccount = fromAccount.toDto(),
+        toAccount = toAccount.toDto(),
+        intermediateBookings = intermediateBookings.map { it.toDto() }
+    )
+}
+
+private fun Booking.toDto(): BookingDto {
+    return BookingDto(
+        account = account.toDto(),
+        quantity = quantity,
+        asset = asset,
+        label = label,
+        type = type
+    )
+}
+
+private fun LedgerAndAccountReference.toDto(): LedgerAndAccountReferenceDto {
+    return LedgerAndAccountReferenceDto(ledgerId = ledgerId, accountReference = accountReference)
 }
 
 private fun StageChange.toDto(): StageChangeDto {
@@ -136,11 +209,91 @@ private fun StorylineDto.toDomain(): Storyline {
 }
 
 private fun ChapterDto.toDomain(): Chapter {
-    return Chapter(name = name, changes = changes.map { it.toDomain() }, scenario = scenario?.toDomain())
+    return Chapter(
+        name = name,
+        changes = changes.map { it.toDomain() },
+        scenario = scenario.toDomain()
+    )
 }
 
 private fun ScenarioDto.toDomain(): Scenario {
-    return Scenario(name = name, steps = Steps(emptyList()))
+    return Scenario(
+        name = name,
+        steps = Steps(steps.map { it.toDomain() })
+    )
+}
+
+private fun StepDto.toDomain(): Step {
+    return Step(
+       description = description,
+       actions = actions.map { it.toDomain() }
+    )
+}
+
+private fun ActionDto.toDomain(): Action {
+    return when(this) {
+        is CreateAccountActionDto -> this.toDomain()
+        is IssueActionDto -> this.toDomain()
+        is ReduceActionDto -> this.toDomain()
+        is TransferActionDto -> this.toDomain()
+    }
+}
+
+private fun CreateAccountActionDto.toDomain(): CreateAccountAction {
+    return CreateAccountAction(
+        id = id,
+        ledgerId = ledgerId,
+        accountReference = accountReference,
+        owner = owner
+    )
+}
+
+private fun IssueActionDto.toDomain(): IssueAction {
+    return IssueAction(
+        id = id,
+        ledgerId = ledgerId,
+        asset = asset,
+        quantity = quantity,
+        issueAccount = issueAccount,
+        targetAccount = targetAccount
+    )
+}
+
+private fun ReduceActionDto.toDomain(): ReduceAction {
+    return ReduceAction(
+        id = id,
+        ledgerId = ledgerId,
+        asset = asset,
+        quantity = quantity,
+        sourceAccount = sourceAccount,
+        issueAccount = issueAccount
+    )
+}
+
+private fun TransferActionDto.toDomain(): TransferAction {
+    return TransferAction(
+        id = id,
+        asset = asset,
+        quantity = quantity,
+        label = label,
+        fromAccount = fromAccount.toDomain(),
+        toAccount = toAccount.toDomain(),
+        intermediateBookings = intermediateBookings.map { it.toDomain() }
+    )
+}
+
+private fun BookingDto.toDomain(): Booking {
+    return Booking(
+        account = account.toDomain(),
+        quantity = quantity,
+        asset = asset,
+        label = label,
+        type = type
+    )
+}
+
+private fun LedgerAndAccountReferenceDto.toDomain(): LedgerAndAccountReference {
+    return LedgerAndAccountReference(ledgerId = ledgerId, accountReference = accountReference)
 }
 
 private fun StageChangeDto.toDomain(): StageChange {

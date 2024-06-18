@@ -2,6 +2,7 @@ package org.ledgers.domain
 
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.stage.*
+import org.ledgers.replaceAtIndex
 import kotlin.js.JsExport
 
 @JsExport
@@ -35,21 +36,8 @@ data class Storyline(
     }
 
     private fun withChangesInChapter(chapter: Int, updatedChapter: Chapter): Storyline {
-        if (chapter < 0) {
-            throw RuntimeException("Chapter must be greater than equal to 0")
-        }
-        val maxChapter = chapters.size.coerceAtLeast(chapter + 1)
-        val copy = ArrayList<Chapter>(maxChapter)
-        for (i in 0..<maxChapter) {
-            copy.add(
-                if (i == chapter) {
-                    updatedChapter
-                } else {
-                    atChapter(i)
-                }
-            )
-        }
-        return Storyline(copy)
+        val updatedChapters = chapters.replaceAtIndex(chapter, updatedChapter, Chapter.Empty)
+        return Storyline(updatedChapters)
     }
 
     fun getStageAtChapter(chapter: Int): Stage {

@@ -10,7 +10,7 @@ import kotlin.js.JsExport
 data class Chapter(
     val changes: List<StageChange>,
     val name: String = "",
-    val scenario: Scenario? = null
+    val scenario: Scenario = Scenario.Empty
 ) {
 
     fun withName(name: String): Chapter {
@@ -31,8 +31,14 @@ data class Chapter(
         return changes.find { it.componentReference == reference }
     }
 
+    fun withScenarioDescription(name: String): Chapter {
+        return copy(
+            scenario = scenario.withName(name)
+        )
+    }
+
     companion object {
-        val Empty = Chapter(emptyList(), "", null)
+        val Empty = Chapter(emptyList(), "", Scenario.Empty)
     }
 
 }
