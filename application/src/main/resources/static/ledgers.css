@@ -50,12 +50,39 @@
 
 #chapters-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+#chapters-line {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
 }
 
 #chapters-list chapter {
     display: block;
     cursor: pointer;
+    background: var(--color-bg-1);
+    height: 3rem;
+    width: 2rem;
+    text-align: center;
+    color: var(--color-tx-1);
+    padding-top: 0.2rem;
+}
+
+#chapter-details {
+    left: 1rem;
+    bottom: 5rem;
+    display: flex;
+    gap: 6px;
+    flex-direction: row;
+    z-index: 100;
+    font-size: small;
+}
+
+#chapter-apply, #chapter-name {
+    display: none;
 }
 
 #editors {

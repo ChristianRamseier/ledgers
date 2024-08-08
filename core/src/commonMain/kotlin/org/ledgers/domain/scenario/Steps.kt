@@ -40,6 +40,10 @@ data class Steps(
         return Steps(updatedSteps)
     }
 
+    fun withoutStep(step: Int): Steps {
+        return Steps(steps.filterIndexed { index, _ -> step != index })
+    }
+
     companion object {
         val None = Steps(emptyList())
     }

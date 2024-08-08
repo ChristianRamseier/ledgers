@@ -71,10 +71,33 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                 div {
                     id = "chapters"
                     div {
-                        id = "chapters-list"
+                        id = "chapter-details"
+                        div {
+                            id = "chapter-number"
+                        }
+                        div {
+                            id = "chapter-name-display"
+                        }
+                        button {
+                            id = "chapter-edit"
+                            +"Edit"
+                        }
+                        input(type = InputType.text) {
+                            id = "chapter-name"
+                        }
+                        div {
+                            id = "chapter-changes"
+                        }
+                        button {
+                            id = "chapter-apply"
+                            +"Apply"
+                        }
                     }
                     div {
-                        id = "chapters-controls"
+                        id = "chapters-line"
+                        div {
+                            id = "chapters-list"
+                        }
                         button {
                             id = "add-chapter"
                             +"Add Chapter"
@@ -131,19 +154,7 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                             +"Apply"
                         }
                     }
-                    div {
-                        id = "chapter-editor"
-                        input(type = InputType.text) {
-                            id = "chapter-name"
-                        }
-                        div {
-                            id = "chapter-changes"
-                        }
-                        button {
-                            id = "chapter-apply"
-                            +"Apply"
-                        }
-                    }
+
                 }
                 div {
                     id = "controls"

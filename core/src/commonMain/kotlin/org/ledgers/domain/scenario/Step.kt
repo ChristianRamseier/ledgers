@@ -3,7 +3,9 @@ package org.ledgers.domain.scenario
 import org.ledgers.domain.scenario.action.Action
 import org.ledgers.domain.scenario.action.ActionId
 import org.ledgers.replaceFirstOrAdd
+import kotlin.js.JsExport
 
+@JsExport
 data class Step(
     val description: String,
     val actions: List<Action>

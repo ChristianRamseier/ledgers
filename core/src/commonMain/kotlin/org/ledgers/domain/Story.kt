@@ -3,6 +3,7 @@ package org.ledgers.domain
 import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.scenario.Step
 import org.ledgers.domain.stage.AnchorReference
 import org.ledgers.domain.stage.Box
 import org.ledgers.domain.stage.StageChange

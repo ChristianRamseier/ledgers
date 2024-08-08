@@ -37,6 +37,7 @@ function updateStory(story) {
 function updateDisplay() {
     updateComponentList()
     updateChaptersList()
+    updateChapterDisplay()
     toggleEditorDisplay()
 }
 
@@ -204,20 +205,20 @@ const updateComponentList = function () {
 const updateChaptersList = function () {
     const chapters = state.story.storyline.chapters.toArray()
     const html = chapters.map((chapter, i) =>
-        `<chapter id="chapter-${i}">${chapter.name || 'Chapter ' + (i + 1)}</chapter>`
+        `<chapter id="chapter-${i}">${(i + 1)}</chapter>`
     ).join('\n')
     document.getElementById('chapters-list').innerHTML = html
     chapters.forEach((chapter, i) => {
             document.getElementById(`chapter-${i}`).addEventListener('click', function (event) {
                 transition(state.story, state.chapter, state.story, i)
                 state.chapter = i
-            });
-            document.getElementById(`chapter-${i}`).addEventListener('dblclick', function (event) {
-                editChapter(i)
+                resetChapterEditor()
+                updateChapterDisplay()
             });
         }
     )
 }
+
 
 document.getElementById('add-organization').addEventListener('click', function () {
     const story = state.story.addOrganization(`Organization #${state.story.architecture.organizations.numberOfOrganizations + 1}`);
@@ -282,10 +283,11 @@ function editOrganization(organization) {
 }
 
 function editChapter(chapter) {
-    editorState.editor = 'chapter'
-    editorState.edited = chapter
-    toggleEditorDisplay()
+    document.getElementById('chapter-name-display').style.display = 'none'
+    document.getElementById('chapter-edit').style.display = 'none'
     document.getElementById('chapter-name').value = chapter.name
+    document.getElementById('chapter-name').style.display = 'block'
+    document.getElementById('chapter-apply').style.display = 'block'
 }
 
 function editAsset(asset) {
@@ -304,11 +306,16 @@ function flexIf(condition) {
     return 'display: none'
 }
 
+function updateChapterDisplay() {
+    const chapter = state.story.storyline.atChapter(state.chapter)
+    document.getElementById('chapter-number').innerText = `Chapter ${state.chapter + 1}`
+    document.getElementById('chapter-name-display').innerText = chapter.name ? `- ${chapter.name}` : ''
+}
+
 function toggleEditorDisplay() {
     document.getElementById('ledger-editor').style = flexIf(editorState.editor === 'ledger')
     document.getElementById('organization-editor').style = flexIf(editorState.editor === 'organization')
     document.getElementById('asset-editor').style = flexIf(editorState.editor === 'asset')
-    document.getElementById('chapter-editor').style = flexIf(editorState.editor === 'chapter')
 }
 
 function nodeMoved(node) {
@@ -346,6 +353,26 @@ document.getElementById('ledger-apply').addEventListener('click', function () {
         updateComponentList()
     }
 })
+
+document.getElementById('chapter-edit').addEventListener('click', function () {
+    const chapter = state.story.storyline.atChapter(state.chapter)
+    editChapter(chapter)
+})
+
+document.getElementById('chapter-apply').addEventListener('click', function () {
+    const name = document.getElementById('chapter-name').value
+    const story = state.story.withChapterNamed(state.chapter, name)
+    updateStory(story)
+    updateChapterDisplay()
+    resetChapterEditor()
+})
+
+function resetChapterEditor() {
+    document.getElementById('chapter-name-display').style.display = 'block'
+    document.getElementById('chapter-edit').style.display = 'block'
+    document.getElementById('chapter-name').style.display = 'none'
+    document.getElementById('chapter-apply').style.display = 'none'
+}
 
 document.getElementById('organization-apply').addEventListener('click', function () {
     if (editorState.editor == 'organization') {
