@@ -60,6 +60,10 @@ data class Chapter(
         return copy(scenario = scenario.withoutStep(step))
     }
 
+    fun getChangesAsArray(): Array<StageChange> {
+        return changes.toTypedArray()
+    }
+
     companion object {
         val Empty = Chapter(emptyList(), "", Scenario.Empty)
     }

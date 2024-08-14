@@ -71,7 +71,7 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                 div {
                     id = "chapters"
                     div {
-                        id = "chapter-details"
+                        id = "chapter-name"
                         div {
                             id = "chapter-number"
                         }
@@ -83,15 +83,16 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                             +"Edit"
                         }
                         input(type = InputType.text) {
-                            id = "chapter-name"
-                        }
-                        div {
-                            id = "chapter-changes"
+                            id = "chapter-name-input"
                         }
                         button {
                             id = "chapter-apply"
                             +"Apply"
                         }
+                    }
+                    div {
+                        id="chapter-changes"
+
                     }
                     div {
                         id = "chapters-line"

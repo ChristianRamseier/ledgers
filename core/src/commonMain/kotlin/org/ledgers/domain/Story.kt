@@ -28,6 +28,21 @@ data class Story(
         return architecture.getComponent(componentReference)
     }
 
+    fun getComponentDisplayName(componentReference: ComponentReference, chapter: Int): String {
+        val component = getComponent(componentReference)
+        return when (component) {
+            is Asset -> component.name
+            is Ledger -> component.name
+            is Organization -> component.name
+            is Link -> {
+                val from = getComponentDisplayName(storyline.getStageAtChapter(chapter).getById(component.from).reference, chapter)
+                val to = getComponentDisplayName(storyline.getStageAtChapter(chapter).getById(component.to).reference, chapter)
+                return "$from to $to"
+            }
+            else -> componentReference.toString()
+        }
+    }
+
     fun withName(name: String): Story {
         return copy(name = name)
     }

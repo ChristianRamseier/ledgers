@@ -59,6 +59,7 @@ const transition = function (fromStory, fromChapter, toStory, toChapter) {
         }
     })
     drawEdges()
+    updateChapterDisplay()
 }
 
 function changeLinkOnStage(change, component, newStage) {
@@ -285,8 +286,8 @@ function editOrganization(organization) {
 function editChapter(chapter) {
     document.getElementById('chapter-name-display').style.display = 'none'
     document.getElementById('chapter-edit').style.display = 'none'
-    document.getElementById('chapter-name').value = chapter.name
-    document.getElementById('chapter-name').style.display = 'block'
+    document.getElementById('chapter-name-input').value = chapter.name
+    document.getElementById('chapter-name-input').style.display = 'block'
     document.getElementById('chapter-apply').style.display = 'block'
 }
 
@@ -310,6 +311,18 @@ function updateChapterDisplay() {
     const chapter = state.story.storyline.atChapter(state.chapter)
     document.getElementById('chapter-number').innerText = `Chapter ${state.chapter + 1}`
     document.getElementById('chapter-name-display').innerText = chapter.name ? `- ${chapter.name}` : ''
+
+    const changes = chapter.getChangesAsArray()
+    const changeHtml = changes.map(c => {
+        const name = state.story.getComponentDisplayName(c.componentReference, state.chapter)
+        return `<stage-change id="stage-change:${c.componentReference}">${c.type} ${c.componentReference.type} ${name}</stage-change>`
+    }).join('\n')
+    document.getElementById('chapter-changes').innerHTML = changeHtml
+    changes.forEach(c => {
+        document.getElementById(`stage-change:${c.componentReference}`).addEventListener('click', function (event) {
+            // remove?
+        })
+    })
 }
 
 function toggleEditorDisplay() {
@@ -327,6 +340,7 @@ function nodeMoved(node) {
     const reference = domain.component.ComponentReference.Companion.fromString(node.id);
     const story = state.story.withLedgerInChapter(state.chapter, reference, box)
     updateStory(story)
+    updateChapterDisplay()
 }
 
 function linkCreated(startAnchor, endAnchor) {
@@ -335,6 +349,7 @@ function linkCreated(startAnchor, endAnchor) {
     const story = state.story.withLinkInChapter(state.chapter, fromAnchorReference, toAnchorReference)
     transition(state.story, state.chapter, story, state.chapter)
     updateStory(story)
+    updateChapterDisplay()
 }
 
 document.getElementById('ledger-apply').addEventListener('click', function () {
@@ -351,6 +366,7 @@ document.getElementById('ledger-apply').addEventListener('click', function () {
         }
         resetEditors()
         updateComponentList()
+        updateChapterDisplay()
     }
 })
 
@@ -360,7 +376,7 @@ document.getElementById('chapter-edit').addEventListener('click', function () {
 })
 
 document.getElementById('chapter-apply').addEventListener('click', function () {
-    const name = document.getElementById('chapter-name').value
+    const name = document.getElementById('chapter-name-input').value
     const story = state.story.withChapterNamed(state.chapter, name)
     updateStory(story)
     updateChapterDisplay()
@@ -370,7 +386,7 @@ document.getElementById('chapter-apply').addEventListener('click', function () {
 function resetChapterEditor() {
     document.getElementById('chapter-name-display').style.display = 'block'
     document.getElementById('chapter-edit').style.display = 'block'
-    document.getElementById('chapter-name').style.display = 'none'
+    document.getElementById('chapter-name-input').style.display = 'none'
     document.getElementById('chapter-apply').style.display = 'none'
 }
 
