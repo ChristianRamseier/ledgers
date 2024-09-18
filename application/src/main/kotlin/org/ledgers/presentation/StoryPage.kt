@@ -91,8 +91,30 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                         }
                     }
                     div {
-                        id="chapter-changes"
-
+                        id = "chapter-changes"
+                    }
+                    div {
+                        id = "chapter-scenario"
+                        div {
+                            id = "chapter-scenario-name"
+                            div {
+                                id = "chapter-scenario-name-display"
+                            }
+                            button {
+                                id = "chapter-scenario-name-edit"
+                                +"Edit"
+                            }
+                            input(type = InputType.text) {
+                                id = "chapter-scenario-name-input"
+                            }
+                            button {
+                                id = "chapter-scenario-name-apply"
+                                +"Apply"
+                            }
+                        }
+                        div {
+                            id = "chapter-scenario-name-steps"
+                        }
                     }
                     div {
                         id = "chapters-line"
