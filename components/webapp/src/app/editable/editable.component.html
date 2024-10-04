@@ -1,0 +1,11 @@
+<ng-container *ngIf="!isEditMode">
+  {{inputValue}}
+  <button (click)="edit()">Edit</button>
+</ng-container>
+<ng-container *ngIf="isEditMode">
+  <form>
+    <input #inputField *ngIf="isEditMode" type="text" [value]="inputValue" (keydown)="keyDown($event)"/>
+    <button type="submit" (click)="save()">Save</button>
+    <button type="reset" (click)="cancel()">Cancel</button>
+  </form>
+</ng-container>

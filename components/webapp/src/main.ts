@@ -1,12 +1,22 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {createApplication} from '@angular/platform-browser';
+import {createCustomElement} from "@angular/elements";
+import {EditableComponent} from './app/editable/editable.component';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+(async () => {
+  const app = await createApplication({
+    providers: []
+  });
 
-if (environment.production) {
-  enableProdMode();
-}
+  const elements = [
+    {name: 'editable-element', component: EditableComponent}
+  ]
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+  elements.forEach(element => {
+    const editableElement = createCustomElement(element.component, {
+      injector: app.injector,
+    });
+    customElements.define(element.name, editableElement);
+  })
+
+  console.log('Components registered: '+elements.map(e => e.name).join(', '))
+})();
