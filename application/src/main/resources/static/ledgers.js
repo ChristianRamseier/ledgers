@@ -213,7 +213,6 @@ const updateChaptersList = function () {
             document.getElementById(`chapter-${i}`).addEventListener('click', function (event) {
                 transition(state.story, state.chapter, state.story, i)
                 state.chapter = i
-                resetChapterEditor()
                 updateChapterDisplay()
             });
         }
@@ -283,14 +282,6 @@ function editOrganization(organization) {
     document.getElementById('organization-name').value = organization.name
 }
 
-function editChapter(chapter) {
-    document.getElementById('chapter-name-display').style.display = 'none'
-    document.getElementById('chapter-edit').style.display = 'none'
-    document.getElementById('chapter-name-input').value = chapter.name
-    document.getElementById('chapter-name-input').style.display = 'block'
-    document.getElementById('chapter-apply').style.display = 'block'
-}
-
 function editAsset(asset) {
     editorState.editor = 'asset'
     editorState.edited = asset
@@ -309,8 +300,9 @@ function flexIf(condition) {
 
 function updateChapterDisplay() {
     const chapter = state.story.storyline.atChapter(state.chapter)
-    document.getElementById('chapter-number').innerText = `Chapter ${state.chapter + 1}`
-    document.getElementById('chapter-name-display').innerText = chapter.name ? `- ${chapter.name}` : ''
+    const chapterNameEditable = document.getElementById('chapter-name')
+    chapterNameEditable.setAttribute('label', `Chapter ${state.chapter + 1}${chapter.name ? ' -' : ''}`)
+    chapterNameEditable.setAttribute('value', chapter.name)
 
     const changes = chapter.getChangesAsArray()
     const changeHtml = changes.map(c => {
@@ -370,25 +362,13 @@ document.getElementById('ledger-apply').addEventListener('click', function () {
     }
 })
 
-document.getElementById('chapter-edit').addEventListener('click', function () {
-    const chapter = state.story.storyline.atChapter(state.chapter)
-    editChapter(chapter)
-})
-
-document.getElementById('chapter-apply').addEventListener('click', function () {
-    const name = document.getElementById('chapter-name-input').value
+document.getElementById('chapter-name').addEventListener('onChange', function (event) {
+    const name = event.detail
     const story = state.story.withChapterNamed(state.chapter, name)
     updateStory(story)
     updateChapterDisplay()
-    resetChapterEditor()
 })
 
-function resetChapterEditor() {
-    document.getElementById('chapter-name-display').style.display = 'block'
-    document.getElementById('chapter-edit').style.display = 'block'
-    document.getElementById('chapter-name-input').style.display = 'none'
-    document.getElementById('chapter-apply').style.display = 'none'
-}
 
 document.getElementById('organization-apply').addEventListener('click', function () {
     if (editorState.editor == 'organization') {

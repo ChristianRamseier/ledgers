@@ -23,13 +23,17 @@ sourceSets {
     }
 }
 
+evaluationDependsOn(":components")
 evaluationDependsOn(":core")
 
-tasks {
-    processResources {
-        from(project(":core").tasks["jsBrowserProductionLibraryDistribution"].outputs.files) {
-            into("static")
-        }
+tasks.processResources.configure {
+    from(project(":core").tasks["jsBrowserProductionLibraryDistribution"].outputs.files) {
+        into("static")
+    }
+
+    from(project(":components").tasks["buildAngularApp"].outputs.files) {
+        into("static")
+        from()
     }
 }
 

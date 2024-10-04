@@ -34,12 +34,13 @@ tasks.register<com.github.gradle.node.npm.task.NpxTask>("buildAngularApp") {
     dependsOn(tasks.getByName("npmInstall"))
     workingDir.set(file("webapp"))
     command.set("ng")
-    args.set(listOf("build"))
+    args.set(listOf("build", "--output-hashing", "none"))
     inputs.files("package.json", "package-lock.json", "angular.json", "tsconfig.json", "tsconfig.app.json")
     inputs.dir("webapp/src")
     inputs.dir(fileTree("webapp/node_modules").exclude(".cache"))
     outputs.dir("webapp/dist")
 }
+
 
 tasks {
     withType<Copy> {

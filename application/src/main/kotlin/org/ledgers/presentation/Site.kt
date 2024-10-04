@@ -18,6 +18,7 @@ class Site {
                 attributes["lang"] = "en"
                 head {
                     title { +browserTitle }
+                    link(href = "/browser/styles.css?$TIMESTAMP", rel = "stylesheet")
                     link(href = "/canvas.css?$TIMESTAMP", rel = "stylesheet")
                     link(href = "/ledgers.css?$TIMESTAMP", rel = "stylesheet")
                     link(href = "/favicon.svg", rel = "icon")
@@ -36,6 +37,8 @@ class Site {
                     script(src = "/uuid.js?$TIMESTAMP") {}
                     script(src = "/ledgers-core.js?$TIMESTAMP") {}
                     script(src = "/ledgers.js?$TIMESTAMP") {}
+                    script(src = "/browser/polyfills.js?$TIMESTAMP", type = "module") {}
+                    script(src = "/browser/main.js?$TIMESTAMP", type = "module") {}
                 }
             }
             return builder.toString()

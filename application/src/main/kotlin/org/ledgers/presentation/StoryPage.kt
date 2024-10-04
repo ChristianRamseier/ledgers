@@ -2,6 +2,7 @@ package org.ledgers.presentation
 
 import kotlinx.html.*
 import org.ledgers.domain.Story
+import org.ledgers.presentation.components.editableElement
 
 class StoryPage(private val storyId: String, private val story: Story?) : Page {
 
@@ -70,50 +71,19 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                 }
                 div {
                     id = "chapters"
-                    div {
+                    editableElement {
                         id = "chapter-name"
-                        div {
-                            id = "chapter-number"
-                        }
-                        div {
-                            id = "chapter-name-display"
-                        }
-                        button {
-                            id = "chapter-edit"
-                            +"Edit"
-                        }
-                        input(type = InputType.text) {
-                            id = "chapter-name-input"
-                        }
-                        button {
-                            id = "chapter-apply"
-                            +"Apply"
-                        }
                     }
                     div {
                         id = "chapter-changes"
                     }
                     div {
                         id = "chapter-scenario"
-                        div {
+                        editableElement {
                             id = "chapter-scenario-name"
-                            div {
-                                id = "chapter-scenario-name-display"
-                            }
-                            button {
-                                id = "chapter-scenario-name-edit"
-                                +"Edit"
-                            }
-                            input(type = InputType.text) {
-                                id = "chapter-scenario-name-input"
-                            }
-                            button {
-                                id = "chapter-scenario-name-apply"
-                                +"Apply"
-                            }
                         }
                         div {
-                            id = "chapter-scenario-name-steps"
+                            id = "chapter-scenario-steps"
                         }
                     }
                     div {

@@ -11,6 +11,9 @@ import {CommonModule} from '@angular/common';
 export class EditableComponent {
 
   inputValue = '';
+
+  @Input() label: string = ''
+
   @Output() onChange = new EventEmitter<string>();
 
   @ViewChild('inputField') input?: ElementRef;
@@ -44,4 +47,6 @@ export class EditableComponent {
       this.cancel()
     }
   }
+
+  protected readonly localStorage = localStorage;
 }

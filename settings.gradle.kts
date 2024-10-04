@@ -1,6 +1,6 @@
 rootProject.name = "ledgers"
-include("core")
 include("components")
+include("core")
 include("application")
 
 pluginManagement {

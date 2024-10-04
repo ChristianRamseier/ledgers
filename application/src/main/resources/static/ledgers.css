@@ -71,20 +71,6 @@
     padding-top: 0.2rem;
 }
 
-#chapter-name {
-    left: 1rem;
-    bottom: 5rem;
-    display: flex;
-    gap: 6px;
-    flex-direction: row;
-    z-index: 100;
-    font-size: small;
-}
-
-#chapter-apply, #chapter-name-input {
-    display: none;
-}
-
 #chapter-changes {
     display: flex;
     flex-direction: column;
