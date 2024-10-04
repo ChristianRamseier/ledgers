@@ -4,7 +4,8 @@ const usecase = window['org.ledgers:core'].org.ledgers.usecase
 
 let state = {
     story: domain.Story.Companion.new(),
-    chapter: 0
+    chapter: 0,
+    step: 0
 }
 
 function loadStory() {
@@ -213,6 +214,7 @@ const updateChaptersList = function () {
             document.getElementById(`chapter-${i}`).addEventListener('click', function (event) {
                 transition(state.story, state.chapter, state.story, i)
                 state.chapter = i
+                state.step = 0
                 updateChapterDisplay()
             });
         }
@@ -299,11 +301,13 @@ function flexIf(condition) {
 }
 
 function updateChapterDisplay() {
+    // Chapter Name
     const chapter = state.story.storyline.atChapter(state.chapter)
     const chapterNameEditable = document.getElementById('chapter-name')
     chapterNameEditable.setAttribute('label', `Chapter ${state.chapter + 1}${chapter.name ? ' -' : ''}`)
     chapterNameEditable.setAttribute('value', chapter.name)
 
+    // Chapter Changes
     const changes = chapter.getChangesAsArray()
     const changeHtml = changes.map(c => {
         const name = state.story.getComponentDisplayName(c.componentReference, state.chapter)
@@ -315,6 +319,31 @@ function updateChapterDisplay() {
             // remove?
         })
     })
+
+    // Chapter Scenario
+    const hasScenario = !chapter.scenario.isEmpty();
+    document.getElementById('chapter-scenario').style = flexIf(hasScenario)
+    if(hasScenario) {
+        // Step Name
+        const step = chapter.scenario.atStep(state.step)
+        const stepNameEditable = document.getElementById('chapter-scenario-step-name')
+        stepNameEditable.setAttribute('label', `Step ${state.step + 1}${step.name ? ' -' : ''}`)
+        stepNameEditable.setAttribute('value', step.name)
+        // Step List
+        const steps = chapter.scenario.getStepsAsArray()
+        const stepsHtml = steps.map((step, index) => {
+            return `<step id="step:${index}">${step.description}</step>`
+        }).join('\n')
+        document.getElementById('chapter-scenario-steps').innerHTML = stepsHtml
+        steps.forEach((step,index) => {
+            document.getElementById(`step:${index}`).addEventListener('click', function (event) {
+                state.step = index
+                updateChapterDisplay()
+            })
+        })
+
+    }
+
 }
 
 function toggleEditorDisplay() {

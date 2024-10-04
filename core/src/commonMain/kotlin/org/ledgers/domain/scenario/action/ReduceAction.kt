@@ -6,10 +6,12 @@ import org.ledgers.domain.scenario.AccountReference
 import org.ledgers.domain.scenario.LedgerAndAccountReference
 import org.ledgers.domain.scenario.PositionLabel
 import org.ledgers.domain.scenario.Quantity
+import kotlin.js.JsExport
 
 /**
  * Reduce quantity of an asset by reducing (i.e. destroying) it
  */
+@JsExport
 class ReduceAction(
     override val id: ActionId,
     override val asset: AssetId,

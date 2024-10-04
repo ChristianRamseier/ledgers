@@ -66,7 +66,7 @@ private fun Chapter.toDto(): ChapterDto {
 }
 
 private fun Scenario.toDto(): ScenarioDto {
-    return ScenarioDto(name = name, steps = steps.steps.map { it.toDto() })
+    return ScenarioDto(steps = steps.steps.map { it.toDto() })
 }
 
 private fun Step.toDto(): StepDto {
@@ -218,7 +218,6 @@ private fun ChapterDto.toDomain(): Chapter {
 
 private fun ScenarioDto.toDomain(): Scenario {
     return Scenario(
-        name = name,
         steps = Steps(steps.map { it.toDomain() })
     )
 }

@@ -6,10 +6,12 @@ import org.ledgers.domain.scenario.AccountReference
 import org.ledgers.domain.scenario.LedgerAndAccountReference
 import org.ledgers.domain.scenario.PositionLabel
 import org.ledgers.domain.scenario.Quantity
+import kotlin.js.JsExport
 
 /**
  * Increase quantity of an asset by issuing (i.e. creating) it
  */
+@JsExport
 class IssueAction(
     override val id: ActionId,
     val ledgerId: LedgerId,

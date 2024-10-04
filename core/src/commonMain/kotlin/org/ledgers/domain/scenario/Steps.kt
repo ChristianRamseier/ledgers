@@ -4,7 +4,9 @@ import org.ledgers.add
 import org.ledgers.domain.scenario.action.Action
 import org.ledgers.domain.scenario.action.ActionId
 import org.ledgers.replaceAtIndex
+import kotlin.js.JsExport
 
+@JsExport
 data class Steps(
     val steps: List<Step>
 ) {

@@ -5,8 +5,10 @@ import org.ledgers.domain.scenario.Booking
 import org.ledgers.domain.scenario.LedgerAndAccountReference
 import org.ledgers.domain.scenario.PositionLabel
 import org.ledgers.domain.scenario.Quantity
+import kotlin.js.JsExport
 
- class TransferAction(
+@JsExport
+class TransferAction(
     override val id: ActionId,
     override val asset: AssetId,
     override val quantity: Quantity,
@@ -18,6 +20,6 @@ import org.ledgers.domain.scenario.Quantity
 
     override val type: ActionType get() = ActionType.Transfer
 
-     override val bookings: List<Booking> get() = listOf(fromBooking) + intermediateBookings + listOf(toBooking)
+    override val bookings: List<Booking> get() = listOf(fromBooking) + intermediateBookings + listOf(toBooking)
 
 }

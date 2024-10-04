@@ -2,9 +2,10 @@ package org.ledgers.domain.scenario
 
 import org.ledgers.domain.scenario.action.Action
 import org.ledgers.domain.scenario.action.ActionId
+import kotlin.js.JsExport
 
+@JsExport
 data class Scenario(
-    val name: String,
     val steps: Steps
 ) {
 
@@ -14,12 +15,6 @@ data class Scenario(
             positions = positions.withActionsApplied(steps.atStep(step).actions)
         }
         return positions
-    }
-
-    fun withName(name: String): Scenario {
-        return copy(
-            name = name
-        )
     }
 
     fun withNewStep(step: Step, insertAt: Int = -1): Scenario {
@@ -42,8 +37,16 @@ data class Scenario(
         return copy(steps = steps.withoutStep(step))
     }
 
+    fun isEmpty(): Boolean {
+        return this == Empty
+    }
+
+    fun getStepsAsArray(): Array<Step> {
+        return steps.steps.toTypedArray()
+    }
+
     companion object {
-        val Empty = Scenario("", Steps.None)
+        val Empty = Scenario(Steps.None)
     }
 
 }

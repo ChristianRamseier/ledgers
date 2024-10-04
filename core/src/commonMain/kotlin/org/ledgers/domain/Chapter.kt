@@ -50,12 +50,6 @@ data class Chapter(
         return copy(scenario = scenario.withDescriptionAtStep(description, step))
     }
 
-    fun withScenarioDescription(name: String): Chapter {
-        return copy(
-            scenario = scenario.withName(name)
-        )
-    }
-
     fun withoutScenarioStep(step: Int): Chapter {
         return copy(scenario = scenario.withoutStep(step))
     }

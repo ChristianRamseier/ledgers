@@ -80,7 +80,7 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                     div {
                         id = "chapter-scenario"
                         editableElement {
-                            id = "chapter-scenario-name"
+                            id = "chapter-scenario-step-name"
                         }
                         div {
                             id = "chapter-scenario-steps"
