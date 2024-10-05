@@ -1,7 +1,9 @@
 package org.ledgers.domain.scenario
 
+import kotlin.js.JsExport
 import kotlin.math.round
 
+@JsExport
 data class Quantity(
     val quantity: Double
 ) {

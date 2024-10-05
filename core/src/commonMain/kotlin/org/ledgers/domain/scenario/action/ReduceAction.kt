@@ -4,7 +4,6 @@ import org.ledgers.domain.architecture.AssetId
 import org.ledgers.domain.architecture.LedgerId
 import org.ledgers.domain.scenario.AccountReference
 import org.ledgers.domain.scenario.LedgerAndAccountReference
-import org.ledgers.domain.scenario.PositionLabel
 import org.ledgers.domain.scenario.Quantity
 import kotlin.js.JsExport
 
@@ -21,7 +20,6 @@ class ReduceAction(
     val issueAccount: AccountReference
 ) : Action, Transfer {
 
-    override val label: PositionLabel get() = PositionLabel.None
     override val type: ActionType get() = ActionType.Reduce
 
     override val fromAccount: LedgerAndAccountReference get() = LedgerAndAccountReference(ledgerId, sourceAccount)

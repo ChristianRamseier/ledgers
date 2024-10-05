@@ -62,8 +62,8 @@ data class Positions(
 
         if(!hasAccount(transfer.fromAccount)) { throw RuntimeException("From account does not exist: ${transfer.fromAccount}") }
         if(!hasAccount(transfer.toAccount)) { throw RuntimeException("To account does not exist: ${transfer.toAccount}") }
-        val fromPosition = positions.find { it.account == transfer.fromAccount && it.asset == transfer.asset }?.withDebit( transfer.quantity) ?: Position(transfer.fromAccount, transfer.asset, transfer.quantity, transfer.label)
-        val toPosition = positions.find { it.account == transfer.toAccount && it.asset == transfer.asset}?.withCredit( transfer.quantity) ?: Position(transfer.toAccount, transfer.asset, transfer.quantity, transfer.label)
+        val fromPosition = positions.find { it.account == transfer.fromAccount && it.asset == transfer.asset }?.withDebit( transfer.quantity) ?: Position(transfer.fromAccount, transfer.asset, transfer.quantity)
+        val toPosition = positions.find { it.account == transfer.toAccount && it.asset == transfer.asset}?.withCredit( transfer.quantity) ?: Position(transfer.toAccount, transfer.asset, transfer.quantity)
 
         return positions
             .replaceFirstOrAdd(fromPosition){ it.key == fromPosition.key }

@@ -16,7 +16,7 @@ internal inline fun <T> List<T>.replaceFirstOrAdd(newElement: T, predicate: (T) 
     return copy
 }
 
-internal inline fun <T> List<T>.replaceAtIndex(index: Int, element: T, fillWith: T): List<T> {
+internal fun <T> List<T>.replaceAtIndex(index: Int, element: T, fillWith: T): List<T> {
     if (index < 0) {
         throw RuntimeException("Index must be greater than equal to 0")
     }
@@ -41,7 +41,7 @@ internal inline fun <T> List<T>.replaceAtIndex(index: Int, element: T, fillWith:
  * Copies the list and adds an element at a specified index.
  * If the index is negative, the element is added to the end of the list.
  */
-internal inline fun <T> List<T>.add(atIndex: Int, newElement: T): List<T> {
+internal fun <T> List<T>.add(atIndex: Int, newElement: T): List<T> {
     val copy = ArrayList(this)
     if (atIndex < 0) {
         copy.add(newElement)

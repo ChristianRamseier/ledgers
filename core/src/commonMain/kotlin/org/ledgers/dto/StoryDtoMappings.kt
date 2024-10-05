@@ -121,7 +121,6 @@ fun TransferAction.toDto(): TransferActionDto {
         id = id,
         asset = asset,
         quantity = quantity,
-        label = label,
         fromAccount = fromAccount.toDto(),
         toAccount = toAccount.toDto(),
         intermediateBookings = intermediateBookings.map { it.toDto() }
@@ -133,7 +132,6 @@ private fun Booking.toDto(): BookingDto {
         account = account.toDto(),
         quantity = quantity,
         asset = asset,
-        label = label,
         type = type
     )
 }
@@ -274,7 +272,6 @@ private fun TransferActionDto.toDomain(): TransferAction {
         id = id,
         asset = asset,
         quantity = quantity,
-        label = label,
         fromAccount = fromAccount.toDomain(),
         toAccount = toAccount.toDomain(),
         intermediateBookings = intermediateBookings.map { it.toDomain() }
@@ -286,7 +283,6 @@ private fun BookingDto.toDomain(): Booking {
         account = account.toDomain(),
         quantity = quantity,
         asset = asset,
-        label = label,
         type = type
     )
 }

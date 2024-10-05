@@ -7,17 +7,16 @@ import kotlin.js.JsExport
 data class Position(
     val account: LedgerAndAccountReference,
     val asset: AssetId,
-    val quantity: Quantity,
-    val label: PositionLabel
+    val quantity: Quantity
 ) {
 
-    val key: PositionKey get() = PositionKey(account, asset, label)
+    val key: PositionKey get() = PositionKey(account, asset)
 
     fun withBooking(booking: Booking): Position {
-        if(booking.positionKey != key) {
+        if (booking.positionKey != key) {
             throw RuntimeException("Cannot apply booking with key ${booking.positionKey} to position with key ${key}")
         }
-        return when(booking.type) {
+        return when (booking.type) {
             BookingType.Credit -> withCredit(booking.quantity)
             BookingType.Debit -> withDebit(booking.quantity)
         }
