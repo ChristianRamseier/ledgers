@@ -54,6 +54,29 @@
     gap: 0.5rem;
 }
 
+#chapter-scenario-steps {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+#chapter-scenario-step-line {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+#chapter-scenario-steps step {
+    display: block;
+    cursor: pointer;
+    background: var(--color-bg-1);
+    height: 3rem;
+    width: 2rem;
+    text-align: center;
+    color: var(--color-tx-1);
+    padding-top: 0.2rem;
+}
+
 #chapters-line {
     display: flex;
     flex-direction: row;

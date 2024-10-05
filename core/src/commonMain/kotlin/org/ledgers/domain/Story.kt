@@ -39,6 +39,7 @@ data class Story(
                 val to = getComponentDisplayName(storyline.getStageAtChapter(chapter).getById(component.to).reference, chapter)
                 return "$from to $to"
             }
+
             else -> componentReference.toString()
         }
     }
@@ -97,6 +98,14 @@ data class Story(
         } else {
             updated
         }
+    }
+
+    fun withNewScenarioStep(chapter: Int, step: Step = Step.Empty, insertAt: Int = -1): Story {
+        return copy(storyline = storyline.withNewScenarioStep(chapter, step, insertAt))
+    }
+
+    fun withDescriptionAtStep(chapter: Int, step: Int, description: String): Story {
+        return copy(storyline = storyline.withDescriptionAtStep(chapter, step, description))
     }
 
     fun withChapterNamed(chapter: Int, name: String): Story {

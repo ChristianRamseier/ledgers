@@ -149,11 +149,11 @@ data class Storyline(
         return withChangesInChapter(chapter, atChapter(chapter).withActionAtScenarioStep(action, step))
     }
 
-    fun withoutActionAtStep(chapter: Int, actionId: ActionId, step: Int): Storyline {
+    fun withoutActionAtStep(chapter: Int, step: Int, actionId: ActionId): Storyline {
         return withChangesInChapter(chapter, atChapter(chapter).withoutActionAtStep(actionId, step))
     }
 
-    fun withDescriptionAtStep(chapter: Int, description: String, step: Int): Storyline {
+    fun withDescriptionAtStep(chapter: Int, step: Int, description: String): Storyline {
         return withChangesInChapter(chapter, atChapter(chapter).withDescriptionAtStep(description, step))
     }
 

@@ -37,6 +37,11 @@ data class Scenario(
         return copy(steps = steps.withoutStep(step))
     }
 
+    fun atStep(step: Int): Step {
+        return steps.atStep(step)
+    }
+
+
     fun isEmpty(): Boolean {
         return this == Empty
     }

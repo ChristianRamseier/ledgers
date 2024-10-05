@@ -16,7 +16,8 @@ function loadStory() {
             transition(state.story, state.chapter, story, 0)
             state = {
                 story: story,
-                chapter: 0
+                chapter: 0,
+                step: 0
             }
             updateDisplay()
         })
@@ -253,6 +254,15 @@ document.getElementById('add-chapter').addEventListener('click', function () {
     const story = state.story.withChapterNamed(numberOfChapters, '')
     updateStory(story)
     updateChaptersList()
+    updateChapterDisplay()
+})
+
+document.getElementById('add-chapter-scenario-step').addEventListener('click', function () {
+    const story = state.story.withNewScenarioStep(state.chapter)
+    console.log(story)
+    updateStory(story)
+    updateChaptersList()
+    updateChapterDisplay()
 })
 
 let editorState;
@@ -305,7 +315,7 @@ function updateChapterDisplay() {
     const chapter = state.story.storyline.atChapter(state.chapter)
     const chapterNameEditable = document.getElementById('chapter-name')
     chapterNameEditable.setAttribute('label', `Chapter ${state.chapter + 1}${chapter.name ? ' -' : ''}`)
-    chapterNameEditable.setAttribute('value', chapter.name)
+    chapterNameEditable.setAttribute('value', chapter.name || '')
 
     // Chapter Changes
     const changes = chapter.getChangesAsArray()
@@ -322,27 +332,26 @@ function updateChapterDisplay() {
 
     // Chapter Scenario
     const hasScenario = !chapter.scenario.isEmpty();
-    document.getElementById('chapter-scenario').style = flexIf(hasScenario)
-    if(hasScenario) {
+    document.getElementById('chapter-scenario-step-name').style = flexIf(hasScenario)
+    if (hasScenario) {
         // Step Name
         const step = chapter.scenario.atStep(state.step)
         const stepNameEditable = document.getElementById('chapter-scenario-step-name')
-        stepNameEditable.setAttribute('label', `Step ${state.step + 1}${step.name ? ' -' : ''}`)
-        stepNameEditable.setAttribute('value', step.name)
-        // Step List
-        const steps = chapter.scenario.getStepsAsArray()
-        const stepsHtml = steps.map((step, index) => {
-            return `<step id="step:${index}">${step.description}</step>`
-        }).join('\n')
-        document.getElementById('chapter-scenario-steps').innerHTML = stepsHtml
-        steps.forEach((step,index) => {
-            document.getElementById(`step:${index}`).addEventListener('click', function (event) {
-                state.step = index
-                updateChapterDisplay()
-            })
-        })
-
+        stepNameEditable.setAttribute('label', `Step ${state.step + 1}${step.description ? ' -' : ''}`)
+        stepNameEditable.setAttribute('value', step.description || '')
     }
+    // Step List
+    const steps = chapter.scenario.getStepsAsArray()
+    const stepsHtml = steps.map((step, index) => {
+        return `<step id="step:${index}">${index + 1}</step>`
+    }).join('\n')
+    document.getElementById('chapter-scenario-steps').innerHTML = stepsHtml
+    steps.forEach((step, index) => {
+        document.getElementById(`step:${index}`).addEventListener('click', function (event) {
+            state.step = index
+            updateChapterDisplay()
+        })
+    })
 
 }
 
@@ -389,6 +398,13 @@ document.getElementById('ledger-apply').addEventListener('click', function () {
         updateComponentList()
         updateChapterDisplay()
     }
+})
+
+document.getElementById('chapter-scenario-step-name').addEventListener('onChange', function (event) {
+    const name = event.detail
+    const story = state.story.withDescriptionAtStep(state.chapter, state.step, name)
+    updateStory(story)
+    updateChapterDisplay()
 })
 
 document.getElementById('chapter-name').addEventListener('onChange', function (event) {
