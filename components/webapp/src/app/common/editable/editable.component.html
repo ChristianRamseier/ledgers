@@ -1,16 +1,15 @@
 <div class="editable">
   <label>
-    {{label}}
+    {{ label }}
   </label>
-  <ng-container *ngIf="!isEditMode">
+  @if (!isEditMode) {
     <span>{{ inputValue }}</span>
     <button (click)="edit()">✎</button>
-  </ng-container>
-  <ng-container *ngIf="isEditMode">
+  } @else {
     <form class="editable">
-      <input #inputField *ngIf="isEditMode" type="text" [value]="inputValue" (keydown)="keyDown($event)"/>
+      <input #inputField type="text" [value]="inputValue" (keydown)="keyDown($event)"/>
       <button type="submit" (click)="save()">✓</button>
       <button type="reset" (click)="cancel()">🗙</button>
     </form>
-  </ng-container>
+  }
 </div>

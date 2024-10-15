@@ -1,0 +1,21 @@
+.story {
+  display: flex;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+app-panels {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+
+app-chapters {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}

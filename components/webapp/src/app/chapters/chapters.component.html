@@ -1,0 +1,10 @@
+<div class="storyline">
+  @for (chapter of storyline().chapters; track chapter; let i = $index) {
+    <app-chapter
+      [number]="i"
+      [selected]="i == state().chapter"
+      (onSelect)="select(i)"
+    >
+    </app-chapter>
+  }
+</div>

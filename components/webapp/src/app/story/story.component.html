@@ -1,0 +1,39 @@
+@if (story; as theStory) {
+  <div class="story">
+    <app-panels>
+      <app-panel panelTitle="Organizations">
+        @for (organization of theStory.architecture.organizations; track organization) {
+          <app-panel-entry [entryTitle]="organization.name">
+          </app-panel-entry>
+        }
+      </app-panel>
+
+      <app-panel panelTitle="Ledgers">
+        @for (ledger of theStory.architecture.ledgers; track ledger) {
+          <app-panel-entry [entryTitle]="ledger.name">
+          </app-panel-entry>
+        }
+      </app-panel>
+      <app-panel panelTitle="Links">
+        @for (link of theStory.architecture.links; track link) {
+          <app-panel-entry [entryTitle]="link.from">
+          </app-panel-entry>
+        }
+      </app-panel>
+      <app-panel panelTitle="Assets">
+        @for (asset of theStory.architecture.assets; track asset) {
+          <app-panel-entry [entryTitle]="asset.name">
+          </app-panel-entry>
+        }
+      </app-panel>
+    </app-panels>
+
+    <app-chapters
+      [storyline]="theStory.storyline"
+      [state]="state"
+      (onChapterChange)="onChapterChange($event)"
+    ></app-chapters>
+  </div>
+} @else {
+  Loading ...
+}

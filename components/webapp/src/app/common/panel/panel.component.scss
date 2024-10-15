@@ -1,0 +1,11 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid;
+  cursor: pointer;
+}

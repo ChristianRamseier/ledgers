@@ -8,14 +8,6 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <h1>Test Element</h1>
-  <editable-element id="editable-element" value="Test Value" label="Label"></editable-element>
+<story-element id="story"></story-element>
 </body>
-<script>
-  const editableElement = document.getElementById('editable-element');
-  editableElement.addEventListener('onChange', (event)=> {
-    console.log(event);
-    editableElement.setAttribute('value', event.detail);
-  })
-</script>
 </html>
