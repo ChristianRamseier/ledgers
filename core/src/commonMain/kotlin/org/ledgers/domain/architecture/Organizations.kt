@@ -32,7 +32,7 @@ data class Organizations(
     }
 
     fun withChangedOrganization(reference: ComponentReference, name: String): Organizations {
-        return return Organizations(
+        return Organizations(
             organizations.map {
                 if (it.reference == reference) {
                     it.copy(name = name)

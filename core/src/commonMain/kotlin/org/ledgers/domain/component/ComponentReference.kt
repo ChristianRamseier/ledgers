@@ -33,5 +33,24 @@ data class ComponentReference(
             return ComponentReference(type, id, version)
         }
 
+        fun forLedger(id: String, version: Int): ComponentReference {
+            return ComponentReference(ComponentType.Ledger, LedgerId(id), Version(version))
+        }
+
+
+        fun forAsset(id: String, version: Int): ComponentReference {
+            return ComponentReference(ComponentType.Asset, AssetId(id), Version(version))
+        }
+
+
+        fun forOrganization(id: String, version: Int): ComponentReference {
+            return ComponentReference(ComponentType.Organization, OrganizationId(id), Version(version))
+        }
+
+
+        fun forLink(id: String, version: Int): ComponentReference {
+            return ComponentReference(ComponentType.Link, LedgerId(id), Version(version))
+        }
+
     }
 }

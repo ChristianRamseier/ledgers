@@ -29,7 +29,7 @@ data class Ledgers(
     }
 
     fun withChangedLedger(reference: ComponentReference, name: String, ownerId: OrganizationId): Ledgers {
-        return return Ledgers(
+        return Ledgers(
             ledgers.map {
                 if (it.reference == reference) {
                     it.copy(name = name, ownerId = ownerId)

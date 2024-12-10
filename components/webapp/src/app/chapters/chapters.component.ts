@@ -1,6 +1,6 @@
 import {Component, Input, input, InputSignal, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {Storyline} from '../story/story';
+import {Storyline} from '../story/story-dto';
 import {ChapterComponent} from '../chapter/chapter.component';
 import {State} from '../state';
 

@@ -1,0 +1,16 @@
+<div class="ledger">
+  <div>
+    <label>Name</label>
+    <input type="text" [formControl]="formControl().nameControl"/>
+  </div>
+  <div>
+    <label>Organization</label>
+    <select type="text" [formControl]="formControl().nameControl">
+      @for (organization of organizations(); track (organization.id + organization.version)) {
+
+      }
+    </select>
+    <button type="submit" (click)="save()">✓</button>
+    <button type="reset" (click)="cancel()">🗙</button>
+  </div>
+</div>

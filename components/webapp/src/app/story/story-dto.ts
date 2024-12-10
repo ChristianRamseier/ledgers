@@ -1,4 +1,5 @@
-export interface Story {
+
+export interface StoryDto {
   id: string,
   name: string,
   architecture: Architecture,
@@ -49,17 +50,23 @@ export interface Scenario {
 
 }
 
-export interface Organization {
-  id: string,
-  version: number,
+export interface NewOrganization {
   name: string
 }
 
-export interface Ledger {
+export interface Organization extends NewOrganization {
   id: string,
-  version: number,
+  version: number
+}
+
+export interface NewLedger {
   name: string,
   ownerId: string
+}
+
+export interface Ledger extends NewLedger {
+  id: string,
+  version: number
 }
 
 export interface Asset {

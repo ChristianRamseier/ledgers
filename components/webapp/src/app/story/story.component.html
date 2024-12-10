@@ -1,35 +1,60 @@
-@if (story; as theStory) {
+@if (storyDto; as theStory) {
   <div class="story">
     <app-panels>
       <app-panel panelTitle="Organizations">
-        @for (organization of theStory.architecture.organizations; track organization) {
-          <app-panel-entry [entryTitle]="organization.name">
-          </app-panel-entry>
+
+        @for (organization of storyDto.architecture.organizations; track organization) {
+          <app-panel-entry
+            [entryTitle]="organization.name"
+            (click)="editOrganization(organization)"
+          ></app-panel-entry>
+        }
+        @if (editor == Editor.Organization) {
+          <app-organization-editor
+            [formControl]="organizationFormControl"
+            (onSave)="saveOrganization()"
+            (onCancel)="resetEditor()"
+          ></app-organization-editor>
+        } @else if (editor == Editor.None) {
+          <app-panel-entry entryTitle="Add Organization" (click)="addOrganization()"></app-panel-entry>
         }
       </app-panel>
 
       <app-panel panelTitle="Ledgers">
-        @for (ledger of theStory.architecture.ledgers; track ledger) {
+        @for (ledger of storyDto.architecture.ledgers; track ledger) {
           <app-panel-entry [entryTitle]="ledger.name">
           </app-panel-entry>
         }
+        @if (editor == Editor.Ledger) {
+          <app-ledger-editor
+            [organizations]="storyDto.architecture.organizations"
+            (onSave)="saveLedger()"
+            (onCancel)="resetEditor()"
+            [formControl]="ledgerFormControl"
+          ></app-ledger-editor>
+        } @else if (editor == Editor.None) {
+          <app-panel-entry entryTitle="Add Ledger" (click)="addLedger()"></app-panel-entry>
+        }
       </app-panel>
+
       <app-panel panelTitle="Links">
-        @for (link of theStory.architecture.links; track link) {
+        @for (link of storyDto.architecture.links; track link) {
           <app-panel-entry [entryTitle]="link.from">
           </app-panel-entry>
         }
       </app-panel>
+
       <app-panel panelTitle="Assets">
-        @for (asset of theStory.architecture.assets; track asset) {
+        @for (asset of storyDto.architecture.assets; track asset) {
           <app-panel-entry [entryTitle]="asset.name">
           </app-panel-entry>
         }
       </app-panel>
+
     </app-panels>
 
     <app-chapters
-      [storyline]="theStory.storyline"
+      [storyline]="storyDto.storyline"
       [state]="state"
       (onChapterChange)="onChapterChange($event)"
     ></app-chapters>

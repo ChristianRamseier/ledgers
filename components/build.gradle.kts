@@ -8,6 +8,8 @@ repositories {
     mavenCentral()
 }
 
+evaluationDependsOn(":core")
+
 node {
     version.set("20.17.0")
     npmVersion.set("10.8.2")
@@ -31,6 +33,7 @@ tasks.withType<Test> {
 }
 
 tasks.register<com.github.gradle.node.npm.task.NpxTask>("buildAngularApp") {
+    dependsOn(tasks.getByName("copyCoreDependencies"))
     dependsOn(tasks.getByName("npmInstall"))
     workingDir.set(file("webapp"))
     command.set("ng")
@@ -41,6 +44,10 @@ tasks.register<com.github.gradle.node.npm.task.NpxTask>("buildAngularApp") {
     outputs.dir("webapp/dist")
 }
 
+tasks.register<Copy>("copyCoreDependencies").configure {
+    from(project(":core").tasks["jsBrowserProductionLibraryDistribution"].outputs.files)
+    destinationDir = file("webapp/public")
+}
 
 tasks {
     withType<Copy> {
