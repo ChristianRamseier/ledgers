@@ -1,6 +1,7 @@
 .panel {
   display: flex;
   flex-direction: column;
+  width: 250px;
 }
 
 .header {
@@ -8,4 +9,17 @@
   justify-content: space-between;
   border: 1px solid;
   cursor: pointer;
+}
+
+.panel-side {
+  width: 250px;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+:host {
+  display: flex;
+  flex-direction: row;
 }

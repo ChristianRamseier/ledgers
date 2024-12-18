@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {PanelComponent} from '../common/panel/panel.component';
 import {PanelsComponent} from '../common/panels/panels.component';
 import {PanelEntryComponent} from '../common/panel-entry/panel-entry.component';
-import {Organization, StoryDto} from './story-dto'
+import {Ledger, Organization, StoryDto} from './story-dto'
 import {State} from '../state'
 import {ChaptersComponent} from '../chapters/chapters.component';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -16,11 +16,14 @@ import Story = org.ledgers.domain.Story;
 import dto = org.ledgers.dto;
 import ComponentReference = org.ledgers.domain.component.ComponentReference;
 import {Patch} from '../patch';
+import OrganizationId = org.ledgers.domain.architecture.OrganizationId;
+import {PanelActionComponent} from '../common/panel-action/panel-action.component';
+import {PanelSideComponent} from '../common/panel-side/panel-side.component';
 
 @Component({
   selector: 'app-story',
   standalone: true,
-  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent],
+  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent, PanelActionComponent, PanelSideComponent],
   templateUrl: './story.component.html',
   styleUrl: './story.component.scss'
 })
@@ -63,6 +66,11 @@ export class StoryComponent implements OnInit {
     this.organizationFormControl.setData(organization)
   }
 
+  editLedger(ledger: Ledger) {
+    this.editor = Editor.Ledger
+    this.ledgerFormControl.setData(ledger)
+  }
+
   addLedger() {
     this.editor = Editor.Ledger
     this.ledgerFormControl.setData({name: '', ownerId: ''})
@@ -73,13 +81,14 @@ export class StoryComponent implements OnInit {
   }
 
   saveOrganization() {
-    const organization = this.organizationFormControl.toOrganization()
+
     if (this.organizationFormControl.id) {
       const organization = this.organizationFormControl.toOrganization() as Organization
       const reference = ComponentReference.Companion.forOrganization(organization.id, organization.version)
       const updatedStory = this.story!!.withChangedOrganization(reference, organization.name)
       this.saveStory(updatedStory)
     } else {
+      const organization = this.organizationFormControl.toOrganization()
       const updatedStory = this.story!!.addOrganization(organization.name)
       this.saveStory(updatedStory)
     }
@@ -87,7 +96,17 @@ export class StoryComponent implements OnInit {
   }
 
   saveLedger() {
-
+    if (this.ledgerFormControl.id) {
+      const ledger = this.ledgerFormControl.toLedger() as Ledger
+      const reference = ComponentReference.Companion.forLedger(ledger.id, ledger.version)
+      const updatedStory = this.story!!.withChangedLedger(reference, ledger.name, new OrganizationId(ledger.ownerId))
+      this.saveStory(updatedStory)
+    } else {
+      const ledger = this.ledgerFormControl.toLedger()
+      const updatedStory = this.story!!.addLedger(ledger.name, new OrganizationId(ledger.ownerId))
+      this.saveStory(updatedStory)
+    }
+    this.resetEditor()
   }
 
   private saveStory(updatedStory: Story) {
@@ -106,6 +125,17 @@ export class StoryComponent implements OnInit {
     this.storyDto = Patch.apply(this.storyDto, JSON.parse(dto.toJson(updatedStory)))
   }
 
+  isOrganizationBeingEdited(organization: Organization) {
+    return this.editor == Editor.Organization
+      && organization.id == this.organizationFormControl.id
+      && organization.version == this.organizationFormControl.version
+  }
+
+  isLedgerBeeingEdited(ledger: Ledger) {
+    return this.editor == Editor.Ledger
+      && ledger.id == this.ledgerFormControl.id
+      && ledger.version == this.ledgerFormControl.version
+  }
 }
 
 enum Editor {

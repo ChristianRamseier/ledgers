@@ -1,1 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --font-content: -apple-system, BlinkMacSystemFont, "Inter", "IBM Plex Sans", Segoe UI, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "Cascadia Code", "Roboto Mono", "Source Code Pro", "DejaVu Sans Mono", "Liberation Mono", "Consolas", Menlo, Monaco, monospace;
+  --font-small: 0.875em;
+  --font-smaller: 0.8em;
+  --wrap-wide: 1000px;
+  --wrap-normal: 37em;
+  --line-height: 1.5;
+
+  --color-bg-1: #fff;
+  --color-bg-2: #fafafa;
+  --color-tx-1: #3F062D;
+  --color-tx-2: #999;
+  --color-ui-1: #ddd;
+  --color-ui-2: #bbb;
+  --color-ui-3: #5E0641;
+  --color-ax-1: #8B0A5F;
+
+  --color-selection: rgba(139,10,95,0.15);
+}
+
+.theme-dark {
+  --color-bg-1: #1e0516;
+  --color-bg-2: #140310;
+  --color-tx-1: #fff;
+  --color-tx-2: #a28397;
+  --color-ui-1: #3F062D;
+  --color-ui-2: #68154C;
+  --color-ui-3: #b40e7a;
+  --color-ax-1: #8B0A5F;
+
+  --color-selection: rgba(139,10,95,0.5);
+}
+
+*, *:before, *:after {
+  box-sizing:inherit;}
+
+::selection {
+  background: var(--color-selection);
+}
+
+::-moz-selection {
+  background: var(--color-selection);
+}
+
+
+html, body {
+  touch-action: manipulation;
+}
+
+html {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  font-size: 62.5%;
+}
+
+body {
+  color-scheme: light dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-color: var(--color-bg-1);
+  font-family: var(--font-content);
+  margin: 0 auto 0 auto;
+  line-height: var(--line-height);
+  padding: 0;
+  font-size: 1.6rem;
+  color: var(--color-tx-1);
+}
+
+/* Canvas area */
+body {
+  overflow: hidden;
+}

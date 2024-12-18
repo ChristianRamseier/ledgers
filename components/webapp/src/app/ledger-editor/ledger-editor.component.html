@@ -5,9 +5,9 @@
   </div>
   <div>
     <label>Organization</label>
-    <select type="text" [formControl]="formControl().nameControl">
+    <select type="text" [formControl]="formControl().ownerIdControl">
       @for (organization of organizations(); track (organization.id + organization.version)) {
-
+        <option [value]="organization.id">{{organization.name}}</option>
       }
     </select>
     <button type="submit" (click)="save()">✓</button>

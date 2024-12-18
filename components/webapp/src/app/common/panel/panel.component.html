@@ -1,10 +1,17 @@
 <div class="panel">
-  <a (click)="toggle()" class="header">
-    <div class="title">
+  <div class="header">
+    <a (click)="toggle()" class="title">
       {{ panelTitle }}
+    </a>
+    <div class="actions">
+      <ng-content select="app-panel-action"></ng-content>
     </div>
-  </a>
-  <div class="content" [ngStyle]="{display: expanded ? 'block' : 'none' }">
-    <ng-content/>
   </div>
+  <div class="content" [ngStyle]="{display: expanded ? 'block' : 'none' }">
+    <ng-content select="app-panel-entry"></ng-content>
+  </div>
+</div>
+<div class="panel-side">
+  <div class="title">&nbsp;</div>
+  <ng-content select="app-panel-side"></ng-content>
 </div>

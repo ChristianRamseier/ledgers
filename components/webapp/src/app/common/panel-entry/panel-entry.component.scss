@@ -1,1 +1,8 @@
-
+.panel-entry {
+  cursor: pointer;
+}
+.panel-entry-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}

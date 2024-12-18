@@ -2,7 +2,6 @@
   <div class="story">
     <app-panels>
       <app-panel panelTitle="Organizations">
-
         @for (organization of storyDto.architecture.organizations; track organization) {
           <app-panel-entry
             [entryTitle]="organization.name"
@@ -10,30 +9,37 @@
           ></app-panel-entry>
         }
         @if (editor == Editor.Organization) {
-          <app-organization-editor
-            [formControl]="organizationFormControl"
-            (onSave)="saveOrganization()"
-            (onCancel)="resetEditor()"
-          ></app-organization-editor>
+          <app-panel-side>
+            <app-organization-editor
+              [formControl]="organizationFormControl"
+              (onSave)="saveOrganization()"
+              (onCancel)="resetEditor()"
+            ></app-organization-editor>
+          </app-panel-side>
         } @else if (editor == Editor.None) {
-          <app-panel-entry entryTitle="Add Organization" (click)="addOrganization()"></app-panel-entry>
+          <app-panel-action actionTitle="+" (click)="addOrganization()"></app-panel-action>
         }
       </app-panel>
 
       <app-panel panelTitle="Ledgers">
         @for (ledger of storyDto.architecture.ledgers; track ledger) {
-          <app-panel-entry [entryTitle]="ledger.name">
-          </app-panel-entry>
+          <app-panel-entry
+            [entryTitle]="ledger.name"
+            (click)="editLedger(ledger)"
+          ></app-panel-entry>
         }
         @if (editor == Editor.Ledger) {
-          <app-ledger-editor
-            [organizations]="storyDto.architecture.organizations"
-            (onSave)="saveLedger()"
-            (onCancel)="resetEditor()"
-            [formControl]="ledgerFormControl"
-          ></app-ledger-editor>
+          <app-panel-side>
+            <app-ledger-editor
+              [organizations]="storyDto.architecture.organizations"
+              (onSave)="saveLedger()"
+              (onCancel)="resetEditor()"
+              [formControl]="ledgerFormControl"
+            ></app-ledger-editor>
+          </app-panel-side>
         } @else if (editor == Editor.None) {
-          <app-panel-entry entryTitle="Add Ledger" (click)="addLedger()"></app-panel-entry>
+          <app-panel-action actionTitle="+" (click)="addLedger()">
+          </app-panel-action>
         }
       </app-panel>
 

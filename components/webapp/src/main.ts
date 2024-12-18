@@ -6,6 +6,8 @@ import {PanelComponent} from './app/common/panel/panel.component';
 import {PanelEntryComponent} from './app/common/panel-entry/panel-entry.component';
 import {StoryComponent} from './app/story/story.component';
 import {provideHttpClient} from '@angular/common/http';
+import {PanelActionComponent} from './app/common/panel-action/panel-action.component';
+import {PanelSideComponent} from './app/common/panel-side/panel-side.component';
 
 (async () => {
 
@@ -17,6 +19,8 @@ import {provideHttpClient} from '@angular/common/http';
     {name: 'editable-element', component: EditableComponent},
     {name: 'panels-element', component: PanelsComponent},
     {name: 'panel-element', component: PanelComponent},
+    {name: 'panel-side', component: PanelSideComponent},
+    {name: 'panel-action', component: PanelActionComponent},
     {name: 'panel-entry-element', component: PanelEntryComponent},
     {name: 'story-element', component: StoryComponent}
   ]

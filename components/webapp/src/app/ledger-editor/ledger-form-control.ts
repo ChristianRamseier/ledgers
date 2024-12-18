@@ -1,5 +1,7 @@
 import {FormControl} from '@angular/forms';
 import {Ledger, NewLedger, Organization} from '../story/story-dto';
+import {org} from '../../../public';
+import LedgerId = org.ledgers.domain.architecture.LedgerId;
 
 export class LedgerFormControl extends FormControl {
 
@@ -33,11 +35,11 @@ export class LedgerFormControl extends FormControl {
     }
   }
 
-  setData(organization: Ledger | NewLedger) {
-    this.id = (organization as Organization).id
-    this.version = (organization as Organization).version
-    this.nameControl.setValue(organization.name)
-    this.ownerIdControl.setValue(organization.ownerId)
+  setData(ledger: Ledger | NewLedger) {
+    this.id = (ledger as Ledger).id
+    this.version = (ledger as Ledger).version
+    this.nameControl.setValue(ledger.name)
+    this.ownerIdControl.setValue(ledger.ownerId)
   }
 
 }
