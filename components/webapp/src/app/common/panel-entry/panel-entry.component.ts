@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, input} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -11,8 +11,9 @@ import {CommonModule} from '@angular/common';
 })
 export class PanelEntryComponent {
 
-  @Input()
-  entryTitle = ''
+  selected = input<boolean>()
+
+  entryTitle = input<string>()
 
   constructor() {
   }

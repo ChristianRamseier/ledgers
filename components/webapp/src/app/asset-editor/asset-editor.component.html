@@ -1,0 +1,22 @@
+<div class="asset">
+  <div>
+    <label>
+      Name
+      <input type="text" [formControl]="formControl().nameControl"/>
+    </label>
+    <div>
+      <label>
+        AssetType
+        <select type="text" [formControl]="formControl().assetTypeControl">
+          <option value="Security">Security</option>
+          <option value="Security">Cash</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="submit" (click)="save()">✓</button>
+    <button type="reset" (click)="cancel()">🗙</button>
+  </div>
+</div>

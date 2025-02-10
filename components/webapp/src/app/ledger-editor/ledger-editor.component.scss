@@ -1,6 +1,9 @@
-.chapter {
-
+.ledger > * {
+  display: flex;
+  background-color: var(--color-selection);
+  padding: 0.5rem;
 }
-.selected {
-  background-color: grey
+
+.actions {
+  justify-content: right;
 }

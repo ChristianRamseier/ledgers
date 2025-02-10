@@ -4,6 +4,7 @@
       <app-panel panelTitle="Organizations">
         @for (organization of storyDto.architecture.organizations; track organization) {
           <app-panel-entry
+            [selected]="isOrganizationBeingEdited(organization)"
             [entryTitle]="organization.name"
             (click)="editOrganization(organization)"
           ></app-panel-entry>
@@ -24,6 +25,7 @@
       <app-panel panelTitle="Ledgers">
         @for (ledger of storyDto.architecture.ledgers; track ledger) {
           <app-panel-entry
+            [selected]="isLedgerBeeingEdited(ledger)"
             [entryTitle]="ledger.name"
             (click)="editLedger(ledger)"
           ></app-panel-entry>
@@ -43,6 +45,30 @@
         }
       </app-panel>
 
+      <app-panel panelTitle="Assets">
+        @for (asset of storyDto.architecture.assets; track asset) {
+          <app-panel-entry
+            [entryTitle]="asset.name"
+            [selected]="isAssetBeeingEdited(asset)"
+            (click)="editAsset(asset)"
+          >
+          </app-panel-entry>
+        }
+        @if (editor == Editor.Asset) {
+          <app-panel-side>
+            <app-asset-editor
+              (onSave)="saveAsset()"
+              (onCancel)="resetEditor()"
+              [formControl]="assetFormControl"
+            ></app-asset-editor>
+          </app-panel-side>
+        } @else if (editor == Editor.None) {
+          <app-panel-action actionTitle="+" (click)="addAsset()">
+          </app-panel-action>
+        }
+      </app-panel>
+
+
       <app-panel panelTitle="Links">
         @for (link of storyDto.architecture.links; track link) {
           <app-panel-entry [entryTitle]="link.from">
@@ -50,12 +76,6 @@
         }
       </app-panel>
 
-      <app-panel panelTitle="Assets">
-        @for (asset of storyDto.architecture.assets; track asset) {
-          <app-panel-entry [entryTitle]="asset.name">
-          </app-panel-entry>
-        }
-      </app-panel>
 
     </app-panels>
 

@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {PanelComponent} from '../common/panel/panel.component';
 import {PanelsComponent} from '../common/panels/panels.component';
 import {PanelEntryComponent} from '../common/panel-entry/panel-entry.component';
-import {Ledger, Organization, StoryDto} from './story-dto'
+import {Asset, Ledger, Organization, StoryDto} from './story-dto'
 import {State} from '../state'
 import {ChaptersComponent} from '../chapters/chapters.component';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -12,18 +12,21 @@ import {OrganizationFormControl} from '../organization-editor/organization-form-
 import {LedgerFormControl} from '../ledger-editor/ledger-form-control';
 import {LedgerEditorComponent} from '../ledger-editor/ledger-editor.component';
 import {org} from '../../../public';
+import {Patch} from '../patch';
+import {PanelActionComponent} from '../common/panel-action/panel-action.component';
+import {PanelSideComponent} from '../common/panel-side/panel-side.component';
+import {AssetFormControl} from '../asset-editor/asset-form-control';
 import Story = org.ledgers.domain.Story;
 import dto = org.ledgers.dto;
 import ComponentReference = org.ledgers.domain.component.ComponentReference;
-import {Patch} from '../patch';
 import OrganizationId = org.ledgers.domain.architecture.OrganizationId;
-import {PanelActionComponent} from '../common/panel-action/panel-action.component';
-import {PanelSideComponent} from '../common/panel-side/panel-side.component';
+import AssetType = org.ledgers.domain.AssetType;
+import {AssetEditorComponent} from '../asset-editor/asset-editor.component';
 
 @Component({
   selector: 'app-story',
   standalone: true,
-  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent, PanelActionComponent, PanelSideComponent],
+  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent, AssetEditorComponent, PanelActionComponent, PanelSideComponent],
   templateUrl: './story.component.html',
   styleUrl: './story.component.scss'
 })
@@ -39,6 +42,7 @@ export class StoryComponent implements OnInit {
 
   organizationFormControl = OrganizationFormControl.createDefault()
   ledgerFormControl = LedgerFormControl.createDefault()
+  assetFormControl = AssetFormControl.createDefault()
 
   story?: Story;
   storyDto?: StoryDto;
@@ -76,9 +80,35 @@ export class StoryComponent implements OnInit {
     this.ledgerFormControl.setData({name: '', ownerId: ''})
   }
 
+  editAsset(asset: Asset) {
+    this.editor = Editor.Asset
+    this.assetFormControl.setData(asset)
+  }
+
+
+  addAsset() {
+    this.editor = Editor.Asset
+    this.assetFormControl.setData({name: '', assetType: ''})
+  }
+
   resetEditor() {
     this.editor = Editor.None
   }
+
+  saveAsset() {
+    if (this.assetFormControl.id) {
+      const asset = this.assetFormControl.toAsset() as Asset
+      const reference = ComponentReference.Companion.forAsset(asset.id, asset.version)
+      const updatedStory = this.story!!.withChangedAsset(reference, asset.name, AssetType.valueOf(asset.assetType))
+      this.saveStory(updatedStory)
+    } else {
+      const asset = this.assetFormControl.toAsset()
+      const updatedStory = this.story!!.addAsset(asset.name, AssetType.valueOf(asset.assetType))
+      this.saveStory(updatedStory)
+    }
+    this.resetEditor()
+  }
+
 
   saveOrganization() {
 
@@ -136,8 +166,14 @@ export class StoryComponent implements OnInit {
       && ledger.id == this.ledgerFormControl.id
       && ledger.version == this.ledgerFormControl.version
   }
+
+  isAssetBeeingEdited(asset: Asset) {
+    return this.editor == Editor.Asset
+      && asset.id == this.assetFormControl.id
+      && asset.version == this.assetFormControl.version;
+  }
 }
 
 enum Editor {
-  None, Organization, Ledger
+  None, Organization, Ledger, Asset
 }

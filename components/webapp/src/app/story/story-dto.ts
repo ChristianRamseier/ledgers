@@ -59,6 +59,16 @@ export interface Organization extends NewOrganization {
   version: number
 }
 
+export interface NewAsset {
+  name: string,
+  assetType: string
+}
+
+export interface Asset extends NewAsset {
+  id: string,
+  version: number
+}
+
 export interface NewLedger {
   name: string,
   ownerId: string

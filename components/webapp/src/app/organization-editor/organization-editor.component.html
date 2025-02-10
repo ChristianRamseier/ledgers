@@ -1,7 +1,11 @@
 <div class="organization">
   <div>
-    <label>Name</label>
-    <input type="text" [formControl]="formControl().nameControl"/>
+    <label>
+      Name
+      <input type="text" [formControl]="formControl().nameControl"/>
+    </label>
+  </div>
+  <div class="actions">
     <button type="submit" (click)="save()">✓</button>
     <button type="reset" (click)="cancel()">🗙</button>
   </div>
