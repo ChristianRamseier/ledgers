@@ -1,9 +1,9 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Ledger, NewLedger, Organization} from '../story/story-dto';
 import {org} from '../../../public';
 import LedgerId = org.ledgers.domain.architecture.LedgerId;
 
-export class LedgerFormControl extends FormControl {
+export class LedgerFormGroup extends FormGroup {
 
   constructor(
     public id: string | undefined,
@@ -17,12 +17,12 @@ export class LedgerFormControl extends FormControl {
     });
   }
 
-  static createDefault(): LedgerFormControl {
-    return new LedgerFormControl(
+  static createDefault(): LedgerFormGroup {
+    return new LedgerFormGroup(
       undefined,
       undefined,
-      new FormControl<string>('', {nonNullable: true}),
-      new FormControl<string>('', {nonNullable: true})
+      new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
+      new FormControl<string>('', {nonNullable: true, validators: Validators.required})
     )
   }
 

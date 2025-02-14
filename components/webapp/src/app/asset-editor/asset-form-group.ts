@@ -1,7 +1,7 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {NewAsset, Asset} from '../story/story-dto';
 
-export class AssetFormControl extends FormControl {
+export class AssetFormGroup extends FormGroup {
 
   constructor(
     public id: string | undefined,
@@ -15,12 +15,12 @@ export class AssetFormControl extends FormControl {
     });
   }
 
-  static createDefault(): AssetFormControl {
-    return new AssetFormControl(
+  static createDefault(): AssetFormGroup {
+    return new AssetFormGroup(
       undefined,
       undefined,
-      new FormControl<string>('', {nonNullable: true}),
-      new FormControl<string>('', {nonNullable: true}),
+      new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
+      new FormControl<string>('', {nonNullable: true, validators: Validators.required}),
     )
   }
 

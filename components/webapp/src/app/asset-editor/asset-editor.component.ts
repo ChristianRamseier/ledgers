@@ -1,7 +1,7 @@
-import {Component, input, output} from '@angular/core';
+import {Component, input, InputSignal, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
-import {AssetFormControl} from './asset-form-control';
+import {AssetFormGroup} from './asset-form-group';
 
 @Component({
   selector: 'app-asset-editor',
@@ -12,11 +12,13 @@ import {AssetFormControl} from './asset-form-control';
 })
 export class AssetEditorComponent {
 
-  formControl = input.required<AssetFormControl>();
+  deletable: InputSignal<Boolean> = input.required<Boolean>()
+
+  formControl = input.required<AssetFormGroup>();
 
   onSave = output()
-
   onCancel = output()
+  onDelete = output()
 
   save() {
     this.onSave.emit()
@@ -24,6 +26,10 @@ export class AssetEditorComponent {
 
   cancel() {
     this.onCancel.emit()
+  }
+
+  delete() {
+    this.onDelete.emit()
   }
 
 }

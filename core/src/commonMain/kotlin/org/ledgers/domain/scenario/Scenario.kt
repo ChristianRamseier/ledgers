@@ -1,5 +1,6 @@
 package org.ledgers.domain.scenario
 
+import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.scenario.action.Action
 import org.ledgers.domain.scenario.action.ActionId
 import kotlin.js.JsExport
@@ -48,6 +49,10 @@ data class Scenario(
 
     fun getStepsAsArray(): Array<Step> {
         return steps.steps.toTypedArray()
+    }
+
+    fun isComponentUsed(reference: ComponentReference): Boolean {
+        return steps.isComponentInUse(reference)
     }
 
     companion object {

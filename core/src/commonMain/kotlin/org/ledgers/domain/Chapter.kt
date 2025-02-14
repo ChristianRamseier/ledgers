@@ -58,6 +58,15 @@ data class Chapter(
         return changes.toTypedArray()
     }
 
+    fun isAssetUsed(componentReference: ComponentReference): Boolean {
+        return scenario.isComponentUsed(componentReference)
+    }
+
+    fun isComponentUsed(reference: ComponentReference): Boolean {
+        return changes.any { it.componentReference == reference }
+                || scenario.isComponentUsed(reference)
+    }
+
     companion object {
         val Empty = Chapter(emptyList(), "", Scenario.Empty)
     }

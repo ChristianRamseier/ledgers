@@ -1,7 +1,7 @@
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {NewOrganization, Organization} from '../story/story-dto';
 
-export class OrganizationFormControl extends FormControl {
+export class OrganizationFormGroup extends FormGroup {
 
   constructor(
     public id: string | undefined,
@@ -13,11 +13,11 @@ export class OrganizationFormControl extends FormControl {
     });
   }
 
-  static createDefault(): OrganizationFormControl {
-    return new OrganizationFormControl(
+  static createDefault(): OrganizationFormGroup {
+    return new OrganizationFormGroup(
       undefined,
       undefined,
-      new FormControl<string>('', {nonNullable: true})
+      new FormControl<string>('', {nonNullable: true, validators: Validators.required})
     )
   }
 

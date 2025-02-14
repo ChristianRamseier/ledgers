@@ -157,4 +157,8 @@ data class Storyline(
         return withChangesInChapter(chapter, atChapter(chapter).withDescriptionAtStep(description, step))
     }
 
+    fun isComponentUsed(reference: ComponentReference): Boolean {
+        return chapters.any { it.isComponentUsed(reference) }
+    }
+
 }

@@ -1,6 +1,6 @@
-import {Component, input, output} from '@angular/core';
+import {Component, input, output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {OrganizationFormControl} from './organization-form-control';
+import {OrganizationFormGroup} from './organization-form-group';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @Component({
@@ -12,11 +12,13 @@ import {ReactiveFormsModule} from '@angular/forms';
 })
 export class OrganizationEditorComponent {
 
-  formControl = input.required<OrganizationFormControl>();
+  formControl = input.required<OrganizationFormGroup>();
+
+  deletable = input.required<boolean>();
 
   onSave = output()
-
   onCancel = output()
+  onDelete = output()
 
   save() {
     this.onSave.emit()
@@ -24,6 +26,10 @@ export class OrganizationEditorComponent {
 
   cancel() {
     this.onCancel.emit()
+  }
+
+  delete() {
+    this.onDelete.emit()
   }
 
 }

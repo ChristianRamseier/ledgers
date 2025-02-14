@@ -13,8 +13,10 @@
           <app-panel-side>
             <app-organization-editor
               [formControl]="organizationFormControl"
+              [deletable]="isEditedComponentDeletable()"
               (onSave)="saveOrganization()"
               (onCancel)="resetEditor()"
+              (onDelete)="deleteOrganization()"
             ></app-organization-editor>
           </app-panel-side>
         } @else if (editor == Editor.None) {
@@ -34,8 +36,10 @@
           <app-panel-side>
             <app-ledger-editor
               [organizations]="storyDto.architecture.organizations"
+              [deletable]="isEditedComponentDeletable()"
               (onSave)="saveLedger()"
               (onCancel)="resetEditor()"
+              (onDelete)="deleteLedger()"
               [formControl]="ledgerFormControl"
             ></app-ledger-editor>
           </app-panel-side>
@@ -57,8 +61,10 @@
         @if (editor == Editor.Asset) {
           <app-panel-side>
             <app-asset-editor
+              [deletable]="isEditedComponentDeletable()"
               (onSave)="saveAsset()"
               (onCancel)="resetEditor()"
+              (onDelete)="deleteAsset()"
               [formControl]="assetFormControl"
             ></app-asset-editor>
           </app-panel-side>

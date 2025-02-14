@@ -25,7 +25,7 @@ data class Ledgers(
     }
 
     fun remove(reference: ComponentReference): Ledgers {
-        return Ledgers(ledgers.filter { it.reference != reference })
+        return Ledgers(ledgers.filterNot { it.reference == reference })
     }
 
     fun withChangedLedger(reference: ComponentReference, name: String, ownerId: OrganizationId): Ledgers {

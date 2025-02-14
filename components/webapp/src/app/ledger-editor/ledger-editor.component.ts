@@ -1,6 +1,6 @@
-import {Component, input, output} from '@angular/core';
+import {Component, Input, input, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {LedgerFormControl} from './ledger-form-control';
+import {LedgerFormGroup} from './ledger-form-group';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Ledger, NewLedger, NewOrganization, Organization} from '../story/story-dto';
 
@@ -13,12 +13,14 @@ import {Ledger, NewLedger, NewOrganization, Organization} from '../story/story-d
 })
 export class LedgerEditorComponent {
 
-  formControl = input.required<LedgerFormControl>();
+  formControl = input.required<LedgerFormGroup>();
   organizations = input.required<Organization[]>();
 
-  onSave = output()
+  deletable = input.required<boolean>();
 
+  onSave = output()
   onCancel = output()
+  onDelete = output()
 
   save() {
     this.onSave.emit()
@@ -28,4 +30,7 @@ export class LedgerEditorComponent {
     this.onCancel.emit()
   }
 
+  delete() {
+    this.onDelete.emit()
+  }
 }

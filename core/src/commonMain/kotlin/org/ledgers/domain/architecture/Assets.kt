@@ -17,11 +17,11 @@ data class Assets(val assets: List<Asset> = emptyList()) {
         return Assets(assets.plus(asset))
     }
 
-    fun remove(name: String): Assets {
-        if (assets.none { it.name == name }) {
-            throw RuntimeException("Asset with name ${name} not found")
+    fun remove(reference: ComponentReference): Assets {
+        if (assets.none { it.reference == reference }) {
+            throw RuntimeException("Asset with reference ${reference} not found")
         }
-        return Assets(assets.filter { it.name == name })
+        return Assets(assets.filterNot { it.reference == reference  })
     }
 
     fun change(reference: ComponentReference, name: String, assetType: AssetType): Assets {

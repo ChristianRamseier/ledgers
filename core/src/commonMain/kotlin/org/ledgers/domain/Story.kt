@@ -53,7 +53,14 @@ data class Story(
     }
 
     fun removeOrganization(reference: ComponentReference): Story {
+        if(isComponentUsed(reference)) {
+            throw RuntimeException("Cannot remove organization that is in use.")
+        }
         return copy(architecture = architecture.removeOrganization(reference))
+    }
+
+    fun isComponentUsed(reference: ComponentReference): Boolean {
+        return storyline.isComponentUsed(reference)
     }
 
     fun addLedger(name: String, ownerId: OrganizationId): Story {
@@ -61,6 +68,9 @@ data class Story(
     }
 
     fun removeLedger(reference: ComponentReference): Story {
+        if(isComponentUsed(reference)) {
+            throw RuntimeException("Cannot remove ledger that is in use.")
+        }
         return copy(architecture = architecture.removeLedger(reference))
     }
 
@@ -72,8 +82,11 @@ data class Story(
         return copy(architecture = architecture.withChangedAsset(reference, name, assetType))
     }
 
-    fun removeAsset(name: String): Story {
-        return copy(architecture = architecture.removeAsset(name))
+    fun removeAsset(reference: ComponentReference): Story {
+        if(isComponentUsed(reference)) {
+            throw RuntimeException("Cannot remove asset that is in use.")
+        }
+        return copy(architecture = architecture.removeAsset(reference))
     }
 
     fun withChangeInChapter(chapter: Int, change: StageChange): Story {

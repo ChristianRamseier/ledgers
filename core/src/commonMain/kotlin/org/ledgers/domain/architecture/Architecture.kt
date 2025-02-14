@@ -90,11 +90,11 @@ data class Architecture(
         )
     }
 
-    fun removeAsset(name: String): Architecture {
+    fun removeAsset(reference: ComponentReference): Architecture {
         return Architecture(
             organizations = organizations,
             ledgers = ledgers,
-            assets = assets.remove(name),
+            assets = assets.remove(reference),
             links = links
         )
     }

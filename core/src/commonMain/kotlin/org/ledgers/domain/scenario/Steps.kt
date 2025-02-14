@@ -1,6 +1,7 @@
 package org.ledgers.domain.scenario
 
 import org.ledgers.add
+import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.scenario.action.Action
 import org.ledgers.domain.scenario.action.ActionId
 import org.ledgers.replaceAtIndex
@@ -44,6 +45,10 @@ data class Steps(
 
     fun withoutStep(step: Int): Steps {
         return Steps(steps.filterIndexed { index, _ -> step != index })
+    }
+
+    fun isComponentInUse(reference: ComponentReference): Boolean {
+        return steps.any { it.actions.any { it.isComponentUsed(reference) } }
     }
 
     companion object {

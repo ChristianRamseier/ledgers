@@ -8,20 +8,20 @@ import {State} from '../state'
 import {ChaptersComponent} from '../chapters/chapters.component';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {OrganizationEditorComponent} from '../organization-editor/organization-editor.component';
-import {OrganizationFormControl} from '../organization-editor/organization-form-control';
-import {LedgerFormControl} from '../ledger-editor/ledger-form-control';
+import {OrganizationFormGroup} from '../organization-editor/organization-form-group';
+import {LedgerFormGroup} from '../ledger-editor/ledger-form-group';
 import {LedgerEditorComponent} from '../ledger-editor/ledger-editor.component';
 import {org} from '../../../public';
 import {Patch} from '../patch';
 import {PanelActionComponent} from '../common/panel-action/panel-action.component';
 import {PanelSideComponent} from '../common/panel-side/panel-side.component';
-import {AssetFormControl} from '../asset-editor/asset-form-control';
+import {AssetFormGroup} from '../asset-editor/asset-form-group';
+import {AssetEditorComponent} from '../asset-editor/asset-editor.component';
 import Story = org.ledgers.domain.Story;
 import dto = org.ledgers.dto;
 import ComponentReference = org.ledgers.domain.component.ComponentReference;
 import OrganizationId = org.ledgers.domain.architecture.OrganizationId;
 import AssetType = org.ledgers.domain.AssetType;
-import {AssetEditorComponent} from '../asset-editor/asset-editor.component';
 
 @Component({
   selector: 'app-story',
@@ -40,9 +40,9 @@ export class StoryComponent implements OnInit {
   state: State = {chapter: 0, step: 0}
   editor = Editor.None;
 
-  organizationFormControl = OrganizationFormControl.createDefault()
-  ledgerFormControl = LedgerFormControl.createDefault()
-  assetFormControl = AssetFormControl.createDefault()
+  organizationFormControl = OrganizationFormGroup.createDefault()
+  ledgerFormControl = LedgerFormGroup.createDefault()
+  assetFormControl = AssetFormGroup.createDefault()
 
   story?: Story;
   storyDto?: StoryDto;
@@ -109,9 +109,17 @@ export class StoryComponent implements OnInit {
     this.resetEditor()
   }
 
+  deleteAsset() {
+    if (this.assetFormControl.id) {
+      const asset = this.assetFormControl.toAsset() as Asset
+      const reference = ComponentReference.Companion.forAsset(asset.id, asset.version)
+      const updatedStory = this.story!!.removeAsset(reference)
+      this.saveStory(updatedStory)
+    }
+    this.resetEditor()
+  }
 
   saveOrganization() {
-
     if (this.organizationFormControl.id) {
       const organization = this.organizationFormControl.toOrganization() as Organization
       const reference = ComponentReference.Companion.forOrganization(organization.id, organization.version)
@@ -120,6 +128,16 @@ export class StoryComponent implements OnInit {
     } else {
       const organization = this.organizationFormControl.toOrganization()
       const updatedStory = this.story!!.addOrganization(organization.name)
+      this.saveStory(updatedStory)
+    }
+    this.resetEditor()
+  }
+
+  deleteOrganization() {
+    if (this.organizationFormControl.id) {
+      const organization = this.organizationFormControl.toOrganization() as Organization
+      const reference = ComponentReference.Companion.forOrganization(organization.id, organization.version)
+      const updatedStory = this.story!!.removeOrganization(reference)
       this.saveStory(updatedStory)
     }
     this.resetEditor()
@@ -134,6 +152,16 @@ export class StoryComponent implements OnInit {
     } else {
       const ledger = this.ledgerFormControl.toLedger()
       const updatedStory = this.story!!.addLedger(ledger.name, new OrganizationId(ledger.ownerId))
+      this.saveStory(updatedStory)
+    }
+    this.resetEditor()
+  }
+
+  deleteLedger() {
+    if (this.ledgerFormControl.id) {
+      const ledger = this.ledgerFormControl.toLedger() as Ledger
+      const reference = ComponentReference.Companion.forLedger(ledger.id, ledger.version)
+      const updatedStory = this.story!!.removeLedger(reference)
       this.saveStory(updatedStory)
     }
     this.resetEditor()
@@ -172,6 +200,26 @@ export class StoryComponent implements OnInit {
       && asset.id == this.assetFormControl.id
       && asset.version == this.assetFormControl.version;
   }
+
+  isEditedComponentDeletable():boolean {
+    const reference = this.getEditedComponentReference();
+    return reference !== undefined && !this.story!!.isComponentUsed(reference)
+  }
+
+  getEditedComponentReference(): ComponentReference | undefined {
+    switch (this.editor) {
+      case Editor.None:
+        return undefined;
+      case Editor.Asset:
+        return this.assetFormControl.id ? ComponentReference.Companion.forAsset(this.assetFormControl.id!!, this.assetFormControl.version!!) : undefined;
+      case Editor.Ledger:
+        return this.ledgerFormControl.id ? ComponentReference.Companion.forLedger(this.ledgerFormControl.id!!, this.ledgerFormControl.version!!) : undefined;
+      case Editor.Organization:
+        return this.organizationFormControl.id ? ComponentReference.Companion.forOrganization(this.organizationFormControl.id!!, this.organizationFormControl.version!!) : undefined;
+    }
+    return undefined;
+  }
+
 }
 
 enum Editor {
