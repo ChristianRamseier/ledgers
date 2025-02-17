@@ -22,11 +22,12 @@ import dto = org.ledgers.dto;
 import ComponentReference = org.ledgers.domain.component.ComponentReference;
 import OrganizationId = org.ledgers.domain.architecture.OrganizationId;
 import AssetType = org.ledgers.domain.AssetType;
+import {ActiveChapterComponent} from '../active-chapter/active-chapter.component';
 
 @Component({
   selector: 'app-story',
   standalone: true,
-  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent, AssetEditorComponent, PanelActionComponent, PanelSideComponent],
+  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent, AssetEditorComponent, PanelActionComponent, PanelSideComponent, ActiveChapterComponent],
   templateUrl: './story.component.html',
   styleUrl: './story.component.scss'
 })
@@ -58,6 +59,11 @@ export class StoryComponent implements OnInit {
       ...this.state,
       chapter: chapter
     }
+  }
+
+  onChapterNameChange(newName: string) {
+      const updatedStory = this.story!!.withChapterNamed(this.state.chapter, newName);
+      this.saveStory(updatedStory);
   }
 
   addOrganization() {
@@ -219,6 +225,7 @@ export class StoryComponent implements OnInit {
     }
     return undefined;
   }
+
 
 }
 

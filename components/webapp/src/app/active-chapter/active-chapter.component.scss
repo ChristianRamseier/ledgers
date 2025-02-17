@@ -1,0 +1,14 @@
+.chapter {
+  display: block;
+  cursor: pointer;
+  background: var(--color-bg-1);
+  height: 3rem;
+  width: 2rem;
+  text-align: center;
+  color: var(--color-tx-1);
+  padding-top: 0.2rem;
+}
+
+.selected {
+  background-color: var(--color-selection);
+}

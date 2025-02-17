@@ -1,7 +1,7 @@
 <div class="chapters">
   @for (chapter of storyline().chapters; track chapter; let i = $index) {
     <app-chapter
-      [number]="i"
+      [number]="i+1"
       [selected]="i == state().chapter"
       (onSelect)="select(i)"
     >

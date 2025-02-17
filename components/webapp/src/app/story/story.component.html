@@ -81,9 +81,14 @@
           </app-panel-entry>
         }
       </app-panel>
-
-
     </app-panels>
+
+    <app-active-chapter
+      [name]="storyDto.storyline.chapters[state.chapter].name"
+      [number]="state.chapter"
+      (onChapterNameChange)="onChapterNameChange($event)"
+    >
+    </app-active-chapter>
 
     <app-chapters
       [storyline]="storyDto.storyline"

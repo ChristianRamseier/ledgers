@@ -22,4 +22,5 @@ export class ChaptersComponent {
   select(chapter: number) {
     this.onChapterChange.emit(chapter)
   }
+
 }
