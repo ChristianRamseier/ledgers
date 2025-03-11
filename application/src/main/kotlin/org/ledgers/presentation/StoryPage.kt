@@ -1,8 +1,11 @@
 package org.ledgers.presentation
 
-import kotlinx.html.*
+import kotlinx.html.button
+import kotlinx.html.div
+import kotlinx.html.id
+import kotlinx.html.svg
 import org.ledgers.domain.Story
-import org.ledgers.presentation.components.editableElement
+import org.ledgers.presentation.components.storyElement
 
 class StoryPage(private val storyId: String, private val story: Story?) : Page {
 
@@ -15,7 +18,7 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
         return Site.getHtmlFor("${story.getDisplayName()} - Story") {
             div {
                 id = "story-id"
-                attributes["storyId"] = storyId
+                attributes["story-id"] = storyId
             }
             div {
                 id = "container"
@@ -50,108 +53,6 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                 }
                 div {
                     id = "components"
-                    div {
-                        id = "components-controls"
-                        button {
-                            id = "add-organization"
-                            +"Add Organization"
-                        }
-                        button {
-                            id = "add-ledger"
-                            +"Add Ledger"
-                        }
-                        button {
-                            id = "add-asset"
-                            +"Add Asset"
-                        }
-                    }
-                    div {
-                        id = "components-list"
-                    }
-                }
-                div {
-                    id = "chapters"
-                    editableElement {
-                        id = "chapter-name"
-                    }
-                    div {
-                        id = "chapter-changes"
-                    }
-                    editableElement {
-                        id = "chapter-scenario-step-name"
-                    }
-                    div {
-                        id = "chapter-scenario-step-line"
-                        div {
-                            id = "chapter-scenario-steps"
-                        }
-                        button {
-                            id = "add-chapter-scenario-step"
-                            +"Add Step"
-                        }
-                    }
-                    div {
-                        id = "chapters-line"
-                        div {
-                            id = "chapters-list"
-                        }
-                        button {
-                            id = "add-chapter"
-                            +"Add Chapter"
-                        }
-                    }
-                }
-                div {
-                    id = "editors"
-                    div {
-                        id = "ledger-editor"
-                        input(type = InputType.text) {
-                            id = "ledger-name"
-                        }
-                        select {
-                            id = "ledger-organization"
-                        }
-                        button {
-                            id = "ledger-apply"
-                            +"Apply"
-                        }
-                    }
-                    div {
-                        id = "organization-editor"
-                        input(type = InputType.text) {
-                            id = "organization-name"
-                        }
-                        button {
-                            id = "organization-apply"
-                            +"Apply"
-                        }
-                    }
-                    div {
-                        id = "asset-editor"
-                        input(type = InputType.text) {
-                            id = "asset-name"
-                        }
-                        label {
-                            radioInput(name = "asset-type") {
-                                id = "asset-type-cash"
-                                value = "Cash"
-                            }
-                            +"Cash"
-                        }
-                        label {
-                            radioInput(name = "asset-type") {
-                                id = "asset-type-security"
-                                value = "Security"
-
-                            }
-                            +"Security"
-                        }
-                        button {
-                            id = "asset-apply"
-                            +"Apply"
-                        }
-                    }
-
                 }
                 div {
                     id = "controls"
@@ -172,6 +73,10 @@ class StoryPage(private val storyId: String, private val story: Story?) : Page {
                     }
                 }
             }
+            storyElement(storyId = storyId) {
+                id = "story-element"
+            }
+
         }
     }
 }

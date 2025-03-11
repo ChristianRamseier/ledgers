@@ -11,12 +11,16 @@
   cursor: pointer;
 }
 
-.panel-side {
-  width: 250px;
+.actions {
+  justify-content: right;
+  margin-right: 3px;
 }
 
 .title {
   flex-grow: 1;
+  text-decoration: none;
+  font-weight: 500;
+  margin: 2px 2px 2px 5px;
 }
 
 :host {

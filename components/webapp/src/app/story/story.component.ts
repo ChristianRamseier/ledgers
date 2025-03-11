@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, effect, EventEmitter, input, InputSignal, OnInit, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {PanelComponent} from '../common/panel/panel.component';
 import {PanelsComponent} from '../common/panels/panels.component';
@@ -23,6 +23,7 @@ import ComponentReference = org.ledgers.domain.component.ComponentReference;
 import OrganizationId = org.ledgers.domain.architecture.OrganizationId;
 import AssetType = org.ledgers.domain.AssetType;
 import {ActiveChapterComponent} from '../active-chapter/active-chapter.component';
+import Box = org.ledgers.domain.stage.Box;
 
 @Component({
   selector: 'app-story',
@@ -33,9 +34,29 @@ import {ActiveChapterComponent} from '../active-chapter/active-chapter.component
 })
 export class StoryComponent implements OnInit {
 
+  storyId: InputSignal<string> = input.required<string>()
+
+  storyUpdated = output<{ story: Story, chapter: number, step: number }>();
+
+  storyInitialized = output<EventEmitter<any>>();
+
+  storyInputs = new EventEmitter<any>();
+
   Editor = Editor
 
   constructor(private httpClient: HttpClient) {
+    effect(() => {
+      const newStoryId = this.storyId();
+      if (this.currentStoryId !== newStoryId) {
+        this.currentStoryId = newStoryId
+        this.httpClient
+          .get(`/api/story/${this.currentStoryId}`, {responseType: 'text'})
+          .subscribe(json => {
+            this.setStory(dto.fromJson(json));
+            this.storyInitialized.emit(this.storyInputs);
+          })
+      }
+    });
   }
 
   state: State = {chapter: 0, step: 0}
@@ -45,13 +66,20 @@ export class StoryComponent implements OnInit {
   ledgerFormControl = LedgerFormGroup.createDefault()
   assetFormControl = AssetFormGroup.createDefault()
 
+  currentStoryId?: string;
   story?: Story;
   storyDto?: StoryDto;
 
   ngOnInit(): void {
-    this.httpClient
-      .get('/api/story/50d1ebca-0d9c-4e46-888b-5b78ee94e09d', {responseType: 'text'})
-      .subscribe(json => this.setStory(dto.fromJson(json)))
+    this.storyInputs.subscribe(event => {
+      if(event.type === 'move-ledger') {
+        const reference = ComponentReference.Companion.fromString(event.reference);
+        const box = new Box(event.x, event.y, event.width, event.height);
+        const story = this.story!!.withLedgerInChapter(this.state.chapter, reference, box)
+        console.log(event);
+        this.saveStory(story)
+      }
+    })
   }
 
   onChapterChange(chapter: number) {
@@ -62,8 +90,8 @@ export class StoryComponent implements OnInit {
   }
 
   onChapterNameChange(newName: string) {
-      const updatedStory = this.story!!.withChapterNamed(this.state.chapter, newName);
-      this.saveStory(updatedStory);
+    const updatedStory = this.story!!.withChapterNamed(this.state.chapter, newName);
+    this.saveStory(updatedStory);
   }
 
   addOrganization() {
@@ -187,6 +215,11 @@ export class StoryComponent implements OnInit {
   private setStory(updatedStory: Story) {
     this.story = updatedStory
     this.storyDto = Patch.apply(this.storyDto, JSON.parse(dto.toJson(updatedStory)))
+    this.storyUpdated.emit({
+      story: updatedStory,
+      chapter: this.state.chapter,
+      step: this.state.step
+    })
   }
 
   isOrganizationBeingEdited(organization: Organization) {
@@ -207,7 +240,7 @@ export class StoryComponent implements OnInit {
       && asset.version == this.assetFormControl.version;
   }
 
-  isEditedComponentDeletable():boolean {
+  isEditedComponentDeletable(): boolean {
     const reference = this.getEditedComponentReference();
     return reference !== undefined && !this.story!!.isComponentUsed(reference)
   }

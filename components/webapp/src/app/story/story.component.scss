@@ -1,10 +1,6 @@
 .story {
   display: flex;
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
 }
 
 app-panels {
@@ -19,9 +15,14 @@ app-active-chapter {
   left: 1rem;
 }
 
-
 app-chapters {
   position: fixed;
   bottom: 1rem;
   left: 1rem;
+}
+
+app-panel-side {
+  display: block;
+  width: 250px;
+  margin-top: 30px;
 }

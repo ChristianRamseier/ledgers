@@ -1,4 +1,4 @@
-import {Component, computed, EventEmitter, input, output} from '@angular/core';
+import {Component, computed, input, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {EditableComponent} from '../common/editable/editable.component';
 
