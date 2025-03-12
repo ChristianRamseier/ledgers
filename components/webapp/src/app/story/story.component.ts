@@ -24,6 +24,7 @@ import OrganizationId = org.ledgers.domain.architecture.OrganizationId;
 import AssetType = org.ledgers.domain.AssetType;
 import {ActiveChapterComponent} from '../active-chapter/active-chapter.component';
 import Box = org.ledgers.domain.stage.Box;
+import AnchorReference = org.ledgers.domain.stage.AnchorReference;
 
 @Component({
   selector: 'app-story',
@@ -72,11 +73,16 @@ export class StoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.storyInputs.subscribe(event => {
-      if(event.type === 'move-ledger') {
+      console.log(event);
+      if (event.type === 'move-ledger') {
         const reference = ComponentReference.Companion.fromString(event.reference);
         const box = new Box(event.x, event.y, event.width, event.height);
         const story = this.story!!.withLedgerInChapter(this.state.chapter, reference, box)
-        console.log(event);
+        this.saveStory(story)
+      } else if (event.type === 'create-link') {
+        const fromAnchorReference = AnchorReference.Companion.fromString(event.startAnchor)
+        const toAnchorReference = AnchorReference.Companion.fromString(event.endAnchor)
+        const story = this.story!!.withLinkInChapter(this.state.chapter, fromAnchorReference, toAnchorReference)
         this.saveStory(story)
       }
     })
@@ -87,6 +93,7 @@ export class StoryComponent implements OnInit {
       ...this.state,
       chapter: chapter
     }
+    this.emitStoryUpdate();
   }
 
   onChapterNameChange(newName: string) {
@@ -215,11 +222,17 @@ export class StoryComponent implements OnInit {
   private setStory(updatedStory: Story) {
     this.story = updatedStory
     this.storyDto = Patch.apply(this.storyDto, JSON.parse(dto.toJson(updatedStory)))
-    this.storyUpdated.emit({
-      story: updatedStory,
-      chapter: this.state.chapter,
-      step: this.state.step
-    })
+    this.emitStoryUpdate();
+  }
+
+  private emitStoryUpdate() {
+    if (this.story) {
+      this.storyUpdated.emit({
+        story: this.story,
+        chapter: this.state.chapter,
+        step: this.state.step
+      })
+    }
   }
 
   isOrganizationBeingEdited(organization: Organization) {

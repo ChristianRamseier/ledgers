@@ -1,5 +1,6 @@
 const domain = window['org.ledgers:core'].org.ledgers.domain
 
+// the display state after the last transition, i.e. the starting point for new transitions
 let state = {
     story: domain.Story.Companion.new(),
     chapter: 0,
@@ -14,20 +15,18 @@ function loadStory() {
         const update = e.detail
         const story = update.story
         const chapter = update.chapter
+        const step = update.step
         transition(state.story, state.chapter, story, chapter)
         state = {
             story: story,
-            chapter: 0,
-            step: 0
+            chapter: chapter,
+            step: step,
         }
     })
     storyElement.addEventListener('storyInitialized', (e) => {
+        // Save event emitter in order to send events to the component later
         storyInputs = e.detail
     });
-}
-
-function updateStory(story) {
-    console.log('legacy update of story', story)
 }
 
 const transition = function (fromStory, fromChapter, toStory, toChapter) {
@@ -86,7 +85,7 @@ function changeLinkOnStage(change, component, newStage) {
 
 function createAnchor(component, anchor) {
     const anchorElement = document.createElement('anchor')
-    anchorElement.id = `${component.reference}.${anchor}`
+    anchorElement.id = `${component.reference}.anchor.${anchor}`
     anchorElement.className = `node-anchor-${anchor}`
     return anchorElement
 }
@@ -178,11 +177,11 @@ function nodeMoved(node) {
 }
 
 function linkCreated(startAnchor, endAnchor) {
-    //const fromAnchorReference = domain.stage.AnchorReference.Companion.fromString(startAnchor.id)
-    //const toAnchorReference = domain.stage.AnchorReference.Companion.fromString(endAnchor.id)
-    //const story = state.story.withLinkInChapter(state.chapter, fromAnchorReference, toAnchorReference)
-    transition(state.story, state.chapter, story, state.chapter)
-    updateStory(story)
+    storyInputs.emit({
+        type: 'create-link',
+        startAnchor: startAnchor.id,
+        endAnchor: endAnchor.id
+    })
 }
 
 

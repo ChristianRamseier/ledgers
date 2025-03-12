@@ -1,5 +1,8 @@
 <div class="panel-entry" [ngClass]="selected() ? 'selected' : ''">
-  <div class="panel-entry-title">{{entryTitle()}}</div>
+  <div class="panel-entry-title">
+    <ng-container *ngIf="entryTitle()">{{entryTitle()}}</ng-container>
+    <ng-container *ngIf="!entryTitle()">&nbsp;</ng-container>
+  </div>
   <div class="panel-entry-content">
     <ng-content/>
   </div>
