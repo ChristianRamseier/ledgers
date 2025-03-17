@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
-    kotlin("plugin.spring") version "1.9.22"
+    kotlin("plugin.spring") version "1.9.25"
 }
 
 group = "org.ledgers"
@@ -27,10 +27,6 @@ evaluationDependsOn(":components")
 evaluationDependsOn(":core")
 
 tasks.processResources.configure {
-    from(project(":core").tasks["jsBrowserProductionLibraryDistribution"].outputs.files) {
-        into("static")
-    }
-
     from(project(":components").tasks["buildAngularApp"].outputs.files) {
         into("static")
         from()

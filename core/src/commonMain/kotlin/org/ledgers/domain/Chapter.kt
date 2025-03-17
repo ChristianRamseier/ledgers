@@ -54,10 +54,6 @@ data class Chapter(
         return copy(scenario = scenario.withoutStep(step))
     }
 
-    fun getChangesAsArray(): Array<StageChange> {
-        return changes.toTypedArray()
-    }
-
     fun isAssetUsed(componentReference: ComponentReference): Boolean {
         return scenario.isComponentUsed(componentReference)
     }

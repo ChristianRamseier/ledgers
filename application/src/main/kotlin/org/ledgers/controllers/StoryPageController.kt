@@ -20,7 +20,7 @@ class StoryPageController(
 
     @RequestMapping("/story/new", produces = [MediaType.TEXT_HTML_VALUE])
     fun renderStory(): ResponseEntity<String> {
-        val story = SaveStoryUseCase(storyRepository).saveStory(Story.new())
+        val story = SaveStoryUseCase(storyRepository).saveStory(Story.create())
         return ResponseEntity
             .status(HttpStatus.FOUND)
             .header("Location", "/story/${story.id}").build()

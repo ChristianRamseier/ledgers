@@ -45,4 +45,9 @@ data class Assets(val assets: List<Asset> = emptyList()) {
         return asset ?: throw RuntimeException("No asset with reference $reference")
     }
 
+    fun contains(reference: ComponentReference): Boolean {
+        return assets.any { it.reference == reference }
+    }
+
+
 }

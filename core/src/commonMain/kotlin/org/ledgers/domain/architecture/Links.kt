@@ -51,6 +51,10 @@ data class Links(val links: List<Link> = emptyList()) {
         return asset ?: throw RuntimeException("No link with reference $reference")
     }
 
+    fun contains(reference: ComponentReference): Boolean {
+        return links.any { it.reference == reference }
+    }
+
     fun findBetween(from: LedgerId, to: LedgerId): Link? {
         return links.find { it.from == from && it.to == to }
     }

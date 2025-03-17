@@ -1,4 +1,4 @@
-import {Component, effect, EventEmitter, input, InputSignal, OnInit, output} from '@angular/core';
+import {Component, effect, EventEmitter, input, InputSignal, NgZone, OnInit, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {PanelComponent} from '../common/panel/panel.component';
 import {PanelsComponent} from '../common/panels/panels.component';
@@ -39,7 +39,7 @@ export class StoryComponent implements OnInit {
 
   storyUpdated = output<{ story: Story, chapter: number, step: number }>();
 
-  storyInitialized = output<EventEmitter<any>>();
+  storyInitialized = output<{ eventEmitter: EventEmitter<any>, emptyStory: Story }>();
 
   storyInputs = new EventEmitter<any>();
 
@@ -53,8 +53,11 @@ export class StoryComponent implements OnInit {
         this.httpClient
           .get(`/api/story/${this.currentStoryId}`, {responseType: 'text'})
           .subscribe(json => {
+            this.storyInitialized.emit({
+              eventEmitter: this.storyInputs,
+              emptyStory: Story.Companion.create()
+            });
             this.setStory(dto.fromJson(json));
-            this.storyInitialized.emit(this.storyInputs);
           })
       }
     });
@@ -72,6 +75,7 @@ export class StoryComponent implements OnInit {
   storyDto?: StoryDto;
 
   ngOnInit(): void {
+
     this.storyInputs.subscribe(event => {
       console.log(event);
       if (event.type === 'move-ledger') {
@@ -86,6 +90,7 @@ export class StoryComponent implements OnInit {
         this.saveStory(story)
       }
     })
+
   }
 
   onChapterChange(chapter: number) {

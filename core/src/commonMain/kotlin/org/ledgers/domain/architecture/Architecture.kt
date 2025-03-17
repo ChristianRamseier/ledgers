@@ -135,6 +135,15 @@ data class Architecture(
         }
     }
 
+    fun hasComponent(componentReference: ComponentReference): Boolean {
+        return when (componentReference.type) {
+            ComponentType.Organization -> organizations.contains(componentReference)
+            ComponentType.Ledger -> ledgers.contains(componentReference)
+            ComponentType.Asset -> assets.contains(componentReference)
+            ComponentType.Link -> links.contains(componentReference)
+        }
+    }
+
     companion object {
         val Empty = Architecture(
             organizations = Organizations(),

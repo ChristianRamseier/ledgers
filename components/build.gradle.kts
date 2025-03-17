@@ -40,6 +40,7 @@ tasks.register<com.github.gradle.node.npm.task.NpxTask>("buildAngularApp") {
     args.set(listOf("build", "--output-hashing", "none"))
     inputs.files("package.json", "package-lock.json", "angular.json", "tsconfig.json", "tsconfig.app.json")
     inputs.dir("webapp/src")
+    inputs.dir("webapp/public")
     inputs.dir(fileTree("webapp/node_modules").exclude(".cache"))
     outputs.dir("webapp/dist")
 }

@@ -13,7 +13,7 @@ data class Stage(
         return components.any { it.reference == reference }
     }
 
-    fun getById(id: ComponentId): ComponentOnStage {
+    fun getComponentOnStageById(id: ComponentId): ComponentOnStage {
         return components.find { it.reference.id == id } ?: throw RuntimeException("No component on stage by id $id")
     }
 

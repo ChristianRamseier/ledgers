@@ -2,7 +2,9 @@ package org.ledgers.domain.scenario
 
 import org.ledgers.domain.scenario.action.*
 import org.ledgers.replaceFirstOrAdd
+import kotlin.js.JsExport
 
+@JsExport
 data class Positions(
     val accounts: List<Account>,
     val positions: List<Position>

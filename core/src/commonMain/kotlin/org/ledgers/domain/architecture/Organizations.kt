@@ -11,6 +11,10 @@ data class Organizations(
     val numberOfOrganizations get() = organizations.size
     val last get() = organizations.last()
 
+    fun contains(reference: ComponentReference): Boolean {
+        return organizations.any { it.reference == reference }
+    }
+
     fun getByReference(reference: ComponentReference): Organization {
         val organization = organizations.find { it.reference == reference }
         return organization ?: throw RuntimeException("No organization with reference $reference")
@@ -42,6 +46,5 @@ data class Organizations(
             }
         )
     }
-
 
 }

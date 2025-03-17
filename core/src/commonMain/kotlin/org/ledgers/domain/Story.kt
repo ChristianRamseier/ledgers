@@ -4,9 +4,7 @@ import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.scenario.Step
-import org.ledgers.domain.stage.AnchorReference
-import org.ledgers.domain.stage.Box
-import org.ledgers.domain.stage.StageChange
+import org.ledgers.domain.stage.*
 import kotlin.js.JsExport
 
 @JsExport
@@ -16,6 +14,21 @@ data class Story(
     val architecture: Architecture,
     val storyline: Storyline
 ) {
+
+    fun getStageChanges(fromChapter: Int, toStory: Story, toChapter: Int): StageChanges {
+        val fromStage = storyline.getStageAtChapter(fromChapter)
+        val toStage = toStory.storyline.getStageAtChapter(toChapter)
+        val stageChanges = fromStage.getChangesThatLeadTo(toStage)
+        val componentChanges = toStage.components
+            .filter { architecture.hasComponent(it.reference) }
+            .filter { architecture.getComponent(it.reference) != toStory.architecture.getComponent(it.reference) }
+            .map { Change(it) }
+        val changes = (stageChanges + componentChanges).distinct().toTypedArray()
+        return StageChanges(
+            changes = changes,
+            newStage = toStage
+        )
+    }
 
     fun getDisplayName(): String {
         if (name.isNullOrBlank()) {
@@ -35,8 +48,8 @@ data class Story(
             is Ledger -> component.name
             is Organization -> component.name
             is Link -> {
-                val from = getComponentDisplayName(storyline.getStageAtChapter(chapter).getById(component.from).reference, chapter)
-                val to = getComponentDisplayName(storyline.getStageAtChapter(chapter).getById(component.to).reference, chapter)
+                val from = getComponentDisplayName(storyline.getStageAtChapter(chapter).getComponentOnStageById(component.from).reference, chapter)
+                val to = getComponentDisplayName(storyline.getStageAtChapter(chapter).getComponentOnStageById(component.to).reference, chapter)
                 return "$from to $to"
             }
 
@@ -53,7 +66,7 @@ data class Story(
     }
 
     fun removeOrganization(reference: ComponentReference): Story {
-        if(isComponentUsed(reference)) {
+        if (isComponentUsed(reference)) {
             throw RuntimeException("Cannot remove organization that is in use.")
         }
         return copy(architecture = architecture.removeOrganization(reference))
@@ -68,7 +81,7 @@ data class Story(
     }
 
     fun removeLedger(reference: ComponentReference): Story {
-        if(isComponentUsed(reference)) {
+        if (isComponentUsed(reference)) {
             throw RuntimeException("Cannot remove ledger that is in use.")
         }
         return copy(architecture = architecture.removeLedger(reference))
@@ -83,7 +96,7 @@ data class Story(
     }
 
     fun removeAsset(reference: ComponentReference): Story {
-        if(isComponentUsed(reference)) {
+        if (isComponentUsed(reference)) {
             throw RuntimeException("Cannot remove asset that is in use.")
         }
         return copy(architecture = architecture.removeAsset(reference))
@@ -134,7 +147,7 @@ data class Story(
     }
 
     companion object {
-        fun new(): Story {
+        fun create(): Story {
             return Story(
                 id = StoryId.random(),
                 name = "",

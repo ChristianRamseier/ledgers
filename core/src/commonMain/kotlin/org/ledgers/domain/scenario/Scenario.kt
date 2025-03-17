@@ -47,10 +47,6 @@ data class Scenario(
         return this == Empty
     }
 
-    fun getStepsAsArray(): Array<Step> {
-        return steps.steps.toTypedArray()
-    }
-
     fun isComponentUsed(reference: ComponentReference): Boolean {
         return steps.isComponentInUse(reference)
     }

@@ -16,6 +16,10 @@ data class Ledgers(
         return ledger ?: throw RuntimeException("No ledger with reference $reference")
     }
 
+    fun contains(reference: ComponentReference): Boolean {
+        return ledgers.any { it.reference == reference }
+    }
+
     fun toArray(): Array<Ledger> {
         return ledgers.toTypedArray()
     }

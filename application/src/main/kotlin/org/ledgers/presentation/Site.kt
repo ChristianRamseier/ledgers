@@ -30,12 +30,6 @@ class Site {
                         content()
                     }
                     script(src = "/canvas.js?$TIMESTAMP") {}
-                    script(src = "/kotlin-kotlin-stdlib.js?$TIMESTAMP") {}
-                    script(src = "/kotlin_org_jetbrains_kotlin_kotlin_dom_api_compat.js?$TIMESTAMP") {}
-                    script(src = "/kotlinx-serialization-kotlinx-serialization-core.js?$TIMESTAMP") {}
-                    script(src = "/kotlinx-serialization-kotlinx-serialization-json.js?$TIMESTAMP") {}
-                    script(src = "/uuid.js?$TIMESTAMP") {}
-                    script(src = "/ledgers-core.js?$TIMESTAMP") {}
                     script(src = "/ledgers.js?$TIMESTAMP") {}
                     script(src = "/browser/polyfills.js?$TIMESTAMP", type = "module") {}
                     script(src = "/browser/main.js?$TIMESTAMP", type = "module") {}

@@ -1,8 +1,6 @@
-const domain = window['org.ledgers:core'].org.ledgers.domain
-
 // the display state after the last transition, i.e. the starting point for new transitions
 let state = {
-    story: domain.Story.Companion.new(),
+    story: undefined,
     chapter: 0,
     step: 0
 }
@@ -25,15 +23,17 @@ function loadStory() {
     })
     storyElement.addEventListener('storyInitialized', (e) => {
         // Save event emitter in order to send events to the component later
-        storyInputs = e.detail
+        const initializedEvent = e.detail
+        storyInputs = initializedEvent.eventEmitter
+        state.story = initializedEvent.emptyStory
     });
 }
 
 const transition = function (fromStory, fromChapter, toStory, toChapter) {
-    const currentStage = fromStory.storyline.getStageAtChapter(fromChapter)
-    const newStage = toStory.storyline.getStageAtChapter(toChapter)
-    const changes = currentStage.getChangesThatLeadTo(newStage)
-    changes.toArray().forEach(change => {
+    const stageChanges = fromStory.getStageChanges(fromChapter, toStory, toChapter)
+    const changes = stageChanges.changes
+    const newStage = stageChanges.newStage
+    changes.forEach(change => {
         const component = toStory.getComponent(change.componentReference)
         switch (component.type.name) {
             case 'Ledger': {
@@ -56,8 +56,8 @@ function changeLinkOnStage(change, component, newStage) {
             const edges = document.getElementById('canvas-edges')
             const newEdge = document.createElement('edge');
             newEdge.id = `${component.reference}`
-            newEdge.setAttribute('data-from-node', `${newStage.getById(component.from).reference}`)
-            newEdge.setAttribute('data-to-node', `${newStage.getById(component.to).reference}`)
+            newEdge.setAttribute('data-from-node', `${newStage.getComponentOnStageById(component.from).reference}`)
+            newEdge.setAttribute('data-to-node', `${newStage.getComponentOnStageById(component.to).reference}`)
             newEdge.setAttribute('data-from-side', `${change.component.fromAnchor}`)
             newEdge.setAttribute('data-to-side', `${change.component.toAnchor}`)
             edges.appendChild(newEdge)
@@ -66,8 +66,8 @@ function changeLinkOnStage(change, component, newStage) {
 
         case 'Change': {
             const edge = document.getElementById(`${component.reference}`)
-            edge.setAttribute('data-from-node', `${newStage.getById(component.from).reference}`)
-            edge.setAttribute('data-to-node', `${newStage.getById(component.to).reference}`)
+            edge.setAttribute('data-from-node', `${newStage.getComponentOnStageById(component.from).reference}`)
+            edge.setAttribute('data-to-node', `${newStage.getComponentOnStageById(component.to).reference}`)
             edge.setAttribute('data-from-side', `${change.component.fromAnchor}`)
             edge.setAttribute('data-to-side', `${change.component.toAnchor}`)
             break;
@@ -183,7 +183,6 @@ function linkCreated(startAnchor, endAnchor) {
         endAnchor: endAnchor.id
     })
 }
-
 
 document.addEventListener("DOMContentLoaded", (event) => {
     loadStory()
