@@ -56,8 +56,8 @@ function changeLinkOnStage(change, component, newStage) {
             const edges = document.getElementById('canvas-edges')
             const newEdge = document.createElement('edge');
             newEdge.id = `${component.reference}`
-            newEdge.setAttribute('data-from-node', `${newStage.getComponentOnStageById(component.from).reference}`)
-            newEdge.setAttribute('data-to-node', `${newStage.getComponentOnStageById(component.to).reference}`)
+            newEdge.setAttribute('data-from-node', `${newStage.getById(component.from).reference}`)
+            newEdge.setAttribute('data-to-node', `${newStage.getById(component.to).reference}`)
             newEdge.setAttribute('data-from-side', `${change.component.fromAnchor}`)
             newEdge.setAttribute('data-to-side', `${change.component.toAnchor}`)
             edges.appendChild(newEdge)
@@ -66,8 +66,8 @@ function changeLinkOnStage(change, component, newStage) {
 
         case 'Change': {
             const edge = document.getElementById(`${component.reference}`)
-            edge.setAttribute('data-from-node', `${newStage.getComponentOnStageById(component.from).reference}`)
-            edge.setAttribute('data-to-node', `${newStage.getComponentOnStageById(component.to).reference}`)
+            edge.setAttribute('data-from-node', `${newStage.getById(component.from).reference}`)
+            edge.setAttribute('data-to-node', `${newStage.getById(component.to).reference}`)
             edge.setAttribute('data-from-side', `${change.component.fromAnchor}`)
             edge.setAttribute('data-to-side', `${change.component.toAnchor}`)
             break;

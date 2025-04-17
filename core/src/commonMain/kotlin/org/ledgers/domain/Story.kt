@@ -3,6 +3,7 @@ package org.ledgers.domain
 import org.ledgers.domain.architecture.*
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
+import org.ledgers.domain.component.ComponentType
 import org.ledgers.domain.scenario.Step
 import org.ledgers.domain.stage.*
 import kotlin.js.JsExport
@@ -41,19 +42,29 @@ data class Story(
         return architecture.getComponent(componentReference)
     }
 
-    fun getComponentDisplayName(componentReference: ComponentReference, chapter: Int): String {
-        val component = getComponent(componentReference)
-        return when (component) {
-            is Asset -> component.name
-            is Ledger -> component.name
-            is Organization -> component.name
-            is Link -> {
-                val from = getComponentDisplayName(storyline.getStageAtChapter(chapter).getComponentOnStageById(component.from).reference, chapter)
-                val to = getComponentDisplayName(storyline.getStageAtChapter(chapter).getComponentOnStageById(component.to).reference, chapter)
-                return "$from to $to"
-            }
 
-            else -> componentReference.toString()
+    fun getComponentDisplayName(componentReference: ComponentReference, chapter: Int): String {
+        return when(componentReference.type) {
+            ComponentType.Ledger -> architecture.ledgers.getByReference(componentReference).name
+            ComponentType.Organization -> architecture.organizations.getByReference(componentReference).name
+            ComponentType.Asset -> architecture.assets.getByReference(componentReference).name
+            ComponentType.Link -> getLinkDisplayName(componentReference, chapter)
+        }
+    }
+
+    fun getLinkDisplayName(linkReference: ComponentReference, chapter: Int): String {
+        val link = architecture.links.getByReference(linkReference)
+        val stage = storyline.getStageAtChapter(chapter)
+        val from = getLedgerNameOnStageOrLowestVersion(stage, link.from)
+        val to = getLedgerNameOnStageOrLowestVersion(stage, link.to)
+        return "$from to $to"
+    }
+
+    private fun getLedgerNameOnStageOrLowestVersion(stage: Stage, ledgerId: LedgerId): String {
+        return if (stage.hasId(ledgerId)) {
+            architecture.ledgers.getByReference(stage.getById(ledgerId).reference).name
+        } else {
+            architecture.ledgers.getFirstById(ledgerId).name
         }
     }
 
@@ -106,8 +117,19 @@ data class Story(
         return copy(storyline = storyline.withChangeInChapter(chapter, change))
     }
 
-    fun withLedgerInChapter(chapter: Int, reference: ComponentReference, box: Box): Story {
+    fun withLedgerInChapter(chapter: Int, reference: ComponentReference, box: Box = Box.ZERO): Story {
         return copy(storyline = storyline.withLedgerInChapter(chapter, reference, box))
+    }
+
+    fun withoutLedgerAppearance(chapter: Int, reference: ComponentReference): Story {
+        val ledger = architecture.ledgers.getByReference(reference)
+        val links = architecture.links.findAllByLedgerId(ledger.id)
+        return copy(storyline = storyline.withoutLedgerAppearance(chapter, ledger, links))
+    }
+
+    fun withoutLinkAppearance(chapter: Int, reference: ComponentReference): Story {
+        val link = architecture.links.getByReference(reference)
+        return copy(storyline = storyline.withoutLinkAppearance(chapter, link))
     }
 
     fun withLinkBetween(from: LedgerId, to: LedgerId): Story {

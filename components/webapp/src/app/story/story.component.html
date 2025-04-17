@@ -6,7 +6,7 @@
           <app-panel-entry
             [selected]="isOrganizationBeingEdited(organization)"
             [entryTitle]="organization.name"
-            (click)="editOrganization(organization)"
+            (select)="editOrganization(organization)"
           ></app-panel-entry>
         }
         @if (editor == Editor.Organization) {
@@ -29,8 +29,19 @@
           <app-panel-entry
             [selected]="isLedgerBeeingEdited(ledger)"
             [entryTitle]="ledger.name"
-            (click)="editLedger(ledger)"
-          ></app-panel-entry>
+            (select)="editLedger(ledger)"
+          >
+            <app-panel-action
+              *ngIf="!isLedgerOnStage(ledger)"
+              actionTitle="🡺"
+              (click)="addLedgerToStage(ledger)"
+            ></app-panel-action>
+            <app-panel-action
+              *ngIf="isLedgerOnStage(ledger)"
+              actionTitle="🡸"
+              (click)="removeLedgerFromStage(ledger)"
+            ></app-panel-action>
+          </app-panel-entry>
         }
         @if (editor == Editor.Ledger) {
           <app-panel-side>
@@ -54,7 +65,7 @@
           <app-panel-entry
             [entryTitle]="asset.name"
             [selected]="isAssetBeeingEdited(asset)"
-            (click)="editAsset(asset)"
+            (select)="editAsset(asset)"
           >
           </app-panel-entry>
         }
@@ -77,18 +88,29 @@
 
       <app-panel panelTitle="Links">
         @for (link of storyDto.architecture.links; track link) {
-          <app-panel-entry [entryTitle]="link.from">
+          <app-panel-entry
+            [entryTitle]="getLinkTitle(link)">
+            <app-panel-action
+              *ngIf="isLinkOnStage(link)"
+              actionTitle="🡸"
+              (click)="removeLinkFromStage(link)"
+            ></app-panel-action>
+
           </app-panel-entry>
         }
       </app-panel>
     </app-panels>
 
-    <app-active-chapter
-      [name]="storyDto.storyline.chapters[state.chapter].name"
-      [number]="state.chapter"
-      (onChapterNameChange)="onChapterNameChange($event)"
-    >
-    </app-active-chapter>
+    @if (story) {
+      <app-active-chapter
+        [name]="storyDto.storyline.chapters[state.chapter].name"
+        [number]="state.chapter"
+        [changes]="storyDto.storyline.chapters[state.chapter].changes"
+        [changeNameProvider]="story"
+        (onChapterNameChange)="onChapterNameChange($event)"
+      >
+      </app-active-chapter>
+    }
 
     <app-chapters
       [storyline]="storyDto.storyline"

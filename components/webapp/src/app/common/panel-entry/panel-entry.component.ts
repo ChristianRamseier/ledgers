@@ -1,4 +1,4 @@
-import {Component, input} from '@angular/core';
+import {Component, input, output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -15,7 +15,11 @@ export class PanelEntryComponent {
 
   entryTitle = input<string>()
 
+  select = output<Event>()
+
   constructor() {
   }
+
+
 
 }

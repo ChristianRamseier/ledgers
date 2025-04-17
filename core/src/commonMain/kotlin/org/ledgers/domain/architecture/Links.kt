@@ -7,7 +7,6 @@ import kotlin.js.JsExport
 @JsExport
 data class Links(val links: List<Link> = emptyList()) {
 
-    val numberOfAssets get() = links.size
     val last get() = links.last()
 
     fun find(from: LedgerId, to: LedgerId): Link? {
@@ -47,8 +46,8 @@ data class Links(val links: List<Link> = emptyList()) {
     }
 
     fun getByReference(reference: ComponentReference): Link {
-        val asset = links.find { it.reference == reference }
-        return asset ?: throw RuntimeException("No link with reference $reference")
+        val link = links.find { it.reference == reference }
+        return link ?: throw RuntimeException("No link with reference $reference")
     }
 
     fun contains(reference: ComponentReference): Boolean {
@@ -57,6 +56,10 @@ data class Links(val links: List<Link> = emptyList()) {
 
     fun findBetween(from: LedgerId, to: LedgerId): Link? {
         return links.find { it.from == from && it.to == to }
+    }
+
+    fun findAllByLedgerId(ledgerId: LedgerId): List<Link> {
+        return links.filter { it.to == ledgerId || it.from == ledgerId }
     }
 
 

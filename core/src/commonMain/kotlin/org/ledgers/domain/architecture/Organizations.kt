@@ -8,7 +8,6 @@ data class Organizations(
     val organizations: List<Organization> = emptyList()
 ) {
 
-    val numberOfOrganizations get() = organizations.size
     val last get() = organizations.last()
 
     fun contains(reference: ComponentReference): Boolean {

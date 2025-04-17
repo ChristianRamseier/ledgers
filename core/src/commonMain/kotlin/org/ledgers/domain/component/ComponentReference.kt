@@ -33,6 +33,10 @@ data class ComponentReference(
             return ComponentReference(type, id, version)
         }
 
+        fun fromReferenceParts(type: String, id: String, version: Int): ComponentReference {
+            return fromString("$type:$id:$version")
+        }
+
         fun forLedger(id: String, version: Int): ComponentReference {
             return ComponentReference(ComponentType.Ledger, LedgerId(id), Version(version))
         }
@@ -49,7 +53,7 @@ data class ComponentReference(
 
 
         fun forLink(id: String, version: Int): ComponentReference {
-            return ComponentReference(ComponentType.Link, LedgerId(id), Version(version))
+            return ComponentReference(ComponentType.Link, LinkId(id), Version(version))
         }
 
     }

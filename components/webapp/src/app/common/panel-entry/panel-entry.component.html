@@ -1,5 +1,5 @@
 <div class="panel-entry" [ngClass]="selected() ? 'selected' : ''">
-  <div class="panel-entry-title">
+  <div class="panel-entry-title" (click)="select.emit($event)">
     <ng-container *ngIf="entryTitle()">{{entryTitle()}}</ng-container>
     <ng-container *ngIf="!entryTitle()">&nbsp;</ng-container>
   </div>

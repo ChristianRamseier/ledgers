@@ -24,8 +24,12 @@ export interface Chapter {
 }
 
 export interface StageChange {
-  componentReference: ComponentReference
+  component: ComponentOnStage
   type: StageChangeType
+}
+
+export interface ComponentOnStage {
+  reference: ComponentReference
 }
 
 export interface ComponentReference {

@@ -8,12 +8,18 @@ data class Ledgers(
     val ledgers: List<Ledger> = emptyList()
 ) {
 
-    val numberOfLedgers get() = ledgers.size
     val last get() = ledgers.last()
 
     fun getByReference(reference: ComponentReference): Ledger {
         val ledger = ledgers.find { it.reference == reference }
         return ledger ?: throw RuntimeException("No ledger with reference $reference")
+    }
+
+    fun getFirstById(id: LedgerId): Ledger {
+        return ledgers
+            .sortedBy { it.version }
+            .find { it.id == id }
+            ?: throw RuntimeException("No ledger with id $id")
     }
 
     fun contains(reference: ComponentReference): Boolean {

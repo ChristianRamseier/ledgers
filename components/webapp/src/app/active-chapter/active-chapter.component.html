@@ -1,5 +1,14 @@
 <app-editable
   [label]="label()"
   [value]="name()"
-  (onChange)="onChange($event)"
+  (onChange)="onNameChange($event)"
 ></app-editable>
+<app-panels>
+  <app-panel panelTitle="Changes">
+    @for (change of changes(); track change) {
+      <app-panel-entry
+        [entryTitle]="getChangeLabel(change)"
+      ></app-panel-entry>
+    }
+  </app-panel>
+</app-panels>

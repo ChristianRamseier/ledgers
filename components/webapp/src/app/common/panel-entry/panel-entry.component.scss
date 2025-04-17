@@ -1,5 +1,8 @@
 .panel-entry {
   cursor: pointer;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .panel-entry-title {
@@ -7,6 +10,7 @@
   text-overflow: ellipsis;
   text-wrap: nowrap;
   margin-left: 6px;
+  flex-grow: 1;
 }
 
 .selected {
