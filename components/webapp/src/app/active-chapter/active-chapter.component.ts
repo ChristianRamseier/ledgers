@@ -28,6 +28,8 @@ export class ActiveChapterComponent {
 
   onChapterNameChange = output<string>();
   onChangeRemovalFromStage = output<StageChange>();
+  onMoveChangeToPreviousChapter = output<StageChange>();
+  onMoveChangeToNextChapter = output<StageChange>();
 
   onNameChange(newName: string) {
     this.onChapterNameChange.emit(newName);
@@ -40,6 +42,14 @@ export class ActiveChapterComponent {
 
   removeFromStage(change: StageChange) {
     this.onChangeRemovalFromStage.emit(change)
+  }
+
+  moveChangeToPreviousChapter(change: StageChange) {
+    this.onMoveChangeToPreviousChapter.emit(change);
+  }
+
+  moveChangeToNextChapter(change: StageChange) {
+    this.onMoveChangeToNextChapter.emit(change);
   }
 
 }

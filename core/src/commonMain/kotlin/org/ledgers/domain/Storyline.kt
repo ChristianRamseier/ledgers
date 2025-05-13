@@ -150,7 +150,32 @@ data class Storyline(
     }
 
     fun withChangeMovedToChapter(chapter: Int, reference: ComponentReference, newChapter: Int): Storyline {
-        TODO()
+        // Verify that there is a change at the source chapter
+        val currentChapterChange = atChapter(chapter).findStageChange(reference)
+        if (currentChapterChange == null) {
+            throw RuntimeException("Cannot move stage change for component $reference from chapter $chapter to $newChapter because there is no change in the source chapter")
+        }
+        
+        // Determine the range to check between source and target chapters
+        val rangeToCheck = if (chapter < newChapter) {
+            (chapter + 1)..newChapter
+        } else {
+            newChapter..(chapter - 1)
+        }
+        
+        // Check that there are no changes to this component in any chapter between source and target
+        for (i in rangeToCheck) {
+            val changeInBetween = atChapter(i).findStageChange(reference)
+            if (changeInBetween != null) {
+                throw RuntimeException("Cannot move stage change for component $reference from chapter $chapter to $newChapter because there is another change to this component in chapter $i")
+            }
+        }
+        
+        // Create a new storyline with the change removed from the source chapter
+        val storylineWithoutSourceChange = withoutChangeToComponentAtChapter(chapter, reference)
+        
+        // Add the change to the target chapter
+        return storylineWithoutSourceChange.withChangeInChapter(newChapter, currentChapterChange)
     }
 
     fun withLinkInChapter(chapter: Int, link: ComponentReference, from: Anchor, to: Anchor): Storyline {

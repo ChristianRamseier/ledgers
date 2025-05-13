@@ -119,6 +119,8 @@
         [changeNameProvider]="story"
         (onChapterNameChange)="onChapterNameChange($event)"
         (onChangeRemovalFromStage)="onChangeRemovalFromChapter($event)"
+        (onMoveChangeToPreviousChapter)="moveChangeToPreviousChapter($event)"
+        (onMoveChangeToNextChapter)="moveChangeToNextChapter($event)"
       >
       </app-active-chapter>
     }

@@ -25,6 +25,8 @@ The project is organized into several modules:
 
 ## Key Domain Concepts
 
+The key domain objects are immutable. Methods modifying the story always return a copy of the original story with the changes applied, while the original story remains untouched.
+
 ### Story
 
 The central entity in the system. A Story represents a scenario with a specific ledger architecture and storyline.
@@ -39,7 +41,7 @@ Defines the structure of the ledger system, including:
 
 ### Storyline
 
-A sequence of chapters that illustrate how the ledger system evolves over time.
+A sequence of chapters that illustrate how the ledger system evolves over time. The storyline is assumed to have infinite chapters with the boundary automatically extended as changes are applied.
 
 ### Chapter
 
@@ -101,8 +103,8 @@ The project uses JUnit 5 and AssertJ for testing. Each module contains its own t
 ## Technology Stack
 
 - **Backend**
-  - Kotlin 1.9.25
-  - Spring Boot 3.2.1
+  - Kotlin
+  - Spring Boot
   - Spring WebFlux
   - kotlinx-serialization
 

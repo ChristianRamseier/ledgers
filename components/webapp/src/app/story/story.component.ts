@@ -338,6 +338,37 @@ export class StoryComponent implements OnInit {
     }
   }
 
+  moveChangeToPreviousChapter(change: StageChange) {
+    if (this.state.chapter > 0) {
+      const reference = ComponentReference.Companion.fromReferenceParts(
+        change.component.reference.type,
+        change.component.reference.id,
+        change.component.reference.version
+      );
+
+      const updatedStory = this.story!!.withChangeMovedToChapter(
+        this.state.chapter,
+        reference,
+        this.state.chapter - 1
+      );
+      this.saveStory(updatedStory);
+    }
+  }
+
+  moveChangeToNextChapter(change: StageChange) {
+    const reference = ComponentReference.Companion.fromReferenceParts(
+      change.component.reference.type,
+      change.component.reference.id,
+      change.component.reference.version
+    );
+    const updatedStory = this.story!!.withChangeMovedToChapter(
+      this.state.chapter,
+      reference,
+      this.state.chapter + 1
+    );
+    this.saveStory(updatedStory);
+  }
+
 
 }
 

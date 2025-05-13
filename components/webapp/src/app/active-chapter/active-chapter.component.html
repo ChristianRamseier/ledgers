@@ -9,6 +9,8 @@
       <app-panel-entry
         [entryTitle]="getChangeLabel(change)"
       >
+        <app-panel-action *ngIf="number() > 0" actionTitle="←" (click)="moveChangeToPreviousChapter(change)" title="Move to previous chapter"></app-panel-action>
+        <app-panel-action actionTitle="→" (click)="moveChangeToNextChapter(change)" title="Move to next chapter"></app-panel-action>
         <app-panel-action actionTitle="✖" (click)="removeFromStage(change)"></app-panel-action>
       </app-panel-entry>
     }
