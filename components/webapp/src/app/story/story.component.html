@@ -38,8 +38,13 @@
             ></app-panel-action>
             <app-panel-action
               *ngIf="isLedgerOnStage(ledger)"
+              actionTitle="✖"
+              (click)="removeLedgerAppearance(ledger)"
+            ></app-panel-action>
+            <app-panel-action
+              *ngIf="isLedgerOnStage(ledger)"
               actionTitle="🡸"
-              (click)="removeLedgerFromStage(ledger)"
+              (click)="withoutLedgerOnStage(ledger)"
             ></app-panel-action>
           </app-panel-entry>
         }
@@ -92,8 +97,13 @@
             [entryTitle]="getLinkTitle(link)">
             <app-panel-action
               *ngIf="isLinkOnStage(link)"
+              actionTitle="✖"
+              (click)="removeLinkAppearance(link)"
+            ></app-panel-action>
+            <app-panel-action
+              *ngIf="isLinkOnStage(link)"
               actionTitle="🡸"
-              (click)="removeLinkFromStage(link)"
+              (click)="withoutLinkOnStage(link)"
             ></app-panel-action>
 
           </app-panel-entry>
@@ -108,6 +118,7 @@
         [changes]="storyDto.storyline.chapters[state.chapter].changes"
         [changeNameProvider]="story"
         (onChapterNameChange)="onChapterNameChange($event)"
+        (onChangeRemovalFromStage)="onChangeRemovalFromChapter($event)"
       >
       </app-active-chapter>
     }

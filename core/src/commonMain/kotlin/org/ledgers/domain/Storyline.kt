@@ -136,6 +136,23 @@ data class Storyline(
         }
     }
 
+    fun withoutChangeToComponentInChapter(chapter: Int, reference: ComponentReference): Storyline {
+        val currentChapterChange = atChapter(chapter).findStageChange(reference)
+        when (currentChapterChange) {
+            is Add -> throw RuntimeException("Addition of $reference in chapter $chapter cannot be removed, remove the appearance instead.")
+            is Change -> {
+                return withoutChangeToComponentAtChapter(chapter, reference)
+            }
+
+            is Remove -> throw RuntimeException("Removal of $reference in chapter $chapter cannot be removed, remove the appearance instead.")
+            null -> throw RuntimeException("Unable to remove $reference from chapter $chapter, since it is not present in this chapter.")
+        }
+    }
+
+    fun withChangeMovedToChapter(chapter: Int, reference: ComponentReference, newChapter: Int): Storyline {
+        TODO()
+    }
+
     fun withLinkInChapter(chapter: Int, link: ComponentReference, from: Anchor, to: Anchor): Storyline {
         return withComponentOnStageInChapter(chapter, LinkOnStage(link, from, to))
     }
@@ -211,5 +228,8 @@ data class Storyline(
     fun isComponentUsed(reference: ComponentReference): Boolean {
         return chapters.any { it.isComponentUsed(reference) }
     }
+
+
+
 
 }

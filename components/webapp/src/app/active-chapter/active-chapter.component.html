@@ -8,7 +8,9 @@
     @for (change of changes(); track change) {
       <app-panel-entry
         [entryTitle]="getChangeLabel(change)"
-      ></app-panel-entry>
+      >
+        <app-panel-action actionTitle="✖" (click)="removeFromStage(change)"></app-panel-action>
+      </app-panel-entry>
     }
   </app-panel>
 </app-panels>

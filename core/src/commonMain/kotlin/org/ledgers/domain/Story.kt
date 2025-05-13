@@ -1,6 +1,8 @@
 package org.ledgers.domain
 
-import org.ledgers.domain.architecture.*
+import org.ledgers.domain.architecture.Architecture
+import org.ledgers.domain.architecture.LedgerId
+import org.ledgers.domain.architecture.OrganizationId
 import org.ledgers.domain.component.Component
 import org.ledgers.domain.component.ComponentReference
 import org.ledgers.domain.component.ComponentType
@@ -44,7 +46,7 @@ data class Story(
 
 
     fun getComponentDisplayName(componentReference: ComponentReference, chapter: Int): String {
-        return when(componentReference.type) {
+        return when (componentReference.type) {
             ComponentType.Ledger -> architecture.ledgers.getByReference(componentReference).name
             ComponentType.Organization -> architecture.organizations.getByReference(componentReference).name
             ComponentType.Asset -> architecture.assets.getByReference(componentReference).name
@@ -130,6 +132,14 @@ data class Story(
     fun withoutLinkAppearance(chapter: Int, reference: ComponentReference): Story {
         val link = architecture.links.getByReference(reference)
         return copy(storyline = storyline.withoutLinkAppearance(chapter, link))
+    }
+
+    fun withoutChangeToComponentInChapter(chapter: Int, reference: ComponentReference): Story {
+        return copy(storyline = storyline.withoutChangeToComponentInChapter(chapter, reference))
+    }
+
+    fun withChangeMovedToChapter(chapter: Int, reference: ComponentReference, newChapter: Int): Story {
+        return copy(storyline = storyline.withChangeMovedToChapter(chapter, reference, newChapter))
     }
 
     fun withLinkBetween(from: LedgerId, to: LedgerId): Story {

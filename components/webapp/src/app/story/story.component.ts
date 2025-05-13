@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {PanelComponent} from '../common/panel/panel.component';
 import {PanelsComponent} from '../common/panels/panels.component';
 import {PanelEntryComponent} from '../common/panel-entry/panel-entry.component';
-import {Asset, Ledger, Link, Organization, StoryDto} from './story-dto'
+import {Asset, ComponentType, Ledger, Link, Organization, StageChange, StoryDto} from './story-dto'
 import {State} from '../state'
 import {ChaptersComponent} from '../chapters/chapters.component';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -302,17 +302,42 @@ export class StoryComponent implements OnInit {
     this.saveStory(updatedStory)
   }
 
-  removeLedgerFromStage(ledger: Ledger) {
+  removeLedgerAppearance(ledger: Ledger) {
     const ledgerReference = ComponentReference.Companion.forLedger(ledger.id, ledger.version);
     const updatedStory = this.story!!.withoutLedgerAppearance(this.state.chapter, ledgerReference);
     this.saveStory(updatedStory)
   }
 
-  removeLinkFromStage(link: Link) {
+  removeLinkAppearance(link:Link) {
     const linkReference = ComponentReference.Companion.forLink(link.id, link.version);
     const updatedStory = this.story!!.withoutLinkAppearance(this.state.chapter, linkReference);
     this.saveStory(updatedStory)
   }
+
+  withoutLedgerOnStage(ledger: Ledger) {
+    const ledgerReference = ComponentReference.Companion.forLedger(ledger.id, ledger.version);
+    const updatedStory = this.story!!.withoutChangeToComponentInChapter(this.state.chapter, ledgerReference);
+    this.saveStory(updatedStory)
+  }
+
+  withoutLinkOnStage(link: Link) {
+    const linkReference = ComponentReference.Companion.forLink(link.id, link.version);
+    const updatedStory = this.story!!.withoutChangeToComponentInChapter(this.state.chapter, linkReference);
+    this.saveStory(updatedStory)
+  }
+
+  onChangeRemovalFromChapter(change: StageChange) {
+    if (change.component.reference.type == ComponentType.Ledger) {
+      const ledgerReference = ComponentReference.Companion.forLedger(change.component.reference.id, change.component.reference.version);
+      const updatedStory = this.story!!.withoutChangeToComponentInChapter(this.state.chapter, ledgerReference);
+      this.saveStory(updatedStory)
+    } else if (change.component.reference.type == ComponentType.Link) {
+      const linkReference = ComponentReference.Companion.forLink(change.component.reference.id, change.component.reference.version);
+      const updatedStory = this.story!!.withoutChangeToComponentInChapter(this.state.chapter, linkReference);
+      this.saveStory(updatedStory)
+    }
+  }
+
 
 }
 
