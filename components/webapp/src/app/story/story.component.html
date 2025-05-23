@@ -112,24 +112,17 @@
     </app-panels>
 
     @if (story) {
-      <app-active-chapter
-        [name]="storyDto.storyline.chapters[state.chapter].name"
-        [number]="state.chapter"
-        [changes]="storyDto.storyline.chapters[state.chapter].changes"
-        [changeNameProvider]="story"
+      <app-storyline
+        [storyline]="storyDto.storyline"
+        [story]="story"
+        [state]="state"
+        (onChapterChange)="onChapterChange($event)"
         (onChapterNameChange)="onChapterNameChange($event)"
-        (onChangeRemovalFromStage)="onChangeRemovalFromChapter($event)"
-        (onMoveChangeToPreviousChapter)="moveChangeToPreviousChapter($event)"
-        (onMoveChangeToNextChapter)="moveChangeToNextChapter($event)"
-      >
-      </app-active-chapter>
+        (onChangeMove)="onChangeMove($event)"
+      ></app-storyline>
     }
 
-    <app-chapters
-      [storyline]="storyDto.storyline"
-      [state]="state"
-      (onChapterChange)="onChapterChange($event)"
-    ></app-chapters>
+
   </div>
 } @else {
   Loading ...

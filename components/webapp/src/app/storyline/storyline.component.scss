@@ -1,0 +1,244 @@
+.storyline-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin-top: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.current-chapter-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 40px;
+  padding: 0 10px;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  z-index: 5;
+  position: sticky;
+  top: 0;
+}
+
+.storyline-body {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.component-labels {
+  min-width: 150px;
+  max-width: 250px;
+  width: 20%;
+  border-right: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.component-label {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.storyline-grid {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.component-storyline {
+  position: relative;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.connector-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+.connector-line {
+  stroke: #999;
+  stroke-width: 2px;
+  stroke-dasharray: none;
+  transition: all 0.3s ease;
+}
+
+.change-block-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: move;
+  z-index: 10;
+}
+
+.change-block {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+// Change type styles with no text
+.add {
+  background-color: #107c10;
+}
+
+.change {
+  background-color: #0078d4;
+}
+
+.remove {
+  background-color: #d83b01;
+}
+
+// Component type modifiers
+.ledger-change {
+  border: 1px solid #00188f;
+}
+
+.organization-change {
+  border: 1px solid #881798;
+}
+
+.asset-change {
+  border: 1px solid #a4262c;
+}
+
+.link-change {
+  border: 1px solid #038387;
+}
+
+// Chapter number row at the bottom
+.chapter-number-row {
+  display: flex;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  height: 24px;
+  overflow: hidden;
+  position: relative;
+  align-items: center;
+}
+
+.chapter-number-placeholder {
+  min-width: 150px;
+  max-width: 250px;
+  width: 20%;
+  border-right: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chapter-numbers {
+  display: flex;
+  flex-direction: row;
+}
+
+.chapter-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  color: #666;
+
+  &.active {
+    background-color: #e8f4fc;
+    color: #0078d4;
+    font-weight: bold;
+  }
+
+  &:hover:not(.active) {
+    background-color: #f0f0f0;
+  }
+}
+
+// Drag and drop styling
+.cdk-drag-preview {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.8;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.4;
+}
+
+.cdk-drag-animating {
+  transition: transform 50ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Navigation buttons
+.nav-button {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: 10px;
+  color: #555;
+  outline: none;
+  
+  &:hover:not([disabled]) {
+    background-color: #e0e0e0;
+  }
+  
+  &:active:not([disabled]) {
+    background-color: #d0d0d0;
+  }
+  
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Transitions for smooth movement
+.change-block-container, .connector-line {
+  transition: left 0.2s ease, transform 0.05s ease;
+}
+
+// Visible viewport indicator
+.component-storyline {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(to right, rgba(245, 245, 245, 0.2) 0%, rgba(255, 255, 255, 0) 5%, rgba(255, 255, 255, 0) 95%, rgba(245, 245, 245, 0.2) 100%);
+  }
+}

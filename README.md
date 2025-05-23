@@ -123,3 +123,5 @@ The project uses JUnit 5 and AssertJ for testing. Each module contains its own t
 - The core domain is platform-agnostic (using Kotlin Multiplatform)
 - Repository interfaces are defined in the domain, with implementations in the infrastructure
 - DTOs are used for serialization and API communication
+- Catching errors with try/catch is discouraged. If exceptions occur, the root cause should be addressed (e.g. a user interaction, leading to unsupported domain changes should be prevented in the user interface).
+- Printing to the console is discouraged

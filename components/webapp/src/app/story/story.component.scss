@@ -9,16 +9,11 @@ app-panels {
   left: 1rem;
 }
 
-app-active-chapter {
-  position: fixed;
-  bottom: 5rem;
-  left: 1rem;
-}
-
-app-chapters {
+app-storyline {
   position: fixed;
   bottom: 1rem;
   left: 1rem;
+  right: 1rem;
 }
 
 app-panel-side {

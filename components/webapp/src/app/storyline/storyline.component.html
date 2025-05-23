@@ -1,0 +1,91 @@
+<div class="storyline-container" #storylineContainer>
+  <!-- Current Chapter Name Header -->
+  <div class="current-chapter-header">
+    <app-editable
+      [label]="getChapterNameLabel()"
+      [value]="getCurrentChapterName()"
+      (onChange)="updateChapterName($event)"
+    ></app-editable>
+  </div>
+
+  <!-- Storyline Body -->
+  <div class="storyline-body">
+    <!-- Component Labels Column -->
+    <div class="component-labels">
+      @for (key of changesByComponentId.keys(); track key) {
+        <div class="component-label" [style.height]="chapterHeight+'px'">
+          {{ changesByComponentId.get(key)?.[0]?.displayName || key }}
+        </div>
+      }
+    </div>
+
+    <!-- Storyline Grid -->
+    <div class="storyline-grid">
+      @for (key of changesByComponentId.keys(); track key) {
+        <div class="component-storyline" [style.height]="chapterHeight + 'px'">
+          <!-- SVG for connecting lines -->
+          <svg class="connector-lines">
+            @if (changesByComponentId.get(key)?.length) {
+              <line
+                [attr.x1]="getLineCoordinates(key).startX"
+                [attr.y1]="getLineCoordinates(key).centerY"
+                [attr.x2]="getLineCoordinates(key).endX"
+                [attr.y2]="getLineCoordinates(key).centerY"
+                class="connector-line"
+              ></line>
+            }
+          </svg>
+
+          <!-- Change Blocks -->
+          @for (item of changesByComponentId.get(key) || []; track item) {
+            @if (item.chapter >= visibleStartChapter && item.chapter < visibleStartChapter + visibleChapterCount) {
+              <div
+                class="change-block-container"
+                [style.left.px]="(item.chapter - visibleStartChapter) * chapterWidth"
+                [style.width.px]="chapterWidth"
+                cdkDrag
+                cdkDragLockAxis="x"
+                [cdkDragData]="item"
+                (cdkDragStarted)="onDragStarted(item, $event)"
+                (cdkDragMoved)="onDragMoved($event)"
+                (cdkDragEnded)="onDragEnded($event)"
+                title="{{ item.change.type }} {{ item.displayName }} in Chapter {{ item.chapter + 1 }}">
+                <div
+                  class="change-block"
+                  [class]="item.typeClass">
+                </div>
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Chapter Number Row -->
+  <div class="chapter-number-row">
+    <div class="chapter-number-placeholder">
+      <button 
+        class="nav-button" 
+        (click)="navigateLeft()" 
+        [disabled]="visibleStartChapter <= 0"
+        title="Show earlier chapters">◀</button>
+    </div>
+    <div class="chapter-numbers">
+      @for (chapter of displayedChapters; track chapter) {
+        <div
+          class="chapter-number"
+          [class.active]="isCurrentChapter(chapter)"
+          [style.width.px]="chapterWidth"
+          (click)="selectChapter(chapter)">
+          {{ chapter + 1 }}
+        </div>
+      }
+    </div>
+    <button 
+      class="nav-button" 
+      (click)="navigateRight()" 
+      [disabled]="visibleStartChapter + visibleChapterCount >= availableChapters.length"
+      title="Show later chapters">▶</button>
+  </div>
+</div>

@@ -5,7 +5,6 @@ import {PanelsComponent} from '../common/panels/panels.component';
 import {PanelEntryComponent} from '../common/panel-entry/panel-entry.component';
 import {Asset, ComponentType, Ledger, Link, Organization, StageChange, StoryDto} from './story-dto'
 import {State} from '../state'
-import {ChaptersComponent} from '../chapters/chapters.component';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {OrganizationEditorComponent} from '../organization-editor/organization-editor.component';
 import {OrganizationFormGroup} from '../organization-editor/organization-form-group';
@@ -17,7 +16,8 @@ import {PanelActionComponent} from '../common/panel-action/panel-action.componen
 import {PanelSideComponent} from '../common/panel-side/panel-side.component';
 import {AssetFormGroup} from '../asset-editor/asset-form-group';
 import {AssetEditorComponent} from '../asset-editor/asset-editor.component';
-import {ActiveChapterComponent} from '../active-chapter/active-chapter.component';
+import {StorylineComponent} from '../storyline/storyline.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import Story = org.ledgers.domain.Story;
 import dto = org.ledgers.dto;
 import ComponentReference = org.ledgers.domain.component.ComponentReference;
@@ -29,7 +29,7 @@ import AnchorReference = org.ledgers.domain.stage.AnchorReference;
 @Component({
   selector: 'app-story',
   standalone: true,
-  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, ChaptersComponent, OrganizationEditorComponent, LedgerEditorComponent, AssetEditorComponent, PanelActionComponent, PanelSideComponent, ActiveChapterComponent],
+  imports: [CommonModule, PanelComponent, PanelsComponent, PanelEntryComponent, OrganizationEditorComponent, LedgerEditorComponent, AssetEditorComponent, PanelActionComponent, PanelSideComponent, StorylineComponent, DragDropModule],
   templateUrl: './story.component.html',
   styleUrl: './story.component.scss'
 })
@@ -99,8 +99,20 @@ export class StoryComponent implements OnInit {
     this.emitStoryUpdate();
   }
 
-  onChapterNameChange(newName: string) {
-    const updatedStory = this.story!!.withChapterNamed(this.state.chapter, newName);
+  onChapterNameChange(event: { chapter: number, name: string } | string) {
+    let chapterNumber = this.state.chapter;
+    let newName = '';
+
+    if (typeof event === 'string') {
+      // Handle old format for backward compatibility
+      newName = event;
+    } else {
+      // Handle new format from timeline component
+      chapterNumber = event.chapter;
+      newName = event.name;
+    }
+
+    const updatedStory = this.story!!.withChapterNamed(chapterNumber, newName);
     this.saveStory(updatedStory);
   }
 
@@ -212,14 +224,18 @@ export class StoryComponent implements OnInit {
   }
 
   private saveStory(updatedStory: Story) {
-    this.setStory(updatedStory)
+    this.setStory(updatedStory);
+    this.persistStory(updatedStory);
+  }
+
+  private persistStory(updatedStory: Story) {
     const headers = new HttpHeaders({
       "Content-Type": "application/json",
       "Accept": "application/json"
-    })
+    });
     this.httpClient
       .post(`/api/story/${updatedStory.id}`, dto.toJson(updatedStory), {headers: headers})
-      .subscribe()
+      .subscribe();
   }
 
   private setStory(updatedStory: Story) {
@@ -346,12 +362,13 @@ export class StoryComponent implements OnInit {
         change.component.reference.version
       );
 
-      const updatedStory = this.story!!.withChangeMovedToChapter(
-        this.state.chapter,
-        reference,
-        this.state.chapter - 1
-      );
-      this.saveStory(updatedStory);
+
+        const updatedStory = this.story!!.withChangeMovedToChapter(
+          this.state.chapter,
+          reference,
+          this.state.chapter - 1
+        );
+        this.saveStory(updatedStory);
     }
   }
 
@@ -361,12 +378,54 @@ export class StoryComponent implements OnInit {
       change.component.reference.id,
       change.component.reference.version
     );
-    const updatedStory = this.story!!.withChangeMovedToChapter(
-      this.state.chapter,
-      reference,
-      this.state.chapter + 1
+
+
+      const updatedStory = this.story!!.withChangeMovedToChapter(
+        this.state.chapter,
+        reference,
+        this.state.chapter + 1
+      );
+      this.saveStory(updatedStory);
+  }
+
+  onChangeMove(event: { change: StageChange, fromChapter: number, toChapter: number }) {
+    // Validate chapters are within bounds
+    if (event.toChapter < 0) {
+      console.error("Cannot move to negative chapter index");
+      return;
+    }
+
+    // Skip if source and destination are the same
+    if (event.fromChapter === event.toChapter) {
+      return;
+    }
+
+    // Create a reference from the change data
+    const reference = ComponentReference.Companion.fromReferenceParts(
+      event.change.component.reference.type,
+      event.change.component.reference.id,
+      event.change.component.reference.version
     );
-    this.saveStory(updatedStory);
+
+    try {
+      // Move the change to the new chapter
+      const updatedStory = this.story!!.withChangeMovedToChapter(
+        event.fromChapter,
+        reference,
+        event.toChapter
+      );
+
+      // Save the updated story without making HTTP request for immediate UI update
+      this.story = updatedStory;
+      this.storyDto = Patch.apply(this.storyDto, JSON.parse(dto.toJson(updatedStory)));
+      this.emitStoryUpdate();
+
+      // Only persist changes to backend when needed (can be throttled if needed)
+      this.persistStory(updatedStory);
+    } catch (error) {
+      console.error("Could not move change between chapters:", error);
+      // No alert for continuous movements to avoid disrupting user experience
+    }
   }
 
 
